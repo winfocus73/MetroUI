@@ -1,0 +1,12 @@
+.amx-slide-up, .amx-slide-down {
+    overflow:hidden
+  }
+  .amx-slide-up > div, .amx-slide-down > div {
+    /*margin-top: -25%;*/
+    display: none;
+    transition: margin-top 0.6s ease-in-out;
+  }
+  .amx-slide-down > div.filter_more {            
+    /* margin-top: 0;*/
+    display: flex;
+  } 

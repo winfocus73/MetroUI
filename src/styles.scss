@@ -1,0 +1,648 @@
+/* You can add global styles to this file, and also import other style files */
+@import "./app/core/styles/main";
+//@import "https://fonts.googleapis.com/icon?family=Material+Icons";
+@import '~material-icons/iconfont/material-icons.css';
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+@import "@danielmoncada/angular-datetime-picker/assets/style/picker.min.css";
+
+// @import "primeng/resources/themes/lara-light-blue/theme.css";
+// @import "primeng/resources/primeng.css";
+
+// common styles for slide down animation
+@import url('./slide-down-css.scss');
+@import url('./control-styles.scss');
+@import url('./trainset-dashboard.scss');
+* {
+  // --level-1: #c6c6c6;
+  // --level-2: #f5cc7f;
+  // --level-3: #7b9fe0;
+  // --level-4: #f27c8d;
+  --level-1: #c6c6c6;
+--level-2: #d8d8d8;
+--level-3: #d8d8d8;
+--level-4: #f2f2f2;
+--black: #b8b8b8;
+}
+.level-1{
+  margin-top: 15px !important;
+}
+
+.level-1, .level-2, .level-3, .level-4{
+  border: 1px solid #9c9c9c;
+}
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+  background-color: #555;
+}
+
+.pg_header {
+  display: flex;
+  justify-content: space-between;
+}
+
+:root .mat-primary {
+  --mdc-protected-button-container-color: rgb(79, 70, 229);
+}
+
+.mat-mdc-snack-bar-container {
+  &.success {
+    --mdc-snackbar-container-color: #155724;
+    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-mdc-snack-bar-button-color: #fff;
+  }
+}
+
+.mat-mdc-snack-bar-container {
+  &.error {
+    --mdc-snackbar-container-color: #721c24;
+    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-mdc-snack-bar-button-color: #fff;
+  }
+}
+
+.mat-mdc-snack-bar-container {
+  &.warning {
+    --mdc-snackbar-container-color: #856404;
+    --mdc-snackbar-supporting-text-color: #fff;
+    --mat-mdc-snack-bar-button-color: #fff;
+  }
+}
+
+.btn-space {
+  margin-right: 5px;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// input[type="text"] {
+//   border-radius: 25px 25px 25px 25px;
+//   padding-right: 30px;
+//   padding-left: 30px;
+// }
+
+// select, textarea {
+//   border-radius: 25px 25px 25px 25px !important;
+//   padding-right: 30px !important;
+//   padding-left: 30px !important;
+// }
+.cdk-overlay-pane {
+  background-color: var(--mat-datepicker-calendar-container-background-color) !important;
+  //width: auto !important;
+  max-width: 95vw !important;
+}
+
+.mat-calendar-body-cell-content {
+  color: var(--mat-datepicker-calendar-date-text-color) !important;
+  border-color: var(--mat-datepicker-calendar-date-outline-color) !important;
+}
+
+.mat-calendar-body-selected {
+  background-color: var(--mat-datepicker-calendar-date-selected-state-background-color) !important;
+  color: var(--mat-datepicker-calendar-date-selected-state-text-color) !important;
+}
+
+.mat-calendar-body-selected.mat-calendar-body-today {
+  box-shadow: inset 0 0 0 1px var(--mat-datepicker-calendar-date-today-selected-state-outline-color) !important;
+}
+
+.mat-mdc-tab-labels {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.mat-mdc-tab-labels .mdc-tab--active {
+  border: 0 !important;
+  background-color: rgb(79, 70, 229) !important;
+}
+
+.mat-mdc-tab-labels .mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+  color: #fff !important;
+}
+
+.mat-mdc-tab-labels .mdc-tab--active:after {
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 15px solid #e5e5e5;
+  content: " ";
+  position: absolute;
+  bottom: -15px;
+  left: 35%;
+}
+
+.mat-mdc-tab-group.mat-mdc-tab-group-stretch-tabs>.mat-mdc-tab-header .mat-mdc-tab {
+  flex-grow: 0 !important;
+}
+
+.btn-add {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+}
+
+.btn-btlist {
+  position: absolute;
+  top: -37px;
+  right: 0;
+}
+
+.l-col {
+  color: #6c6c6c;
+}
+
+.d-col {
+  color: rgba(0, 0, 0, 0.803);
+  font-weight: bold;
+}
+
+.b-c {
+  border: 1px solid blue;
+}
+
+.mat-calendar-body-disabled>.mat-calendar-body-cell-content:not(.mat-calendar-body-selected) {
+  color: rgba(0, 0, 0, .38) !important;
+}
+
+input[showError],
+textarea[showError] {
+
+  &.ng-invalid.ng-dirty,
+  &.ng-invalid.ng-touched {
+    border-color: #dc3545;
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+    }
+  }
+}
+
+select[showError] {
+
+  &.ng-invalid.ng-dirty,
+  &.ng-invalid.ng-touched {
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+    }
+  }
+}
+
+ng-select[showError] {
+
+  &.ng-invalid.ng-dirty,
+  &.ng-invalid.ng-touched {
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 0 0.2rem rgba(255, 0, 0, 0.25);
+    }
+  }
+}
+
+.invalid-feedback {
+  display: block !important;
+}
+
+// border style for unit exchange table
+.unit-spare th {
+  border: 1px solid #ccc;
+}
+
+.mheight-80 {
+  min-height: 80vh;
+}
+
+// height for message body
+.ql-container {
+  min-height: 200px;
+}
+
+// mat-card{
+//   padding:8px;
+// }
+// indication style for unread messages
+.unread-msg {
+  border-left: 4px solid #0d6efd;
+  border-radius: 0px !important;
+}
+
+.square-badge {
+  .mat-badge-content {
+    width: auto;
+    display: grid;
+    min-width: 32px;
+    min-height: 22px;
+    text-align: center;
+    align-items: center;
+    padding: 0;
+    top: -17px !important;
+    right: -24px !important;
+    border-radius: 30%;
+  }
+}
+
+.mat-mdc-paginator-page-size-label {
+  display: none;
+}
+
+.mat-mdc-paginator-page-size.ng-star-inserted:before {
+  content: 'Items :';
+  font-weight: 400;
+}
+
+.mat-mdc-paginator-range-label {
+  margin: 0 9px !important;
+}
+
+.min-wd-180 {
+  min-width: 180px;
+}
+
+.boot-material-date-icon {
+  position: absolute;
+  top: -8px;
+  right: 10px;
+
+}
+
+ngx-daterangepicker-material .buttons_input {
+  button {
+    margin-left: 8px;
+  }
+}
+
+
+
+// style for slide in right and slide in left
+
+
+
+
+slide-in {
+  z-index: 10;
+  /* to position it in front of the other content */
+  position: absolute;
+  overflow: hidden;
+  /* to prevent scrollbar appearing */
+}
+
+.slide-in.from-left {
+  left: 0;
+}
+
+.slide-in.from-right {
+  right: 0;
+}
+
+.slide-in-content {
+  padding: 5px;
+  background: #eee;
+  transition: transform .5s ease;
+  /* our nice transition */
+}
+
+.slide-in.from-left .slide-in-content {
+  transform: translateX(-100%);
+  -webkit-transform: translateX(-100%);
+}
+
+.slide-in.from-right .slide-in-content {
+  transform: translateX(100%);
+  -webkit-transform: translateX(100%);
+}
+
+.slide-in.show .slide-in-content {
+  transform: translateX(0);
+  -webkit-transform: translateX(0);
+}
+
+/// end of styles slide in left and slide in right
+
+
+.cal-pos {
+  position: relative;
+
+  mat-datepicker-toggle {
+    position: absolute;
+    right: 8px;
+    top: -8px;
+  }
+
+  .owl-date-pic {
+    position: absolute;
+    right: 16px;
+    top: 5px;
+    cursor: pointer;
+  }
+
+  input[readonly]{
+    cursor: pointer;
+    background-color: (120 120 120 / 7%) !important;
+  }
+
+}
+
+
+// row highlight in material table
+.mat-mdc-row:hover {
+  background-color: #cdd7ebb5;
+}
+
+.opacity-65 {
+  opacity: 0.65 !important;
+}
+
+.danger {
+  color: #dc3545;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__title {
+  font-weight: bold;
+  color: blue !important;
+}
+
+
+
+// remove border to cards
+.no-border-card {
+  border: none !important;
+  box-shadow: none !important;
+  margin-bottom: 10px;
+}
+
+.max-date-width, .small-input-ctrl{
+  max-width: 180px !important;
+}
+
+
+.overflow-ellipsis{
+  white-space: nowrap;
+    overflow: hidden;
+    max-width: 190px;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
+
+ngx-mat-datepicker-content {
+  border: 1px solid #ccc;
+  border-radius: 0px !important;
+
+  .mat-calendar-header{
+    border-bottom: 1px solid #ccc;;
+  }
+
+  .mat-datepicker-actions {
+    border-top: 1px solid #ccc;
+  }
+
+}
+
+// *************** owl date timep picker styles *******************//
+
+
+.owl-dt-timer-divider {
+  display: none;
+}
+
+.owl-dt-timer-content .owl-dt-timer-input {
+  border: none;
+  border-bottom: 1px solid;
+  border-radius: 0;
+  font-size: 16px;
+}
+
+.owl-dt-timer-box {
+  width: 16%;
+}
+
+.owl-dt-timer-content {
+  margin: 0;
+}
+
+.custom-readonly-style{
+  cursor: pointer;
+  background-color: (120 120 120 / 7%) !important;
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
+// *************** end of owl date timep picker styles *************//
+
+
+  .bg-completed { background-color: #4CAF50; } /* Green */
+  .bg-approved{ background-color: #90d292; } /* Green */
+  .bg-low , .bg-scheduled{ background-color: #FFEB3B; } /* Yellow */
+  .bg-new { background-color: #2196F3; } /* Blue */
+  .bg-open { background-color: #FF9800; } /* Orange */
+  .bg-no-priority,.bg-normal  { background-color: #E0E0E0; } /* Grey */
+  .bg-closed { background-color: #9E9E9E; } /* Grey */
+  .bg-canceled { background-color: #F44336; } /* Red */
+ /* .bg-in-progress,.bg-hight { background-color: #FF5722; } /* Orange */
+  .bg-rejected { background-color: #F44336; } /* Red */
+  .bg-approval-waiting { background-color: #FFC107; } /* Amber */
+  .bg-started, .bg-in-progress,.bg-hight { background-color: #1CAC78; } /* Amber */
+
+  ng-scrollbar {
+    --scrollbar-thumb-color: #ccc9 !important;
+    --scrollbar-thumb-hover-color: rgb(149, 148, 173) !important;
+    --scrollbar-size: 8px !important;
+    --scrollbar-border-radius: 9px !important;
+  }
+  // .scrollbar-track {
+  //   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5), inset 0 0 2px rgba(0, 0, 0, 0.2),
+  //     0 0 0 1px rgba(255, 255, 255, 0.5);
+  //   overflow: unset;
+  // }
+
+  // .scrollbar-thumb {
+  //   box-shadow: 0 0 0 .5px rgba(103, 217, 27, 0.6), 0 .5px 1px rgba(118, 184, 90, 0.6);
+  // }
+
+  //
+.fa-edit-success {
+
+  &::before
+  {
+  color: green;
+  }
+
+}
+
+.disabled-fm-group{
+  pointer-events: none;
+    opacity: 0.5;
+}
+.btn-add{
+  top:-34px;
+}
+.btn-add span.btn{
+  padding: 0px 6px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+// .ng-select {
+//   height: 4rem auto;
+//   overflow: auto;
+// }
+
+.ng-select .ng-select-container {
+  height: 3rem;
+  overflow: auto !important;
+}
+h1.mat-tree-node{
+  display: block !important;
+}
+.tree-item{
+  padding: 0 10px;
+  margin-left: 5px;
+  margin-bottom: 5px;
+}
+.tree-item.active,.tree-item:hover{
+  background-color: rgb(235 233 255);
+
+}
+.tree-item-title{
+    background-color: #f5f5f5;
+    padding: 5px 7px;
+    margin-left: -7px;
+    margin-right: -7px;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    position: sticky;
+    top:0;
+    z-index: 5;
+}
+.main-tree-node-name{
+  background-color: #fff;
+  position:sticky;
+  top: 0;
+  z-index: 5;
+  display: inline-block;
+  width: 100%;
+}
+
+/** style changes for work order dashboard **/
+nxasm-work-order-request-dashboard, nxasm-service-request-dashboard{
+
+  #chart_div {
+    overflow: hidden;
+  }
+  nxasm-horizontal-bar-chart {
+    max-width: 90px !important;
+    overflow: hidden;
+  }
+  .HorizontalBar{
+    overflow: hidden !important;
+    max-width: 160px;;
+  }
+  .min-wd-bar {
+    min-width: 195px;
+  }
+
+}
+/** end of style changes for work order dashboard **/
+
+.resizable {
+  position: relative;
+  overflow: hidden;
+}
+.div3,.div2{
+  overflow: auto;
+  height: 73vh;
+  flex:1 1 auto;
+}
+.div3{
+  width: 40%;
+}
+.div1{
+  overflow: hidden;
+}
+
+
+// .grabber{
+//   height: 100vh !important;
+// }
+.grabber {
+  cursor: col-resize;
+  position: absolute;
+  background-color: rgb(114, 114, 114);
+  width: 2px;
+  height: 100%;
+  right: 0;
+  top: 0;
+}
+@media(max-width:500px){
+  .top-header .d_none{
+    display: none !important;
+  }
+}
+
+.full-screen-dialog {
+  width: 98vw;
+  height: 98vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+.tree_bloc_icon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  background-color: rgb(79, 70, 229);
+  border-radius: 0 25px 25px 0;
+  box-shadow: 0px 0 5px rgba(0, 0, 0, 0.09);
+  padding: 2px 8px;
+  z-index: 99;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.pointer-events-none{
+  pointer-events: none;
+}
+
+/** styles for calendar view  **/
+nxasm-calendar .fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 2.5em;
+}
+
+/** end styles for calendar view  **/

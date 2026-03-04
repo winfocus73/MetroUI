@@ -1,0 +1,73 @@
+<h5  mat-dialog-title>Asset Location Change</h5> 
+<mat-dialog-content>
+<div class="row m-3">
+    <form [formGroup]="assetFormGroup">
+        <div class="col-12 mb-1">
+            <label class="mb-2 l-col">
+                Asset Name :
+            </label>
+            <label class="d-col">{{selectedAssetData.assetName}}</label> 
+        </div>
+        <div class="col-12 mb-1">
+            <label class="mb-2 l-col">
+                Asset Number :
+            </label>
+            <label class="d-col">{{selectedAssetData.assetNo}}</label> 
+        </div>
+        <div class="col-12 mb-1">
+            <label class="mb-2 l-col">
+                Asset Location :
+            </label>
+            <label class="d-col">{{selectedAssetData.location}}</label> 
+        </div>
+
+        <div class="col-12 form-group mb-2">
+            <label class="mb-2" for="name">New Location</label>
+            <div style="display:flex;">
+                <input type="text" formControlName="newLocation" class="form-control" id="station"
+                  aria-describedby="station" placeholder="Enter Location" />
+                <button type="button" class="btn btn-success btn-rounded btn-fw ms-2 radius-unset m2-2" title="Select Location"
+                  (click)="openDialog()"><i class="las la-search"></i></button>
+            </div>
+        </div>
+
+        <div class="col-12 form-group mb-2">
+            <label class="mb-2" for="name">WO Number</label>
+            <div style="display:flex;">
+                <input type="text" formControlName="woNumber" class="form-control radius-unset" id="workorderno"
+                  readonly aria-describedby="workorderno" placeholder="Enter Work Order No" />
+                <button type="button" class="btn btn-success btn-rounded btn-fw ms-2 radius-unset ms-2"
+                  title="Select Work Orders" (click)="openWorkOrderDialog()"><i class="las la-search"></i></button>
+            </div>
+        </div>
+        <div class="col-12 form-group mb-2">
+            <label class="mb-2" for="name">Movement Date</label>
+            <div class="cal-pos">
+                <input class="form-control custom-readonly-style"
+                placeholder="Select Start Date Time" formControlName="date"
+                  [readonly]="datePickerOptions.readonly" [owlDateTimeTrigger]="reqStartDateTrigger"
+                  [owlDateTime]="reqStartDateTrigger">
+                <owl-date-time #reqStartDateTrigger [showSecondsTimer]="datePickerOptions.showTimer"></owl-date-time>
+                <mat-icon (click)="reqStartDateTrigger.open()" class="owl-date-pic"><span class="material-symbols-outlined">
+                    calendar_month
+                  </span>
+                </mat-icon>
+            </div>
+        </div>
+        <div class="col-12 form-group">
+            <label class="mb-2" for="name">Remarks</label>
+            <div>
+                <textarea id="Description" maxlength="128" formControlName="remarks"  class="form-control" name="Remarks"></textarea>
+                <mat-hint style="float: inline-end;">{{lengthcheck('remarks') || 0}}/128</mat-hint>
+             </div>
+        </div>
+    </form>
+</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <div class="col-12 form-group mt-1 text-end">
+        <button type="button" class="btn btn-outline-danger btn-space" (click)="close()"><i class="fa fa-close"></i> Close</button>
+        <button type="button" class="btn btn-success btn-space" [disabled]="!assetFormGroup.valid"
+            (click)="onSubmit()"><i class="fa fa-save"></i> Save</button>
+    </div>
+</mat-dialog-actions>

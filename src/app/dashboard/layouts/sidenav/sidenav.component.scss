@@ -1,0 +1,255 @@
+@use "../../../core/styles/variables/palette.scss" as palette;
+
+$primary: #2d323e;
+$accent: map-get(palette.$app-accent-palette, palette.$app-accent-intention);
+$color: rgba(255, 255, 255, 0.87);
+
+:host {
+  height: auto;
+  min-height: 100%;
+}
+
+
+.sidenav {
+ // background-color: $primary;
+ background-color: rgb(79,70,229);
+  box-sizing: border-box;
+  height: auto;
+  min-height: 100%;
+  width: 80px;
+  min-width: 80px;
+  // overflow: auto;
+  // overflow-x: hidden;
+  box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 0px 2px 2px rgba(0, 0, 0, 0.098), 0px 0px 5px 1px rgba(0, 0, 0, 0.084);
+  transition: width 0.35s, min-width 0.35s;
+  text-align: center;
+
+  ::ng-deep {
+    ul{
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    ul.submenu{
+      overflow-y: auto;
+    }
+    ul.submenu::-webkit-scrollbar{
+      display: none;
+    }
+    ul > li{
+      position: relative;
+    }
+    ul ul{
+      display: none;
+    }
+    ul ul li span{
+      display: inline-block !important;
+    }
+    ul ul li{
+      white-space: nowrap;
+      text-align: left;
+    }
+    ul ul li a{
+      padding:10px 20px !important;
+      color: #333 !important;
+    }
+    ul ul > li:hover > a, ul  ul > li > a.active{
+      background-color:  rgb(79,70,229) !important;
+      color: #fff !important;
+      border-radius: 0;
+    }
+    ul ul li a span{
+      vertical-align: top;
+      padding-top: 3px;
+    }
+    ul ul li i{
+      padding-right: 5px;
+      margin-bottom: 0;
+    }
+    ul > li:hover a, ul > li a.active{
+      color:rgb(79,70,229);
+      background-color: #fff;
+      border-radius: 5px 0 0 5px;
+    }
+    ul li:hover > ul{
+      display: block;
+      position: fixed;
+      left: 80px;
+      top: 0;
+      background-color: #fff;
+      z-index: 999;
+      width: 200px;
+      box-shadow: 3px 0 5px -2px #888;
+    }
+    ul li:hover ul.submenu-pull{
+      top: 0;
+      bottom: 0;
+      max-height: 100vh;
+      overflow-y: auto;
+    }
+    ul li:hover ul li.sub_title{
+      color: rgb(79, 70, 229);
+      padding: 8px 0;
+      background-color: rgba(0,0,0,0.05);
+    }
+
+    ul > li> a >span{
+      display: block;
+    }
+    ul li i{
+      font-size: 25px;
+      margin-bottom: 5px;
+    }
+    ul li i:last-child{
+      position: absolute;
+    right: 15%;
+    top: 23%;
+    font-size: 13px;
+    }
+    ul li a{
+      text-decoration: none;
+      color: #fff;
+      padding: 0.8rem 0;
+      display: block;
+      font-size: 12px;
+      border-bottom: 1px dotted #d5d5d5;
+    }
+    .sidenav-header {
+      display: flex;
+      flex-direction: row;
+      flex: 1 0 auto;
+      align-items: center;
+      justify-content: space-between;
+      background-color: rgb(79, 70, 229);
+      color: $color;
+      box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+
+      .mat-toolbar-row {
+        justify-content: space-between;
+
+        .logo {
+          display: flex;
+          align-items: center;
+
+          .logo-icon {
+            width: 32px;
+          }
+
+          .logo-text {
+            margin-left: 12px;
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: .4px;
+            line-height: normal;
+          }
+        }
+
+        button {
+          color: rgba(255,255,255,.7)!important;
+        }
+      }
+    }
+    .sidenav-menu {
+      font-size: 14px !important;
+
+      dl {
+        margin: 0;
+        white-space: nowrap;
+
+        dt {
+          padding: 16px;
+          color: rgba(255, 255, 255, 0.87);
+          cursor: pointer;
+          outline: none;
+
+          &:hover {
+            background-color: darken($primary, 2%);
+          }
+
+          &.active {
+            background-color: $accent;
+          }
+        }
+
+        &.submenu {
+          transition: all 0.4s;
+
+          dt {
+            display: flex;
+            // justify-content: space-between;
+
+            &:after {
+              font-family: 'Material Icons';
+              content: "expand_more";
+              transition: all 0.4s ease;
+              display: flex;
+              align-items: center;
+            }
+          }
+
+          dd {
+            margin: 0;
+            background-color: darken($primary, 4%);
+            overflow: hidden;
+            transition: height 0.4s;
+
+            a {
+              color: rgba(255, 255, 255, 0.87);
+              display: block;
+              letter-spacing: .1px;
+              overflow: hidden;
+              padding: 16px;
+              padding-left: 18px;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+              text-decoration: none;
+              cursor: pointer;
+
+              &.active {
+                background-color: $accent;
+              }
+            }
+          }
+
+          &.open {
+            background-color: darken($primary, 4%);
+
+            dt:after {
+              transform: rotate(-180deg);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.fixed {
+    position: absolute;
+    transform: translate3d(0, 0, 0);
+    transition: transform 0.35s;
+    z-index: 9;
+  }
+  &.fixed.closed {
+    width: 300px;
+    min-width: 300px;
+    transform: translate3d(-100%, 0, 0);
+  }
+  &.closed {
+    width: 0;
+    min-width: 0;
+    box-shadow: none;
+  }
+}
+::ng-deep{
+  ul.sub-nav {
+    position: absolute !important;
+    top: 0 !important;
+    left: 200px !important;
+}
+}
+::ng-deep{
+  ul.sub-nav li a {
+    padding: 10px 20px !important;
+  }
+}
+

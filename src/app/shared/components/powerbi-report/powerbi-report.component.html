@@ -1,0 +1,14 @@
+<div>
+  <!-- <input type="text" [(ngModel)]="username" placeholder="Username">
+  <input type="password" [(ngModel)]="password" placeholder="Password">
+  <button (click)="authenticate()">Authenticate & Embed Report</button> -->
+  <!-- <iframe [src]="getReportUrl()" width="800" height="600" frameborder="0" allowFullScreen="true"></iframe>
+  <iframe
+  width="800" height="600"
+  src="https://nxasm.winfocus.co.in/Reports/powerbi/Stationwisemediatypesummary/?username=vinod&password=vin0d123!">
+
+  </iframe> -->
+</div>
+<div id="reportContainer">
+  <div [innerHTML]="safeHtmlContent"></div>
+</div>

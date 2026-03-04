@@ -1,0 +1,23 @@
+<div class="sidenav" [class.closed]="!isOpen" [class.fixed]="isFixed" #sidenav >
+
+  <mat-toolbar class="sidenav-header">
+    <mat-toolbar-row>
+      <div class="logo" style="cursor: pointer;" (click)="goHome()">
+
+        <img src="./assets/images/train.png" width="40" style="margin-left: 10px;" alt="site logo">
+          <span class="logo-text secondary-text" style="display: none;">NXASM</span>
+      </div>
+
+      <button *ngIf="isFixed" mat-icon-button aria-label="" (click)="toggle()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div class="sidenav-menu">
+    <!-- <ngx-simplebar> -->
+         <ng-content></ng-content>
+    <!-- </ngx-simplebar> -->
+
+  </div>
+</div>

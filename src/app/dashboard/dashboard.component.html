@@ -1,0 +1,134 @@
+<div class="dashboard">
+  <app-sidenav #appSideNav *ngIf="data">
+    <ng-scrollbar externalViewport visibility="hover" track="vertical"  [appearance]="scrollbarMode"
+    trackClass="scrollbar-track"
+    thumbClass="scrollbar-thumb"
+    >
+      <div scrollViewport >
+        <div class="scroll-container" (mouseenter)="onMouseEnter($event)" (keydown)="onKeyDown($event)"
+        (mousedown)="onMouseDown($event)"
+        (mouseleave)="onContentEnter($event)"
+        >
+        <!-- content goes here -->
+        <ul class="submenu" style="padding-bottom: 60px;" (keydown)="onContentEnter($event)" (mouseenter)="onContentEnter($event)"  (mousedown)="onContentEnter($event)">
+          <ng-container *ngFor="let m of data.menus; let j=index">
+            <ng-container *ngIf="m.submenu.length === 0">
+              <li  (keydown)="onContentEnter($event)"><a [routerLink]="m.state" (click)="activeParentli(j)" [routerLinkActiveOptions]="{exact: true}"
+                  routerLinkActive="active"><i class="{{m.icon}}"></i> <span>{{m.name}}</span></a></li>
+            </ng-container>
+            <ng-container *ngIf="m.submenu.length !== 0">
+              <li (mouseenter)="onMouseEnterLi($event)" (keydown)="onContentEnter($event)">
+                <a href="javascript:void(0)" [ngClass]="activeClass && indexParent===j ? 'active': ''"><i
+                    class="{{m.icon}}"></i> <span>{{m.name}}</span><i class="fa-solid fa-caret-right"></i>
+                  </a>
+                <ul>
+                  <li class="text-center sub_title"><strong>{{m.name}}</strong></li>
+                  <ng-container *ngFor="let ms of m.submenu;let i = index">
+                    <ng-container *ngIf="ms.name==='Help System'">
+                      <li *ngIf="i===0"><a (click)="helpSysytemClick()" [routerLink]="ms.state" routerLinkActive="active"
+                        [routerLinkActiveOptions]="{exact: true}">
+                        <i class="{{ms.icon}}"></i> <span>{{ms.name}}</span>
+                      </a></li>
+                      <li *ngIf="i !==0"><a (click)="helpSysytemClick()" [routerLink]="ms.state" routerLinkActive="active">
+                        <i class="{{ms.icon}}"></i> <span>{{ms.name}}</span>
+                      </a>
+                    </li>
+                    </ng-container>
+                    <ng-container *ngIf="ms.name === 'BI Reports'">
+                      <li (mouseenter)="onMouseEnterLi($event)" (keydown)="onContentEnter($event)">
+                        <a href="javascript:void(0)"><i class="{{ms.icon}}"></i> <span>{{ms.name}}</span><i class="fa-solid fa-caret-right"></i>
+                          </a>
+                          <ul class="sub-nav">
+                            <ng-container *ngFor="let c of reportsSubmenus">
+                              <a (click)="onPowerBiLinkClick(c.state)" [routerLink]="c.state" routerLinkActive="active">
+                                <i class="{{c.icon}}"></i> <span>{{c.name}}</span>
+                              </a>
+                            </ng-container>
+                          </ul>
+                      </li>
+                    </ng-container>
+                    <ng-container *ngIf="ms.name!=='Help System' && ms.name !== 'BI Reports'" >
+                        <li *ngIf="i===0"><a (click)="activeParentli(j)" [routerLink]="ms.state" routerLinkActive="active"
+                          [routerLinkActiveOptions]="{exact: true}">
+                          <i class="{{ms.icon}}"></i> <span>{{ms.name}}</span>
+                        </a></li>
+                      <li *ngIf="i !==0"><a (click)="activeParentli(j)" [routerLink]="ms.state" routerLinkActive="active">
+                          <i class="{{ms.icon}}"></i> <span>{{ms.name}}</span>
+                        </a>
+                      </li>
+                    </ng-container>  
+                  </ng-container>
+                </ul>
+              </li>
+
+            </ng-container>
+
+          </ng-container>
+
+
+        </ul>
+        </div>
+      </div>
+    </ng-scrollbar>
+  </app-sidenav>
+
+  <!-- <app-sidenav #appSideNav>
+    <ng-container *ngFor="let m of MenuData.menus">
+      <ng-container *ngIf="m.submenu.length === 0">
+      <dl>
+        <dt [routerLink]="m.state" routerLinkActive="active">{{m.name}}</dt>
+      </dl>
+      </ng-container>
+      <ng-container *ngIf="m.submenu.length !== 0">
+        <dl class="submenu">
+          <dt>{{m.name}}</dt>
+          <dd>
+            <ng-container *ngFor="let ms of m.submenu;let i = index">
+                <a *ngIf="i===0" [routerLink]="ms.state" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+                  {{ms.name}}
+                </a>
+                <a *ngIf="i !==0" [routerLink]="ms.state" routerLinkActive="active">
+                  {{ms.name}}
+                </a>
+            </ng-container>
+        </dd>
+        </dl>
+      </ng-container>
+    </ng-container>
+  </app-sidenav> -->
+  <div class="wrapper">
+
+    <app-toolbar class="top-header" [menusData]="submenus"  [dataMenus]="fullSubMenus"
+    [reportsMenusData]="reportsSubmenus"  [reportsDataMenus]="reportsFullSubMenus"
+    (sidenavToggle)="onSidenavToggle()">
+
+    </app-toolbar>
+    <!-- [class]="loading$ ? 'dark-overlay': ''" -->
+    <div class="content">
+        <app-toaster-container></app-toaster-container>
+        <!-- <mat-progress-spinner   [mode]="'indeterminate'" *ngIf="loading$ | async"></mat-progress-spinner> -->
+         <div *ngIf="loading" class=" flex-content-center" style="z-index: 9999;">
+          <div class="loading-container"></div>
+          <div class="loader-img">
+            <img class="metro-logo-circle" src="../../assets/images/metro-logo-circle.png">
+            <img class="metro-logo-lines fa-spin" src="../../assets/images/metro-logo-lines.png">
+          </div>
+          <!-- <mat-progress-spinner
+            color="primary" strokeWidth="2"
+            [mode]="'indeterminate'">
+          </mat-progress-spinner> -->
+        </div>
+      <div class="content__body pt-2 px-3">
+        <nxasm-breadcrumb></nxasm-breadcrumb>
+        <asm-help-dialog></asm-help-dialog>
+        <router-outlet></router-outlet>
+      </div>
+      <app-footer></app-footer>
+    </div>
+  </div>
+  <!-- <ng-template cdkConnectedOverlay [cdkConnectedOverlayOrigin]="trigger"
+    [cdkConnectedOverlayOpen]="isOpen"
+    [cdkConnectedOverlayHasBackdrop]="true"
+    (backdropClick)="isOpen = false">
+</ng-template> -->
+</div>

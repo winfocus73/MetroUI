@@ -1,0 +1,6 @@
+<div class="component-wrapper">
+    <ng-content></ng-content>
+    <div *ngIf="errorMessage" class="invalid-feedback invalid-input-field">
+        {{ errorMessage }}
+    </div>
+</div>

@@ -1,0 +1,232 @@
+<h5 mat-dialog-title>Asset History</h5>
+<mat-dialog-content style="height: 65vh;overflow: auto;">
+  <div class="row p-2 my-1 pl-3 col-12" *ngIf="assetDetailsData">
+    <div class="row">
+      <div class="col-md-2">
+        <div class="form-group row">
+          <label class="l-col">
+            Asset Name
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="rowData.assetName" *ngIf="rowData && rowData.assetName">
+
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group row">
+          <label class="l-col">
+            Asset No
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.assetNo" *ngIf="assetDetailsData.assetNo">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group row">
+          <label class="l-col">
+            OEM Serial No
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.oemSerialNo"
+              *ngIf="assetDetailsData.oemSerialNo">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group row">
+          <label class="l-col">
+            DoC
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.doC | dateOnly"
+              *ngIf="assetDetailsData.doC">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group row">
+          <label class="l-col">
+            OEM
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.mfgName" *ngIf="assetDetailsData.mfgName">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+        <div class="form-group row">
+          <label class="l-col">
+            Status
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.status" *ngIf="assetDetailsData.status">
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2">
+        <div class="form-group row">
+          <label class="l-col">
+            Location
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.locationName"
+              *ngIf="assetDetailsData.locationName">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group row">
+          <label class="l-col">
+            Last Maint
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.objlastSch[0].LastSch"
+              *ngIf="assetDetailsData.objlastSch">
+            </label>/ <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.objlastSch[0].LastSchDate"
+              *ngIf="assetDetailsData.objlastSch">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="form-group row">
+          <label class="l-col">
+            Next Due
+          </label>
+          <div>
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.objNextSchDue[0].NextSchDue"
+              *ngIf="assetDetailsData.objNextSchDue">
+            </label>/<label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.objNextSchDue[0].NextSchDate"
+              *ngIf="assetDetailsData.objNextSchDue">
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group row">
+          <label class="l-col">
+            Last Major Sch
+          </label>
+          <div *ngIf="assetDetailsData && assetDetailsData.objlastSch">
+            <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.objlastSch[0].LastMajorSch"
+              *ngIf="assetDetailsData.objlastSch[0].LastMajorSch">
+            </label>/<label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.objlastSch[0].LastMajorSchDate"
+              *ngIf="assetDetailsData.objlastSch[0].LastMajorSchDate">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-2">
+        <label class="l-col">
+          Last Minor Sch
+        </label>
+        <div>
+          <span *ngIf="assetDetailsData && assetDetailsData.lastMinorSch">
+          <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.lastMinorSch[0].LastMinorSch"
+            *ngIf="assetDetailsData.lastMinorSch[0].LastMinorSch">
+          </label>
+            <span *ngIf="assetDetailsData.lastMinorSch[0].LastMinorSchDate">/<label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.lastMinorSch[0].LastMinorSchDate">
+              </label>
+            </span>
+
+            <label class="mb-2 d-col" *ngIf="!assetDetailsData.lastMinorSch[0].LastMinorSch"> -- </label>
+            <span *ngIf="!assetDetailsData.lastMinorSch[0].LastMinorSchDate">/<label class="mb-2 d-col"> -- </label>
+            </span>
+          </span>
+        </div>
+      </div>
+      <div class="col-2" *ngIf="rowData.category== 'RST'">
+        <label class="l-col">
+          Avg. Wheel Dia
+        </label>
+        <div>
+          <span *ngIf="assetDetailsData.avgWheelDia">
+          <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.avgWheelDia"></label>
+          <!-- <span class="lbl-sufix">mm</span> -->
+        </span>
+          <label class="mb-2 d-col" *ngIf="!assetDetailsData.avgWheelDia"> -- </label>
+        </div>
+      </div>
+      <div class="col-2" *ngIf="rowData.category== 'RST'">
+        <label class="l-col">
+          Last KM Reading
+        </label>
+        <div>
+          <span *ngIf="assetDetailsData.lastKMReading">
+          <label class="mb-2 d-col" [appTextPlaceholder]="assetDetailsData.lastKMReading"></label>
+          <!-- <span class="lbl-sufix">km</span> -->
+          </span>
+          <label class="mb-2 d-col" *ngIf="!assetDetailsData.lastKMReading"> -- </label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="form-group row">
+          <label class="l-col d-col col-1"> Description:
+          </label>
+          <div class="col">
+            <label class="mb-2" [appTextPlaceholder]="assetDetailsData.description"
+              *ngIf="assetDetailsData.description">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <ng-container *ngIf="assetDetailsData && assetDetailsData.progressHistory">
+    <p class="fw-bold">Progress History</p>
+    <app-table *ngIf="assetDetailsData.progressHistory.length > 0" [containerStyles]="{'max-height':'32vh'}"
+      [tableColumns]="tableColumns" [tableData]="assetDetailsData.progressHistory">
+    </app-table>
+  </ng-container>
+  <div class="row m-2" *ngIf="isProGressNoHistory">
+    <span class="bg-warning text-center fw-bold">Progress Asset History Details not available</span>
+  </div>
+  <ng-container *ngIf="assetDetailsData && assetDetailsData.objHistory">
+    <p class="fw-bold">History</p>
+    <app-table *ngIf="assetDetailsData.objHistory.length > 0" [containerStyles]="{'max-height':'32vh'}"
+      [tableColumns]="tableColumns" [tableData]="assetDetailsData.objHistory">
+    </app-table>
+  </ng-container>
+
+  <!-- <p class="fw-bold">Progress History</p>
+    <app-table *ngIf="assetDetailsData1 && assetDetailsData1.progressHistory.length > 0" [tableColumns]="tableColumns"
+        [tableData]="assetDetailsData1.progressHistory">
+    </app-table>
+    
+    <app-table *ngIf="assetDetailsData1 && assetDetailsData1.history" [tableColumns]="tableColumns"
+        [tableData]="assetDetailsData1.objHistory">
+    </app-table> -->
+  <div class="row m-2" *ngIf="isNoHistory">
+    <span class="bg-warning text-center fw-bold">Asset History Details not available</span>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <div class="col-md-12 text-end my-2">
+    <button type="button" class="btn btn-outline-primary btn-space" (click)="close()">Close</button>
+  </div>
+</mat-dialog-actions>
+
+<ng-template #numberTpl let-context let-row let-rowIndex>
+  <div class="pl-3 cursor-pointer" (click)="edit(context.row.WoId, context)" style="padding:9px 0;">
+    <a class="" class="text-primary cursor-pointer" style="display: block; align-items: center;">
+      {{context.row.WoNo }}
+    </a>
+  </div>
+</ng-template>

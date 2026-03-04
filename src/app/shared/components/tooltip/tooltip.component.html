@@ -1,0 +1,11 @@
+<div @tooltip class="container">
+    <div class="arrow">
+      <div class="outer"></div>
+      <div class="inner"></div>
+    </div>
+    <div class="message-body" *ngIf="keyObject">
+        <div  *ngFor="let k of keyObject">
+          {{k}}: <span class="d-col">  {{ getKeyData(k) | dateTime }} </span>
+        </div>
+    </div>
+  </div>

@@ -1,0 +1,3 @@
+<div class="breadcrumb flat m-0">
+  <a  *ngFor="let bc of breadcumbs;let i = index" [ngClass]="bc.isActive==true? 'active': ''" >{{bc.state}}</a>
+</div>

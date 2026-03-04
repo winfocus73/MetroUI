@@ -1,0 +1,79 @@
+.example-tree-invisible {
+    display: none;
+  }
+  
+  .example-tree ul,
+  .example-tree li {
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+  }
+  
+  /* silly UX, they want a border in the full width of the tree between tree nodes */
+  .example-tree {
+    position: relative;
+  }
+  
+  .example-tree-node-name {
+    flex: 1 1 auto;
+  }
+  
+  // li::before {
+  //   height: 3rem;
+  //   position:absolute;
+  //   left: 0;
+  //   // right: 0;
+  //   // border-bottom: #EEE 1px solid;
+  //   content: ' ';
+  // }
+  li.mat-tree-node::before{
+    content: '\f15b ';
+    font-family: "Font Awesome 6 Free";
+    color: #999;
+    width: 14px;
+  }
+  .main-tree-node-name .fa, .mat-tree-node .fa{
+    color: #999;
+  }
+  li.mat-tree-node::after, div.mat-tree-node:after{
+    content: '';
+    height: 1px;
+    width: 10px;
+    position: absolute;
+    background-color: #999;
+    left: 6px;
+  }
+  li.mat-tree-node, div.mat-tree-node{
+    padding-left: 20px;
+    position: relative;
+  }
+  // .tree-node-name{
+  //   padding-left: 8px;
+  //   font-size: 15px;
+  // }
+  .ultree-list{
+    padding-left: 20px;
+    position: relative;
+  }
+  .ultree-list:after {
+    content: "";
+    width: 1px;
+    background-color: #999;
+    position: absolute;
+    bottom: 0;
+    top: 0px;
+    left: 25px;
+  }
+  .mat-mdc-card-content:before{
+    content: "";
+    width: 1px;
+    background-color: #000;
+  }
+  
+  .mat-tree-node{
+    min-height: auto;
+  }
+
+  .curs-pointer {
+    cursor: pointer;
+  }

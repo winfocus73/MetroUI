@@ -1,0 +1,70 @@
+<div class="row m-2">
+    <div class="row" >
+        <div class="col-md-10">
+            <h2>Upload Documents</h2>
+        </div>
+        <div class="col-md-2">
+            <button type="button" class="btn-close" style="float: right;"  aria-label="Close" (click)="close()"></button>
+        </div>
+    </div>
+    <div class="row m-2">
+        <div class="col-md-12 row">
+          <div *ngIf="assetItems?.length" class="col-auto pe-0">
+            <label>Assets</label>
+            <!-- <select class="form-select round small-input-ctrl" name="section" [(ngModel)]="assetId">
+              <option value="">Select</option>
+              <option *ngFor="let t of assetItems" [value]="t.value" title="{{t.title}}">
+                {{t.code}}
+              </option>
+            </select> -->
+            <ng-select  style="width: 10em !important;" class="cust_multiple" [(ngModel)]="assetId" [closeOnSelect]="true" [items]="assetItems" [closeOnSelect]="false"
+                name="Asset" placeholder="Select Asset" bindLabel="code" [multiple]="false" bindValue="value"
+                [editableSearchTerm]="true"><ng-option value="null">Select Asset</ng-option>
+                <ng-option *ngFor="let t of assetItems" [value]="t.value">{{t.code}}</ng-option>
+            </ng-select>
+          </div>
+            <div class="col-auto mb-6 align-self-center">
+            <label class="mb-2"> Attachements </label>
+            <div>
+                <input class="input-file" type="file" #inputFile (change)="onFileChange($any($event))" />
+
+            </div>
+            </div>
+            <div class="col-auto mb-6 align-self-center">
+
+             <div class="row align-items-center">
+             <div class="col-auto"> <i class="fa-solid fa-circle-minus"></i>
+             </div>
+             <div class="col">
+            <span class="filter-types-label">jpg, jpeg, png, pdf, xls, xlsx, doc, docx, mp4, ts allowed</span>
+            <div class="filter-types-label">Maximum 5mb size  allowed for upload</div>
+          </div>
+          </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="row m-2">
+        <div class="col-md-12">
+            <div class="mb-6">
+            <label class="mb-2"> Description </label>
+            <div>
+               <textarea id="Description" maxlength="128" [(ngModel)]="Description" (blur)="buttonValidation($event)" class="form-control" name="Description"></textarea>
+               <mat-hint style="color: red;" *ngIf="Description.length>128" align="start">Max 128 characters</mat-hint>
+               <mat-hint style="float: inline-end;">{{Description.length || 0}}/128</mat-hint>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 center">
+            <button type="button" class="btn btn-primary" [disabled]="!(file!==null&&this.Description && !loginLoading)" (click)="UploadDocuments()">
+                Upload
+                <ng-container *ngIf="loginLoading">
+                    <mat-icon><mat-spinner color="warn" diameter="20">
+                    </mat-spinner></mat-icon>
+                </ng-container>
+            </button>
+        </div>
+    </div>
+</div>

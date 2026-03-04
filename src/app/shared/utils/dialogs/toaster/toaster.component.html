@@ -1,0 +1,6 @@
+<div class="toast toast-{{toast.type}}" style="padding-bottom: 10em !important;" 
+      [style.top.px]="i*100">
+      <h4 class="toast-heading">{{toast.title}}</h4>
+      <p>{{toast.body}}</p>
+      <a class="close" (click)="remove.emit(i)">&times;</a>
+</div>

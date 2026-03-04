@@ -1,0 +1,63 @@
+// .breadcrumb {
+//     background: none;
+//     font-size: .8em;
+//     margin: 0;
+//     padding: 0.2rem 1.13rem !important;
+//     a,
+//     span {
+//         color: darkgrey;
+//     }
+//     a:hover,
+//     span:hover {
+//         color: dimgrey;
+//         text-decoration: none;
+//     }
+//     li {
+//         list-style: none;
+//         float: left;
+//         margin: 0px;
+//     }
+//     li:last-child {
+//         margin-right: 20px;
+//     }
+//     li::after {
+//         content: '->';
+//         color: darkgrey;
+//     }
+//     li:last-child::after {
+//         content: ''
+//     }
+// }
+.cd-breadcrumb {
+    width: 90%;
+    max-width: 768px;
+    padding: 0.5em 1em;
+    border-radius: 0.25em;
+}
+.cd-breadcrumb::after{
+    clear: both;
+    content: "";
+    display: table;
+}
+.cd-breadcrumb li {
+    display: inline-block;
+}
+.cd-breadcrumb.custom-separator li::after {
+    content: '';
+    height: 16px;
+    width: 16px;
+    content: url(../../../../assets/svg/custom-separator.svg);
+    // url(https://codyhouse.co/demo/breadcrumbs-multi-steps-indicator/img/cd-custom-separator.svg) no-repeat center center;
+    vertical-align: middle;
+    display: inline-block;
+    margin: 0 0.5em;
+}
+.cd-breadcrumb li:last-of-type::after{
+    display: none;
+}
+.cd-breadcrumb li > * {
+    display: inline-block;
+    color: #2c3f4c;
+    text-decoration: none;
+    font-size: 13px;
+}

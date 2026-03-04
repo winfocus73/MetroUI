@@ -1,0 +1,134 @@
+<div class="logo text-center"><img width="50" class="" src='./assets/images/train.png'>
+    <strong style="display: block;font-size: 23px;">Asset Management System</strong>
+</div>
+<div class="text-center mt-2" *ngIf="!isReset">
+    <h4 class="font-20">Welcome Back !</h4>
+    <p class="text-muted" *ngIf="!isForgotPwd">Sign in to continue to AMS.</p>
+    <div *ngIf="isMFRequired && loginResponse && !roleMenu" style="color: #c43e1c;">
+        For security reasons, we have sent the 6 digit OTP via SMS to your mobile number {{loginResponse.loginMessage}}.
+        Please enter otp for login completion.
+    </div>
+    <div *ngIf="loginResponse && roleMenu" style="color: #c43e1c;">
+      This user is assigned with multiple roles, please select the required one and proceed to continue.
+  </div>
+</div>
+
+
+<ng-container *ngIf="!roleMenu && !isMFRequired && !isReset && !isForgotPwd">
+    <form autocomplete="off" [formGroup]="form" (ngSubmit)="form.valid && loginUser()">
+        <fieldset [disabled]="loginLoading">
+            <mat-form-field appearance="outline">
+                <mat-label>User Name</mat-label>
+                <input matInput type="email" name="useremail" placeholder="User Name" formControlName="email"
+                    autocomplete="off webauthn">
+                <mat-icon matSuffix><i class="las la-user"></i></mat-icon>
+                <mat-error *ngIf="form.controls['email'].hasError('email')" class="form-control-feedback p-0">
+                    Invalid User Name
+                </mat-error>
+                <mat-error *ngIf="form.controls['email'].hasError('required')" class="form-control-feedback p-0">
+                    User Name is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input name="userpassword" matInput [type]="hide ? 'password' : 'text'" placeholder="Password"
+                    formControlName="password" autocomplete="off" webauthn>
+                <span class="m-0 px-2" mat-icon-button matSuffix (click)="hide = !hide"
+                    [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon matSuffix><i [class]="hide ? 'las la-eye' : 'las la-eye-slash'"></i></mat-icon>
+                </span>
+
+                <mat-error *ngIf="form.controls['password'].hasError('required')" class="form-control-feedback">
+                    Password is required
+                </mat-error>
+            </mat-form-field>
+            <div class="captcha-container {{ config.cssClass}}" *ngIf="isFailedAttempt>=1 || isForgotPwd">
+                <canvas id="captcahCanvas" width="316" height="80"></canvas>
+                <div class="captcha-actions">
+                    <input style="display: inline !important;width: 89% !important;" type="text" class="form-control" formControlName="captch_input" />
+                    <a href="javascript:void(0)" class="cpt-btn reload" (click)="createCaptcha()">&#x21bb;</a>
+                </div>
+            </div>
+            <div class="mt-2">
+                <button type="button" [disabled]="loginLoading ? true: forgotLoading"  (click)="forgotPwd()" class="btn btn-link px-0 text-start">
+                    <span>Forgot Password</span>
+                    <ng-container *ngIf="forgotLoading">
+                        <mat-icon><mat-spinner color="warn" diameter="20">
+                            </mat-spinner></mat-icon>
+                    </ng-container>
+                  </button>
+                <button type="submit" mat-raised-button [disabled]="forgotLoading ? true: loginLoading" color="primary" class="text-end float-end">
+                    SIGN IN
+                    <ng-container *ngIf="loginLoading">
+                        <mat-icon><mat-spinner color="warn" diameter="20">
+                            </mat-spinner></mat-icon>
+                    </ng-container>
+                </button>
+            </div>
+
+        </fieldset>
+    </form>
+</ng-container>
+<ng-container *ngIf="isForgotPwd">
+    <nxasm-for-got-pwd (backtologin)="loginback($event)"></nxasm-for-got-pwd>
+</ng-container>
+<ng-container *ngIf="roleMenu">
+    <fieldset>
+        <div class="row">
+            <div class="col-12 pt-4">
+                <mat-form-field class="col" appearance="outline">
+                    <mat-label>Select Role</mat-label>
+                    <mat-select [(ngModel)]="selectedMenu">
+                        <mat-option *ngFor="let menu of dropdownRoles" [value]="menu">
+                            {{menu}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+
+        <button id="roleMenu" type="button" (click)="menuSelect()" [disabled]="!selectedMenu" mat-raised-button
+            color="primary">Select</button>
+    </fieldset>
+</ng-container>
+
+<ng-container *ngIf="isMFRequired && !roleMenu" >
+    <fieldset>
+        <div class="row">
+            <div class="col-12 pt-4">
+                <input class="form-control" type="text" numbersOnly placeholder="OTP" [(ngModel)]="otp">
+            </div>
+        </div>
+        <div class="row mt-3 text-end justify-content-end">
+            <p class="col-12">OTP expires in {{timerDisplay}} seconds</p>
+            <div class="col-auto">
+                <button id="validate" type="button" [disabled]="!isResend" (click)="resendOTP()" mat-raised-button
+                    color="secondary">
+                    Resend
+                </button>
+            </div>
+            <div class="col-auto">
+                <button id="validate" [disabled]="loginLoading" type="button" (click)="validateOTP()" mat-raised-button
+                    color="primary">
+                    Validate
+                    <ng-container *ngIf="loginLoading">
+                        <mat-icon><mat-spinner color="warn" diameter="20">
+                            </mat-spinner></mat-icon>
+                    </ng-container>
+                </button>
+            </div>
+        </div>
+
+    </fieldset>
+</ng-container>
+<ng-container *ngIf="isReset">
+    <nxasm-change-pwd [loginForm]="true" (backtologin)="loginback($event)" [userData]="loginResponse"
+        [userForm]="true"></nxasm-change-pwd>
+</ng-container>
+<!--
+<div class="redirection">
+    <span class="text">Don't have an account?</span>
+    <a class="link" routerLink="/auth/register">Sign up</a>
+</div> -->
+<div class="lg-version">Version: 5.0.5</div>

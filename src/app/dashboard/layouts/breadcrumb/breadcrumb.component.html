@@ -1,0 +1,32 @@
+<!-- <ol class="breadcrumb">
+    <li *ngFor="let breadcrumb of breadcrumbs">
+        <h4 [routerLink]="breadcrumb.url" routerLinkActive="router-link-active">
+            {{ breadcrumb.label }}
+        </h4>
+    </li>
+</ol> -->
+<!-- <ol class="breadcrumb">
+  <li *ngFor="let breadcrumb of breadcrumbs">
+      <a [routerLink]="breadcrumb.url" routerLinkActive="router-link-active">
+          {{ breadcrumb.label }}
+      </a>
+  </li>
+</ol> -->
+<nav class="w-full rounded-md pl-28" >
+  <ol class="cd-breadcrumb custom-separator custom-icons p-0 m-0">
+    <ng-container *ngFor="let breadcrumb of breadcrumbs">
+      <li *ngIf="breadcrumb.clickable">
+        <span>
+        {{breadcrumb.label}}
+        </span></li>
+      <li *ngIf="!breadcrumb.clickable">
+        <span style="font-weight: bold;font-size: 18px;" class="text-primary transition duration-150 ease-in-out hover:text-primary-600 focus:text-primary-600 active:text-primary-700 dark:text-primary-400
+        dark:hover:text-primary-500 dark:focus:text-primary-500 dark:active:text-primary-600">
+        {{ breadcrumb.label }}
+        </span>
+    </li>
+    </ng-container>
+    
+  </ol>
+   
+  </nav>

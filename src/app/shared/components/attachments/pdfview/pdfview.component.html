@@ -1,0 +1,17 @@
+<div class="pdf-container">
+    <div class="toolbar">
+        <div class="col-md-12 mb-1 text-end">
+            <button type="button" class="btn btn-secondary btn-space" (click)="onNoClick()">
+                Close
+            </button>
+        </div>
+        <div style="height: 600px; overflow-y:scroll;">
+            <pdf-viewer *ngIf="type=='pdf'" [src]="src"
+                        [render-text]="true"
+                        [original-size]="false"
+                        style="width: 100%;height: 600px;"
+            ></pdf-viewer>
+            <img *ngIf="type!='pdf'" style="width: 100%;" [src]="src" />
+        </div>
+    <div>
+</div>

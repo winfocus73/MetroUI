@@ -1,0 +1,127 @@
+<mat-card>
+    <mat-card-content>
+        <div class="row" *ngIf="!isUserCheck">
+           <span class="danger">Forgotten your password? Enter username and mobile below. A 6-digit opt will be sent to you mobile to verify if details are valid.</span>
+            <form [formGroup]="restForm" autocomplete="off">
+                <div class="form-group">
+                    <label for="name">User Name</label>
+                    <app-form-field>
+                        <input type="text" id="fUserName" name="fUserName1" showError [controlName]="'User Name'" class="form-control" formControlName="username" autocomplete="off" webauthn >
+                    </app-form-field>
+                </div>
+                <div class="form-group">
+                    <label for="name">Mobile Number</label>
+                    <app-form-field>
+                        <input type="text" id="fmobileno" name="fmobileno1" showError [controlName]="'Mobile No'" class="form-control" formControlName="mobileno" autocomplete="off" webauthn >
+                    </app-form-field>
+                </div>
+                <div class="captcha-container {{ config.cssClass}}">
+                    <canvas id="captcahCanvas" width="316" height="80"></canvas>
+                    <div class="captcha-actions">
+                        <input style="display: inline !important;width: 89% !important;" type="text" class="form-control" formControlName="captch_input" />
+                        <a href="javascript:void(0)" class="cpt-btn reload" (click)="createCaptcha()">&#x21bb;</a>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <button type="button" (click)="backtoLoginPage()" class="btn btn-link px-0 text-start">
+                        <span>Login</span>
+                      </button>
+                    <button class="float-end" type="button" (click)="checkCaptcha()" mat-raised-button [disabled]="rloginLoading || restForm.invalid" color="primary">
+                        Send OTP
+                        <ng-container *ngIf="rloginLoading">
+                            <mat-icon><mat-spinner color="warn" diameter="20">
+                                </mat-spinner></mat-icon>
+                        </ng-container>
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="row" *ngIf="isUserCheck">
+            <span class="danger">Reset Password. We have sent the 6-digit otp to your mobile. Enter the otp and then new password below to complete reset.</span>
+            <div class="row">
+                <form [formGroup]="pwdFormGroup" autocomplete="off" webauthn>
+                    <div class="form-group">
+                        <label for="name">OTP</label>
+                        <input name="otp-id-1" id="otp-name-1" type="text" class="form-control" formControlName="forgototp" autocomplete="forgot-otp-1" webauthn>
+                        <div *ngIf="f['forgototp'].errors && f['forgototp'].touched" class="text-danger">
+                            <div>OTP is required</div>
+                        </div>
+                    </div>
+                    <div class="form-group row mt-3 justify-content-end">
+                        <p class="col-8 justify-content-start" *ngIf="!isResend">OTP expires in  <span class="danger"> {{timerDisplay}} </span> seconds</p>
+                        <div class="col-3">
+                            <button id="validate" type="button" [disabled]="!isResend" (click)="resendOTP()" class="btn btn-link px-0 text-end"
+                                color="secondary">
+                                Resend
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">New Password</label>
+                        <input id="unique-id-1" name="unique-name-1" type="password" class="form-control" formControlName="forgotPassword" autocomplete="new-password" webauthn>
+                        <div *ngIf="f['forgotPassword'].errors && f['forgotPassword'].touched" class="text-danger">
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('minlength')" class="form-control-feedback">
+                                Password must be at least 12 characters!<br/>
+                            </mat-error>
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('maxlength')"
+                                class="form-control-feedback">
+                                Password must be less than 15 characters!<br/>
+                            </mat-error>
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('required')"
+                                class="form-control-feedback">
+                                Password is required<br/>
+                            </mat-error>
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('at-least-one-digit')">
+                                Password must contain at least one <strong> digit</strong><br/>
+                            </mat-error>
+        
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('at-least-one-lowercase')">
+                                Password must contain at least one <strong> lower case</strong><br/>
+                            </mat-error>
+        
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('at-least-one-uppercase')">
+                                Password must contain at least one <strong> uppercase case</strong><br/>
+                            </mat-error>
+        
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('at-least-one-special-character')">
+                                Password must contain at least 1 <strong>[!@#$%^&*</strong><br/>
+                            </mat-error>
+        
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('at-least-eight-characters')">
+                                Password must contain at least 6 <strong> characters</strong><br/>
+                            </mat-error>
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('maxlength')">
+                                Password must contain max 15 <strong> characters</strong><br/>
+                            </mat-error>
+                            <mat-error *ngIf="pwdFormGroup.controls['forgotPassword'].hasError('please enter valid password')">
+                               security policy doesn't allow the usage of generic or common passwords <br/>
+                            </mat-error>
+                        </div>
+                    </div>
+        
+                    <div class="form-group">
+                        <label for="name">Confirm password</label>
+                        <input autocomplete="off" webauthn type="password" class="form-control" formControlName="confirmPassword">
+                        <div *ngIf="f['confirmPassword'].errors && f['confirmPassword'].touched" class="text-danger">
+                            <div *ngIf="f['confirmPassword'].errors['required']">Confirm password is required</div>
+                            <div *ngIf="f['confirmPassword'].errors['minlength']">It must be at least 12 characters!</div>
+                            <div *ngIf="f['confirmPassword'].errors['maxlength']">It must be less than 15 characters!</div>
+                            <div *ngIf="f['confirmPassword'].errors['matchPassword']">New password and Confirm password didn't
+                                match.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-end mt-2">
+                        <button type="button" (click)="updatedResetPwd()" mat-raised-button [disabled]="uloginLoading || pwdFormGroup.invalid" color="primary">
+                            Reset Password
+                            <ng-container *ngIf="uloginLoading">
+                                <mat-icon><mat-spinner color="warn" diameter="20">
+                                    </mat-spinner></mat-icon>
+                            </ng-container>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

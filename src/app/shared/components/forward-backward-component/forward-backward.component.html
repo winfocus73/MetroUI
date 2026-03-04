@@ -1,0 +1,26 @@
+<div  [hidden]="!isDetailsNavigationVisible">
+  <div *ngIf="!pageOptions">
+    <button mat-button type="button" (click)="moveback()" [disabled]="paginationOptions.index == 1">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <span>
+      <span>{{paginationOptions.index}}</span> of <span>{{paginationOptions.totalRecords}}</span>
+    </span>
+    <button mat-button type="button" (click)="moveforward()"
+      [disabled]="paginationOptions.index == paginationOptions.totalRecords">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+  <div *ngIf="pageOptions && pageOptions.isVisible">
+    <button mat-button type="button" (click)="moveback()" [disabled]="pageOptions.itemIndex == 1">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <span>
+      <span>{{pageOptions.itemIndex }}</span> of <span>{{pageOptions.pageSize}} </span> from Page <span>{{pageOptions.currentPage}}</span>
+    </span>
+    <button mat-button type="button" (click)="moveforward()"
+      [disabled]="pageOptions.itemIndex == pageOptions?.pageItems.length">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,98 @@
+<h5 mat-dialog-title>Feedback Form</h5>
+<mat-dialog-content>
+  <div class="row">
+    <form [formGroup]="feedbackFormGroup" class="row" >
+      <div class="col-12 mb-1">
+        <span class="mb-2"> User : </span>
+        <label class="d-col">{{ UserInfo.userName||UserInfo.roleNames  }}</label>
+      </div>
+      <div class="col">
+        <div class="form-group d-flex align-items-center">
+          <label for="name">Email</label>
+          <div>
+          <input type="email" class="form-control mx-2" formControlName="email" />
+
+            <div *ngIf="f['email'].errors && f['email'].touched && f['email'].errors['required']" class="text-danger px-2">
+              <div>email is required</div>
+            </div>
+            <div *ngIf="f['email'].errors && f['email'].touched && f['email'].errors['invalidRegxValue'] && !f['email'].errors['required']"
+              class="text-danger px-2">
+              <div>email is invalid</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-group d-flex align-items-center">
+          <label for="name">Mobile</label>
+          <div>
+          <input type="text" class="form-control mx-2" formControlName="mobile" />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="name">Description</label>
+        <textarea
+          type="password"
+          class="form-control"
+          formControlName="description"
+          rows="2x"
+        ></textarea>
+        <div
+          *ngIf="f['description'].errors && f['description'].touched"
+          class="text-danger"
+        >
+          <div>description is required</div>
+        </div>
+      </div>
+      <div class="col-md-12 my-2">
+        <div class="alert alert-info p-1 mt-1" role="alert">
+          Note: Attachments can be added after saving feedback !
+        </div>
+        <div [ngClass]="!feedbackId ? 'prevent-int':''">
+          <div class="mt-3 ms-2" style="color: #8b8be4;">Attachments</div>
+          <nxasm-attachements [isUploadBtn]="true" [isDeleteBtn]="false" [status]="''" [objectId]="feedbackId"
+            (attachemntload)="attachmentsload($event)" [kind]="'FB'" [attachments]="attachments"></nxasm-attachements>
+        </div>
+      </div>
+
+            <!-- <div class="col">
+        <div class="form-group d-flex align-items-center">
+          <label for="name">Is Action Taken</label>
+          <div>
+          <input type="text" class="form-control mx-2" formControlName="ActionTaken" />
+          </div>
+        </div>
+      </div> -->
+      <div class="col" [hidden]="!isActionRequire">
+        <div class="form-group">
+          <label for="name">Action Taken</label>
+           <app-form-field>
+          <textarea showError
+            type="password"
+            class="form-control"
+            formControlName="actionTaken"
+            rows="2"
+          ></textarea>
+        </app-form-field>
+        </div>
+      </div>
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <div class="col-md-12 text-end">
+    <button
+      type="button" class="btn btn-success btn-space" (click)="addOrUpdateFeedback()">
+      Save
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-primary btn-space"
+      (click)="close()"
+    >
+      Close
+    </button>
+  </div>
+</mat-dialog-actions>

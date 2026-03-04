@@ -1,0 +1,102 @@
+:host {
+    display: block;
+      margin-left:50px;
+      margin-top:-150px;
+      
+  }
+  
+  /* div {
+   
+    background-color: white;
+    color: black;
+    padding: 0.4rem 0.4rem;
+    border-radius: 1px;
+  } */
+  
+  /* .container{
+    display:flex;
+    flex-direction: column;
+  } */
+  
+  .grp{
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .triangle{
+        width: 0;
+        height: 0;
+        border-top: 50px solid transparent;
+        border-right: 100px solid red;
+        border-bottom: 50px solid transparent;
+  }
+  
+  
+  
+  /* Message box starts here */
+  .container {
+    clear: both;
+    position: relative;
+  
+      display: flex;
+      align-items: center;
+     
+  }
+  
+  .container .arrow {
+    width: 12px;
+    height: 20px;
+    overflow: hidden;
+    position: relative;
+    float: left;
+    top: 6px;
+    right: -1px;
+  
+    }
+  
+  .container .arrow .outer {
+    width: 0;
+    height: 0;
+    border-right: 20px solid #000000;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .container .arrow .inner {
+    width: 0;
+    height: 0;
+    border-right: 20px solid #ffffff;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    position: absolute;
+    top: 0;
+    left: 2px;
+  }
+  
+  .container .message-body {
+    float: left;
+    width: 100%;
+    height: auto;
+    border: 1px solid #CCC;
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    padding: 6px 8px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -o-border-radius: 5px;
+    border-radius: 5px;
+  }
+  
+  .container .message-body p {
+    margin: 0;
+  }
+  
+  
+  
+  
+  
+  

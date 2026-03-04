@@ -1,0 +1,26 @@
+<router-outlet></router-outlet>
+
+<ng-template #confimLogout>
+    <div>
+        <h2 mat-dialog-title class="position-relative d-flex align-items-center"  style="font-size: 20px;">
+            <span> Your session is about to expire </span>
+             <span style="position: absolute; right:8px" (click)="stay()"><mat-icon>close</mat-icon></span></h2>
+        <mat-dialog-content>
+            <div class="min-wd-180" style="min-width: 400px; max-width: 500px;">
+                <span>
+                You have been inactive for 10 minute(s). Please click 'Continue Session' to stay signed in. Otherwise you will
+                be logged off automatically</span>               
+            </div>           
+        </mat-dialog-content>
+        <mat-dialog-actions class="justify-content-end">
+            <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+            <div class="d-flex justify-content-end">
+                <div class="col-auto">
+                    <button type="button" class="btn btn-success mx-2" color="primary" (click)="stay()">Continue
+                        Session</button>
+                    <button type="button" mat-stroked-button color="warn" (click)="logout()">Logout</button>
+                </div>
+            </div>
+        </mat-dialog-actions>
+    </div>
+</ng-template>

@@ -1,0 +1,30 @@
+<div class="row p-3 pb-2" (keydown.enter)="search()">
+    <div class="col" *ngIf="unitDropdown">
+        <div class="row align-items-center">
+            <div class="col-auto"><label>{{dropDownlabelName}}:</label></div>
+            <div class="col">
+                <select class="form-select round"  name="section" [(ngModel)]="value">
+                    <option value="">ALL</option>
+                    <option *ngFor="let t of dropdownItems" [value]="t.code">
+                        {{t.value}}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="col" *ngIf="searchTextBox">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <label>{{textBoxName}}:</label>
+            </div>
+            <div class="col">
+                <input type="text" class="form-control" [(ngModel)]="name">
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <button type="button"  class="btn btn-success btn-rounded btn-fw" (click)="search()">
+            <i class="las la-search"></i>
+        </button>
+    </div>
+</div>

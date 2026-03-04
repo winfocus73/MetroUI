@@ -1,0 +1,73 @@
+<h5  mat-dialog-title>Cancel {{modeldata?.type}} </h5> 
+<mat-dialog-content class="mat-typography">
+    <form class="form-simple p-3" [formGroup]="CancelForm">
+        <div class="col-12">
+            <!-- <div class="col-4 mb-3">
+                <div class="form-group row">
+                    <label class="mb-2 l-col col-4">Activity:
+                        <span class="text-danger">*</span>
+                    </label>
+                    <div class="col-8 d-col">
+                        ACT
+                    </div>
+                </div>
+            </div> -->
+            <div class="col-12 mb-3">
+                <div class="form-group row">
+                    <label class="col-3 mb-2">
+                        No:
+                    </label>
+                    <div class=" col-9 mb-2 d-col">
+                        {{modeldata?.number}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-3">
+                <div class="form-group row">
+                    <label class="mb-2 col-3">
+                        Status:
+                    </label>
+                    <div class="mb-2 col-9 d-col">
+                        {{modeldata?.status}}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group row">
+                    <label class="mb-2 l-col col-12">Reason For Revesion:
+                        <span class="text-danger">*</span>
+                    </label>
+                    <div class="col-12">
+                        <app-form-field>
+                            <select class="form-select round" showError [controlName]="'Reason'" formControlName="reason" name="section">
+                                <option value="">Select</option>
+                                <option *ngFor="let t of dropDownAssetRemoval" [value]="t.id">
+                                    {{t.name}}
+                                </option>
+                            </select>
+                        </app-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <label class="mb-2 l-col">
+                    Remarks:
+                    <span class="text-danger">*</span>
+                </label>
+                <div>
+                    <app-form-field>
+                        <textarea class="form-control" showError [controlName]="'Remarks'" formControlName="remarks" id="Remarks" rows="3"
+                        style="height: 78px">
+                        </textarea>
+                    </app-form-field>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="text-end justify-content-end">
+    <button type="button" class="btn btn-outline-danger btn-space" mat-dialog-close><i class="fa fa-close"></i> Cancel</button>
+    <button type="button" (click)="save()" class="btn btn-success btn-space" [disabled]="CancelForm.invalid"><i class="fa fa-save"></i> Save</button>
+</mat-dialog-actions>

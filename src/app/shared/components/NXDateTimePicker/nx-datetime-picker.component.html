@@ -1,0 +1,28 @@
+  <div class="cal-pos"> 
+    <!-- visible date picker / display date picker -->
+    <input [value]="displayDate" class="form-control" [ngxMatDatetimePicker]="endpicker" [format]="24" (dateChange)="onVisibleDateChange($event)"  placeholder="{{placeholder}}">
+    <mat-datepicker-toggle matSuffix [for]="$any(endpicker)"></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #endpicker [showSpinners]="true" [showSeconds]="true" [stepHour]="1"
+      [stepMinute]="1" [stepSecond]="1" [touchUi]="false" [enableMeridian]="false" [disableMinute]="false"
+      [hideTime]="false">
+      <ngx-mat-datepicker-actions>
+        <button mat-stroked-button ngxMatDatepickerCancel>Cancel</button>
+        <button mat-raised-button color="primary" ngxMatDatepickerApply>Apply</button>
+      </ngx-mat-datepicker-actions>
+    </ngx-mat-datetime-picker>   
+
+
+    <!-- hidden / selected date picker -->
+    <input matInput [ngxMatDatetimePicker]="picker" (dateChange)="onHiddenDateChange($event)" [format]="24" 
+    [min]="min"
+    style="visibility: hidden; width: 0px; padding: 0; position: absolute; left: 8px; top: 0px"
+     placeholder="Choose a date" [value]="selectedDate">
+    <mat-datepicker-toggle matSuffix [for]="$any(picker)" (opened)="onDatePickerOpen($event)"  ></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #picker [showSpinners]="true" [showSeconds]="showSeconds" (opened)="onDatePickerOpen($event)"
+      [stepHour]="1" [stepMinute]="1" [stepSecond]="stepSecond"  [enableMeridian]="enableMeridian"  [hideTime]="false">
+       <ngx-mat-datepicker-actions>
+        <button  mat-stroked-button ngxMatDatepickerCancel>Cancel</button>       
+        <button mat-raised-button color="primary" ngxMatDatepickerApply>Apply</button>
+      </ngx-mat-datepicker-actions>
+    </ngx-mat-datetime-picker>
+  </div>

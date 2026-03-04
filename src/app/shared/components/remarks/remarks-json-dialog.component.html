@@ -1,0 +1,42 @@
+<h5  mat-dialog-title>Asset Under Monitoring  </h5> 
+<mat-dialog-content class="mat-typography">
+    <form class="form-simple p-3" [formGroup]="RemarksForm">
+        <div class="col-12">
+            <table mat-table  [dataSource]="remarksHistory" class="mat-elevation-z8">
+                <ng-container matColumnDef="date">
+                    <th mat-header-cell *matHeaderCellDef>Date</th>
+                    <td mat-cell *matCellDef="let element">{{ element.date | date:'dd-MM-yyyy hh:mm a' }}</td>
+                </ng-container>
+                <ng-container matColumnDef="remarks">
+                    <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                    <td mat-cell *matCellDef="let element">{{ element.remarks }}</td>
+                </ng-container>
+                <ng-container matColumnDef="username">
+                    <th mat-header-cell *matHeaderCellDef>Username</th>
+                    <td mat-cell *matCellDef="let element">{{ element.username }}</td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <div class="col-12">
+                <br/>
+                <label class="mb-2 l-col">
+                    Remarks:
+                    <span class="text-danger">*</span>
+                </label>
+                <div>
+                    <app-form-field>
+                        <input type="text" showError [controlName]="'FormRemarks'" class="form-control" formControlName="FormRemarks"  [disabled]="isClosed">
+                    </app-form-field>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions class="text-end justify-content-end">
+    <button type="button" class="btn btn-outline-danger btn-space" mat-dialog-close  ><i class="fa fa-close"></i> Cancel</button>
+    <button type="button" (click)="save()" class="btn btn-success btn-space" [disabled]="isClosed"><i class="fa fa-save"></i> Save</button>
+</mat-dialog-actions>

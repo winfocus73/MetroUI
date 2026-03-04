@@ -1,0 +1,44 @@
+<div class="ms-2" *ngIf="status!='Closed'" >
+    <button type="button" *ngIf="isUploadBtn" class="btn btn-primary" (click)="UploadDocuments()">Upload Documents</button>
+</div>
+<div class="mt-2">
+    <table *ngIf="attachments.length > 0" class="table text-start table-striped table-bordered">
+        <thead>
+        <tr>
+            <th scope="col" class="px-6 py-4">No</th>
+            <th scope="col" class="px-6 py-4">File Name</th>
+            <th scope="col" class="px-6 py-4">Reference No</th>
+            <th scope="col" class="px-6 py-4">Asset No</th>
+            <th scope="col" class="px-6 py-4">Uploaded By</th>
+            <th scope="col" class="px-6 py-4">Remarks</th>
+            <th scope="col" class="px-6 py-4"> </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let r of attachments;let j= index" class="border-b dark:border-neutral-500">
+            <td class="whitespace-nowrap px-6 py-4 font-medium">{{j + 1}}</td>
+            <td class="whitespace-nowrap px-6 py-4">{{r.name}}</td>
+            <td class="whitespace-nowrap px-6 py-4">{{r.objectNo}}</td>
+            <td class="whitespace-nowrap px-6 py-4">{{r.assetNo}}</td>
+            <td class="whitespace-nowrap px-6 py-4">{{r.createdBy}}</td>
+            <td class="whitespace-nowrap px-6 py-4">{{r.description}}</td>
+            <td class="whitespace-nowrap px-6 py-4">
+                <a href="{{imagePath}}{{r.code}}" target="_blank" class="btn btn-link">
+                    <img src="{{imagePath}}{{r.code}}" *ngIf="r.extension !='.pdf'" style="height: 30px;width: 30px;">
+                    <i class="fa-xl fa-solid fa-file-pdf" *ngIf="r.extension =='.pdf'"></i>
+                </a>
+                <span (click)="view(r.name , r.code)" class="btn btn-primary ps-2 pe-2 pb-1 ms-2 mt-1" style="vertical-align: top;">
+                    <i class="fa fa-eye" title="view" aria-hidden="true"></i>
+                </span>
+                <span *ngIf="isDeleteBtn" (click)="deleteDoc(r.code)" title="Delete Document" class="btn btn-danger ps-2 pe-2 pb-1 ms-2 mt-1" style="vertical-align: top;">
+                    <i class="fa fa-trash" title="view" aria-hidden="true"></i>
+                </span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="row m-2" *ngIf="attachments.length === 0">
+        <span class="bg-warning text-center fw-bold">Attachments not found</span>
+    </div>
+    
+</div>

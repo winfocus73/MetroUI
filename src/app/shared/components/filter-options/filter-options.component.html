@@ -1,0 +1,87 @@
+<!-- filter.component.html -->
+<form [formGroup]="filterForm" (keydown.enter)="onSubmit()" (submit)="onSubmit()">
+  <div class="row p-1">
+    <div class="col {{option.className}}" *ngFor="let option of filterOptions">
+      <div class="row align-items-center">
+        <div class="col-auto">
+          <label>{{ option.displayName || option.name }}:</label>
+        </div>
+        <div class="col-12">
+          <ng-container *ngIf="option.type === 'date';">
+            <div class="cal-pos">
+              <input [ngStyle]="option.style" #dtCtrl [formControlName]="option.name"
+                (change)="option.triggerOnValueChange  && triggerOnValueChange($event)" class="form-control round"
+                placeholder="{{option.displayName}}" [readonly]="true" [owlDateTimeTrigger]="revisedFromDateCalTrigger"
+                [owlDateTime]="revisedFromDateCalTrigger">
+              <owl-date-time (click)="revisedFromDateCalTrigger.open()" #revisedFromDateCalTrigger
+                [showSecondsTimer]="true"></owl-date-time>
+              <mat-icon style="position: absolute; right: 41px; top: 5px; cursor: pointer;"><span
+                  class="material-symbols-outlined">
+                  calendar_month
+                </span>
+              </mat-icon>
+              <mat-icon style="position: absolute; right: 16px; top: 5px; cursor: pointer;">
+                <span class="material-symbols-outlined" (click)="dtCtrl.value=''">
+                  restart_alt
+                </span>
+              </mat-icon>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="option.type === 'text';">
+            <input [ngStyle]="option.style" [type]="option.type" class="form-control"
+              (change)="option.triggerOnValueChange  && triggerOnValueChange($event)" [formControlName]="option.name" />
+          </ng-container>
+          <ng-container *ngIf="option.type === 'dropdown';">
+            <select [ngStyle]="option.style" [formControlName]="option.name" class="form-select round"
+              (change)="option.triggerOnValueChange  && triggerOnValueChange($event)">
+              <option *ngIf="option.optionsDefault == 'all'" value="">ALL</option>
+              <option *ngIf="option.optionsDefault == 'select'" value="">Select</option>
+              <option *ngFor="let dropdownOption of option.options"
+                [value]="dropdownOption[option.optionsValue] || (option.optionsValue ? dropdownOption[option.optionsValue] : '')">
+                {{ (option.optionsLabel ? dropdownOption[option.optionsLabel] : dropdownOption.value ?
+                dropdownOption.value: '') }}
+              </option>
+            </select>
+          </ng-container>
+          <ng-container *ngIf="option.type === 'daterange';">
+            <div class="{{option.colSize}}">
+              <input [ngStyle]="option.style" type="text" ngxDaterangepickerMd [formControlName]="option.name"
+                class="form-control" placeholder="From Date  -  To Date" [showCustomRangeLabel]="true"
+                [alwaysShowCalendars]="true" [ranges]="ranges"
+                [locale]='{ "format": "YYYY-MM-DDTHH:mm:ss.SSSZ", "displayFormat": "DD-MM-YYYY", "separator": " To ", "cancelLabel": "Cancel", "applyLabel": "Okay" }'
+                [showCancel]="true" [linkedCalendars]="true" [showDropdowns]="true" [lockStartDate]="false"
+                [customRangeDirection]="false" [showCancel]="true"
+                (datesUpdated)="option.triggerOnValueChange  && triggerOnValueChange($event)"
+                [keepCalendarOpeningWithRange]="true" [showRangeLabelOnInput]="true" />
+            </div>
+          </ng-container>
+          <ng-template #dropdownTemplate>
+            <!-- Render dropdown -->
+
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <div class="col-auot" *ngIf="showAdd">
+      <div class="btn-add">
+        <span class="btn btn-primary" type="button" (click)="addRecord()"><i class="las la-plus"></i> New</span>
+      </div>
+    </div>
+    <!-- <div class="col-auto" *ngIf="showExcelExport">
+      <span class="btn btn-cust btn-primary btn-rounded btn-fw ms-2 mt-4 d-inline-block col-auto" title="Excel Download" (click)="exportData()">
+        <i class="las la-file-excel"></i></span>
+    </div> -->
+    <ng-content></ng-content>
+    <div class="col-auto mt-4">
+      <button type="submit" *ngIf="isSubmitRequired" class="btn btn-success btn-rounded btn-fw mx-1">
+        <i class="las la-search"></i>
+      </button>
+      <button type="button" class="btn btn-success btn-space mx-1" (click)="clear()"><i
+          class="fa fa-refresh"></i></button>
+      <span *ngIf="showExcelExport"
+        class="btn btn-cust btn-primary btn-rounded btn-fw ms-2 d-inline-block col-auto" title="Excel Download"
+        (click)="exportData()">
+        <i class="las la-file-excel"></i></span>
+    </div>
+  </div>
+</form>

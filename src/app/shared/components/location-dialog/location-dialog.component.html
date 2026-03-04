@@ -1,0 +1,99 @@
+
+<mat-card>
+    <div class="p-2"  style="position: absolute; right: 0;">
+      <mat-icon mat-dialog-close>close</mat-icon>
+    </div>
+    <mat-card-content>
+      <div class="row m-2">
+        <div class="col-md-1 min-wd-180">
+          <div class="col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 ms-2">Code</label>
+              <div class="col-sm-12 ms-2">
+                <input type="text" class="form-control" [(ngModel)]="objSearch.Code" (keydown.enter)="search()" >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1 min-wd-180">
+          <div class="col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 ms-2">Name</label>
+              <div class="col-sm-12 ms-2">
+                <input type="text" class="form-control" [(ngModel)]="objSearch.Name" (keydown.enter)="search()" >
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-1 min-wd-180">
+          <div class="col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 ms-2">Corridor</label>
+              <div class="col-sm-12 ms-2">
+               <select class="form-select round"
+              name="section" [(ngModel)]="objSearch.CorridorId">
+              <option value="">ALL</option>
+              <option *ngFor="let t of corridors" [value]="t.corridorId">
+                {{t.corridorName}}
+              </option>
+            </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="col-sm-12">
+            <div class="form-group row">
+              <label class="col-sm-12 ms-2">Stage</label>
+              <div class="col-sm-12 ms-2">
+                <select class="form-select round"
+              name="section" [(ngModel)]="objSearch.ZoneId">
+              <option value="">ALL</option>
+              <option *ngFor="let t of zones" [value]="t.zoneId">
+                {{t.zoneName}}
+              </option>
+            </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group row">
+            <label class="col-sm-12 ms-2">Type</label>
+            <div class="col-sm-12 ms-2">
+              <select class="form-select round"
+                name="section" [(ngModel)]="objSearch.TypeId">
+                <option value="">ALL</option>
+                <option *ngFor="let t of locationTypes" [value]="t.id">
+                  {{t.name}}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-2 mt-4">
+          <!-- <button type="button" class="btn btn-success btn-rounded btn-fw me-2" title="Search" (click)="search()"><i
+            class="las la-search"></i></button> -->
+          <button type="button" class="btn btn-success btn-rounded btn-fw me-2 radius-unset" title="Select Work Orders"
+            (click)="search()">
+            <i class="las la-search"></i>
+          </button>
+          <button type="button" class="btn btn-success btn-rounded btn-fw" title="Reset"  (click)="reset()"><i
+              class="la la-refresh"></i></button>
+        </div>
+      </div>
+
+      <app-table *ngIf="locations.length > 0" [totalRowsCount]="totalRecords" [isCustomPagination]="'true'"
+        (emitPagination)="pageChanged($event)" [pageIndex]="objSearch.PageNo" [pageSize]="objSearch.PageSize"
+        [tableColumns]="tableColumns" [tableData]="locations" (selectedData)="selectedData($event)">
+      </app-table>
+    <div class="row m-2" *ngIf="isNotFound">
+      <span class="bg-warning text-center fw-bold">Location Details not found</span>
+    </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="col-md-12 text-end my-2">
+    <button type="button" [disabled]="!selectedLocation.locationId" class="btn btn-outline-primary btn-space" (click)="select()">Select</button>
+    <button type="button" class="btn btn-outline-danger btn-space" mat-dialog-close>Close</button>
+</div>

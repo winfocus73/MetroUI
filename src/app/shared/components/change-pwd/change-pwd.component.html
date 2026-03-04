@@ -1,0 +1,96 @@
+<h5 mat-dialog-title *ngIf="!loginForm">User Password Reset</h5>
+<h5 mat-dialog-title *ngIf="loginForm">Change your Password</h5>
+<div class="col-12" *ngIf="loginForm" style="color: rgb(231, 103, 103);">
+    Your password has expired and must be changed to login. Please change the password here or contact application administrator.
+</div>
+<mat-dialog-content>
+    <div class="row">
+        <form [formGroup]="pwdFormGroup">
+            <div class="row" *ngIf="userForm && !loginForm">
+                <div class="col-12 mb-1">
+                    <label class="mb-2 l-col">
+                        User Name :
+                    </label>
+                    <label class="d-col">{{selectedUserInfo.userName}}</label>
+                </div>
+                <div class="col-12 mb-1">
+                    <label class="mb-2 l-col">
+                        Staff Name :
+                    </label>
+                    <label class="d-col">{{selectedUserInfo.staffName}}</label>
+                </div>
+            </div>
+            <div class="form-group" *ngIf="!userForm">
+                <label for="name">Password</label>
+                <input type="password" class="form-control" formControlName="currentPassword">
+                <div *ngIf="f['currentPassword'].errors && f['currentPassword'].touched" class="text-danger">
+                    <div>Password is required</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="name">New password</label>
+                <input type="password" class="form-control" formControlName="newPassword">
+                <div *ngIf="f['newPassword'].errors && f['newPassword'].touched" class="text-danger">
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('minlength')" class="form-control-feedback">
+                        Password must be at least 12 characters!<br/>
+                    </mat-error>
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('maxlength')"
+                        class="form-control-feedback">
+                        Password must be less than 15 characters!<br/>
+                    </mat-error>
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('required')"
+                        class="form-control-feedback">
+                        Password is required<br/>
+                    </mat-error>
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('at-least-one-digit')">
+                        Password must contain at least one <strong> digit</strong><br/>
+                    </mat-error>
+
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('at-least-one-lowercase')">
+                        Password must contain at least one <strong> lower case</strong><br/>
+                    </mat-error>
+
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('at-least-one-uppercase')">
+                        Password must contain at least one <strong> uppercase case</strong><br/>
+                    </mat-error>
+
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('at-least-one-special-character')">
+                        Password must contain at least 1 <strong>[!@#$%^&*</strong><br/>
+                    </mat-error>
+
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('at-least-eight-characters')">
+                        Password must contain at least 6 <strong> characters</strong><br/>
+                    </mat-error>
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('maxlength')">
+                        Password must contain max 15 <strong> characters</strong><br/>
+                    </mat-error>
+                    <mat-error *ngIf="pwdFormGroup.controls['newPassword'].hasError('please enter valid password')">
+                       security policy doesn't allow the usage of generic or common passwords <br/>
+                    </mat-error>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Confirm password</label>
+                <input type="password" class="form-control" formControlName="confirmPassword">
+                <div *ngIf="f['confirmPassword'].errors && f['confirmPassword'].touched" class="text-danger">
+                    <div *ngIf="f['confirmPassword'].errors['required']">Confirm password is required</div>
+                    <div *ngIf="f['confirmPassword'].errors['minlength']">It must be at least 12 characters!</div>
+                    <div *ngIf="f['confirmPassword'].errors['maxlength']">It must be less than 15 characters!</div>
+                    <div *ngIf="f['confirmPassword'].errors['matchPassword']">New password and Confirm password didn't
+                        match.
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <div class="col-md-12 py-2 text-end">
+        <button type="button" class="btn btn-success btn-space" [disabled]="!pwdFormGroup.valid"
+            (click)="onSubmit()">Save</button>
+        <button type="button" *ngIf="!loginForm" class="btn btn-outline-primary btn-space" (click)="close()">Close</button>
+        <button type="button" *ngIf="loginForm" class="btn btn-outline-primary btn-space" (click)="clear()">Clear</button>
+    </div>
+</mat-dialog-actions>

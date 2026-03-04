@@ -1,0 +1,175 @@
+<mat-toolbar class="toolbar">
+  <mat-toolbar-row>
+    <button mat-button class="side-nav-toggle border-0" (click)="onToggeleSidenav()">
+      <mat-icon> menu </mat-icon>
+    </button>
+      <form id="formID" [formGroup]="headerSearch" class="d-flex top_search ms-1 d_none" (ngSubmit)="onSubmit()" novalidate>
+        <select class="border-0"  formControlName="wfTemplateObjectTypeId">
+          <option [value]="-1">Select</option>
+          <option [value]="'WO'">WO</option>
+          <option [value]="'SR'">SR</option>
+          <option [value]="'PTW'">PTW</option>
+      </select>
+      <ng-container  *ngIf="headerSearch.value.wfTemplateObjectTypeId && headerSearch.value.wfTemplateObjectTypeId !== '-1'">
+        <div>
+          <input type="text" *ngIf="headerSearch.value.wfTemplateObjectTypeId" class="border-0" formControlName="orderNumber" numbersOnly placeholder="Search">
+          <button form="formID" mat-button class="border-0" type="submit" hidden>
+            <i class="las la-search"></i>
+          </button>
+        </div>
+      </ng-container>
+        <ng-container  *ngIf="!headerSearch.value.wfTemplateObjectTypeId || headerSearch.value.wfTemplateObjectTypeId === '-1'">
+          <input type="text" placeholder="Menu"
+          class="border-0"
+          [formControl]="myControl"
+          [matAutocomplete]="auto">
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-optgroup *ngFor="let group of filteredOptions | async" [label]="group.name">
+                  <mat-option *ngFor="let task of group.submenu"  (onSelectionChange)="updateFormLocation($event, task.state)" [value]="task.state">
+                    {{task.name}}
+                  </mat-option>
+                </mat-optgroup>
+            </mat-autocomplete>
+        </ng-container>
+      </form>
+
+    <span fxFlex></span>
+    <!-- <button title="Notifications" mat-button class="settings border-0 rounded-0" (click)="onNotification()">
+      <i class="las la-book-reader"></i>
+    </button> -->
+    <button title="Expand" mat-button class="settings border-0 rounded-0 d_none" (click)="onFullscreenToggle()">
+      <i class="las la-expand"></i>
+    </button>
+    <button title="Tasks" mat-button class="settings border-0 rounded-0 d_none">
+      <i class="las la-tasks"></i>
+    </button>
+
+    <button title="{{unReadMessageCount}}" mat-button class="settings border-0 rounded-0 d_none" (click)="onMailRoute()">
+      <mat-icon  class="square-badge" title="{{unReadMessageCount}}" matBadge="{{unReadMessageCount}}" matBadgeColor="warn" style="font-size: 1em;">mail_outline</mat-icon>
+    </button>
+
+    <button title="Calendar" mat-button class="settings border-0 rounded-0 d_none" (click)="onCalendarRoute()">
+      <i class="las la-calendar"></i>
+    </button>
+    <!-- <ng-container *ngIf="reportsDataMenus.length > 0">
+      <nxasm-menu-item [reportMenu]="reportsDataMenus"></nxasm-menu-item>
+    </ng-container> -->
+
+     <button [matMenuTriggerFor]="reports" title="Reports" mat-button class="settings border-0 rounded-0 d_none">
+      <i class="las la-chart-area"></i>
+    </button>
+    <mat-menu #reports="matMenu">
+      <ng-container *ngFor="let c of reportsMenusData">
+        <button mat-menu-item (click)="onPowerBiLinkClick(c.state)">
+          {{c.name}}
+        </button>
+      </ng-container>
+    </mat-menu>
+
+
+
+  <!--  <mat-menu #Report2="matMenu">
+      <button mat-menu-item (click)="onPowerBiLinkClick()">Work Order</button>
+      <button mat-menu-item (click)="onPowerBiLinkClick()">Service Request</button>
+    </mat-menu> -->
+    <!-- <button mat-button class="settings border-0 rounded-0 d_none" >
+      <i class="las la-volume-up"></i>
+    </button> -->
+    <button 
+          [title]="(unReadNotificationCount ?? 0).toString()" mat-button class="settings border-0 rounded-0 d_none" (click)="onNotification()">
+          <mat-icon  
+          class="square-badge" [matBadge]="unReadNotificationCount ?? 0" [matBadgeHidden]="(unReadNotificationCount ?? 0) === 0" matBadgeColor="warn" style="font-size: 1em;">
+          notification_important
+      </mat-icon>
+    </button>
+    <!-- <mat-menu #menu="matMenu" class="rounded-0">
+      <button mat-menu-item>Item 1</button>
+      <button mat-menu-item>Item 2</button>
+    </mat-menu> -->
+    <div class="user-menu">
+      <button mat-button class="border-0 rounded-0" [matMenuTriggerFor]="user">
+        <div class="user-profile">
+          <img src="assets/images/avatars/profile.jpg" alt="User Image">
+          <div class="text-start" *ngIf="loginData">
+            <strong class="m-0" fxHide.lt-md>{{loginData.staffName}}</strong>
+            <p class="m-0" style="color: blue;font-size: 10px;" fxHide.lt-md>{{displayRole}} / {{loginData.unitName}} / {{loginData.locationName}}</p>
+          </div>
+          <mat-icon fxHide.lt-sm>keyboard_arrow_down</mat-icon>
+        </div>
+      </button>
+      <mat-menu #user="matMenu" [overlapTrigger]="false" xPosition="before" yPosition="above">
+        <button mat-menu-item style="min-width: 194px;" (click)="profile()">
+          <mat-icon> person </mat-icon>
+          <span> Profile </span>
+        </button>
+        <button mat-menu-item style="min-width: 194px;" (click)="openFeedback()">
+          <mat-icon> <span class="material-symbols-outlined">
+            feedback
+            </span> </mat-icon>
+          <span> Feedback </span>
+        </button>
+        <button mat-menu-item (click)="changePWD()">
+          <mat-icon> password </mat-icon>
+          <span> Change Password </span>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="onLogout()">
+          <mat-icon> exit_to_app </mat-icon>
+          <span> Logout </span>
+        </button>
+      </mat-menu>
+    </div>
+
+
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<ng-template #dialogTemplate>
+  <h2 mat-dialog-title>
+    <span>
+      Power BI Report - Title
+    </span>
+    <span class="p-2"  style="position: absolute; right: 0;">
+      <mat-icon mat-dialog-close>close</mat-icon>
+    </span>
+  </h2>
+
+  <!-- <button mat-button  (click)="openReportInNewTab()">Open in New Tab</button> -->
+  <mat-dialog-content class="mat-typography" style="min-height: 76vh;">
+    <iframe title="Sample Report Demo" width="100%" height="541.25"
+     src="https://playground.powerbi.com/sampleReportEmbed" frameborder="0" allowFullScreen="true"></iframe>
+    <!-- <iframe title="powerbi-report" [src]="safeUrl" width="95%" height="70%"
+
+      style="position: absolute;"></iframe> -->
+  </mat-dialog-content>
+</ng-template>
+
+<ng-template #notificationTemplate>
+  <h2 mat-dialog-title>
+    <span>
+      Notifications
+    </span>
+    <span class="p-2"  style="position: absolute; right: 0;">
+      <mat-icon mat-dialog-close>close</mat-icon>
+    </span>
+  </h2>
+  <mat-dialog-content class="mat-typography" style="min-height: 70vh; overflow-y: auto;">
+    <table class="table table-striped table-bordered  min-w-full text-left text-sm font-light">
+      <thead class="border-b font-medium dark:border-neutral-500">
+          <tr>
+              <th scope="col" class="px-6 py-4">No</th>
+              <th scope="col" class="px-6 py-4">Message</th>
+              <th scope="col" class="px-6 py-4">Date</th>
+              <th></th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let r of notifications;let j= index;let last =last" class="border-b dark:border-neutral-500">
+              <td class="whitespace-nowrap px-6 py-4 font-medium">{{j + 1}}</td>
+              <td>{{r.message}}</td>
+              <td>{{r.date | dateTime }}</td>
+          </tr>
+      </tbody>
+    </table>
+  </mat-dialog-content>
+</ng-template>
