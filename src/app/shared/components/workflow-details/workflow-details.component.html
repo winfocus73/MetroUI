@@ -1,0 +1,134 @@
+<div class="row" *ngIf="entityId > 0">
+    <!-- Prepared By -->
+    <div class="col-md-2" *ngIf="showPrepared && getFieldValue('preparedBy')">
+        <div class="form-group">
+            <label class="mb-2 l-col">
+                Prepared By
+            </label>
+            <div class="mb-2">
+                <app-form-field>
+                    <input type="text" 
+                           showError 
+                           [controlName]="'Prepared By'" 
+                           formControlName="preparedBy"
+                           class="form-control" 
+                           readonly>
+                </app-form-field>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Prepared Date -->
+    <div class="col-md-2" *ngIf="showPrepared && getFieldValue('preparedDate')">
+        <div class="form-group">
+            <label class="mb-2 l-col">
+                Prepared Date
+            </label>
+            <app-form-field>
+                <div class="mb-2 cal-pos" style="display: inline-flex;">
+                    <input showError 
+                           [controlName]="'Prepared Date'" 
+                           [matDatepicker]="preparedDatePicker"
+                           [datePickerFormat]="dateFormat" 
+                           formControlName="preparedDate"
+                           placeholder="Prepared Date"
+                           class="form-control round" 
+                           readonly>
+                    <mat-datepicker-toggle matSuffix [for]="preparedDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #preparedDatePicker></mat-datepicker>
+                </div>
+            </app-form-field>
+        </div>
+    </div>
+    
+    <!-- Reviewed By -->
+    <div class="col-md-2" *ngIf="showReviewed && getFieldValue('reviewedBy')">
+        <div class="form-group">
+            <label class="mb-2 l-col">
+                Reviewed By
+            </label>
+            <div class="mb-2">
+                <app-form-field>
+                    <input type="text" 
+                           showError 
+                           [controlName]="'Reviewed By'" 
+                           formControlName="reviewedBy"
+                           class="form-control" 
+                           readonly>
+                </app-form-field>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reviewed Date -->
+    <div class="col-md-2" *ngIf="showReviewed && getFieldValue('reviewedDate')">
+        <div class="form-group">
+            <label class="mb-2 l-col">
+                Reviewed Date
+            </label>
+            <app-form-field>
+                <div class="mb-2 cal-pos" style="display: inline-flex;">
+                    <input showError 
+                           [controlName]="'Reviewed Date'" 
+                           [matDatepicker]="reviewedDatePicker"
+                           [datePickerFormat]="dateFormat" 
+                           formControlName="reviewedDate"
+                           placeholder="Reviewed Date"
+                           class="form-control round" 
+                           readonly>
+                    <mat-datepicker-toggle matSuffix [for]="reviewedDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #reviewedDatePicker></mat-datepicker>
+                </div>
+            </app-form-field>
+        </div>
+    </div>
+    
+    <!-- Approved By -->
+    <div class="col-md-2" *ngIf="showApproved && getFieldValue('approvedBy')">
+        <div class="form-group">
+            <label class="mb-2 l-col">
+                Approved By
+            </label>
+            <div class="mb-2">
+                <app-form-field>
+                    <input type="text" 
+                           showError 
+                           [controlName]="'Approved By'" 
+                           formControlName="approvedBy"
+                           class="form-control" 
+                           readonly>
+                </app-form-field>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Approved Date -->
+    <div class="col-md-2" *ngIf="showApproved && getFieldValue('approvedDate')">
+        <div class="form-group">
+            <label class="mb-2 l-col">
+                Approved Date
+            </label>
+            <app-form-field>
+                <div class="mb-2 cal-pos" style="display: inline-flex;">
+                    <input showError 
+                           [controlName]="'Approved Date'" 
+                           [matDatepicker]="approvedDatePicker"
+                           [datePickerFormat]="dateFormat" 
+                           formControlName="approvedDate"
+                           placeholder="Approved Date"
+                           class="form-control round" 
+                           readonly>
+                    <mat-datepicker-toggle matSuffix [for]="approvedDatePicker"></mat-datepicker-toggle>
+                    <mat-datepicker #approvedDatePicker></mat-datepicker>
+                </div>
+            </app-form-field>
+        </div>
+    </div>
+</div>
+
+<!-- Show message when no workflow details available
+<div class="row" *ngIf="entityId === 0 || (!showPrepared && !showReviewed && !showApproved)">
+    <div class="col-12">
+        <p class="text-muted small">Workflow details will appear after submission</p>
+    </div>
+</div> -->

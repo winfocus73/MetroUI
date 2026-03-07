@@ -1,0 +1,188 @@
+<mat-card>
+  <mat-card-content>
+    <ng-container>
+      <!-- <div class="btn-add" *ngIf="objForm?.list==1">
+        <span class="btn btn-primary" *ngIf="!isAddEdit && objForm.add==1" type="button"
+          (click)="add(!isAddEdit)"><i class="las la-plus"></i> New</span>
+      </div> -->
+      <div class="btn-add">
+        <span class="btn btn-primary" (click)="add(true)">
+          <i class="las la-plus"></i> New
+        </span>
+      </div>
+
+      <div class="btn-btlist">
+        <button
+          *ngIf="isAddEdit"
+          mat-button
+          type="button"
+          (click)="add(!isAddEdit)"
+        >
+          <i class="fa fa-arrow-left"></i> Back to List
+        </button>
+      </div>
+      <ng-container *ngIf="!isAddEdit">
+        <form [formGroup]="searchForm">
+          <div class="row m-2">
+            <div class="col-auto pe-0 small-input-ctrl">
+              <label>CP Num</label>
+              <ng-select
+                class="cust_multiple"
+                formControlName="recSourceNum"
+                [items]="cpList"
+                bindLabel="name"
+                bindValue="name"
+                [multiple]="true"
+                [closeOnSelect]="false"
+                placeholder="Select Vendor"
+              >
+              </ng-select>
+            </div>
+
+            <div class="col-auto pe-0 small-input-ctrl">
+              <label>Vendor</label>
+              <ng-select
+                class="cust_multiple"
+                formControlName="vendorId"
+                [items]="agencyNames"
+                bindLabel="vendorName"
+                bindValue="vendorId"
+                placeholder="Select Vendor"
+                [multiple]="true"
+                [closeOnSelect]="false"
+              >
+              </ng-select>
+            </div>
+
+            <div class="col-auto pe-0 small-input-ctrl">
+              <label>Item Type</label>
+              <ng-select
+                class="cust_multiple"
+                formControlName="itemTypeId"
+                placeholder="Select Item Type"
+                [items]="itemTypeItems"
+                bindLabel="value"
+                [multiple]="true"
+                [closeOnSelect]="false"
+                bindValue="code"
+              >
+              </ng-select>
+            </div>
+
+            <div class="col-md-3">
+              <div class="row align-item-center">
+                <label>Date Range (From - To)</label>
+                <div class="col-9">
+                  <input
+                    type="text"
+                    ngxDaterangepickerMd
+                    [formControl]="$any(searchForm.get('timeStamp'))"
+                    class="form-control"
+                    placeholder="From Date - To Date"
+                    [showCustomRangeLabel]="true"
+                    [alwaysShowCalendars]="true"
+                    [ranges]="ranges"
+                    [locale]="{
+                      format: 'YYYY-MM-DD',
+                      displayFormat: 'DD-MM-YYYY',
+                      separator: ' To ',
+                      cancelLabel: 'Cancel',
+                      applyLabel: 'Okay',
+                    }"
+                    [linkedCalendars]="true"
+                    [showDropdowns]="true"
+                    [lockStartDate]="false"
+                    [customRangeDirection]="false"
+                    (datesUpdated)="datesUpdated($event)"
+                    [keepCalendarOpeningWithRange]="true"
+                    [showRangeLabelOnInput]="true"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col mt-4">
+              <div class="btn_cust-filter d-inline">
+                <!-- <button type="button" class="btn btn-rounded btn-fw me-1 fs-5" (click)="showFilter = !showFilter">
+                      <i class="las la-filter"></i>
+                    </button> -->
+                <button
+                  type="button"
+                  class="btn btn-cust btn-success btn-rounded btn-fw me-1"
+                  title="Search"
+                  (click)="search()"
+                >
+                  <i class="las la-search"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-success btn-rounded btn-fw"
+                  title="Reset"
+                  (click)="reset()"
+                >
+                  <i class="la la-refresh"></i>
+                </button>
+                <span
+                  *ngIf="!isAddEdit"
+                  class="btn btn-primary btn-rounded btn-fw ms-2 d-inline-block"
+                  title="Excel Download"
+                  (click)="export()"
+                >
+                  <i class="fa fa-file-excel"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </form>
+        <div class="row">
+          <div
+            class="amx-slide-up col-md-12"
+            [ngClass]="{ 'amx-slide-down': showFilter }"
+          >
+            <div
+              class="row py-2 filter_more"
+              style="background-color: #f5f5f5; position: relative"
+            >
+              <div>
+                <!-- <div>Filter</div> -->
+                <span
+                  style="position: absolute; right: 0; top: 0"
+                  (click)="showFilter = !showFilter"
+                  class="mb-filter me-3"
+                  ><i class="las la-times"></i
+                ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <app-table
+          *ngIf="cashPurchaseData.length > 0"
+          [totalRowsCount]="objSearch.TotalRecords"
+          [isCustomPagination]="'true'"
+          (emitPagination)="pageChanged($event)"
+          [pageIndex]="objSearch.PageNo"
+          [pageSize]="objSearch.PageSize"
+          [tableColumns]="tableColumns"
+          [tableData]="cashPurchaseData"
+          (editData)="editAssetId($event)"
+          (refreshTableData)="refreshTableData($event)"
+          (viewData)="viewPopup($event)"
+        >
+        </app-table>
+        <div class="row m-2" *ngIf="isNotFound">
+          <span class="bg-warning text-center fw-bold"
+            >Cash Purchase Details not found</span
+          >
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="isAddEdit">
+      <nxasm-cp-add-edit
+        [objForm]="objForm"
+        [rec_id]="rec_id"
+        [oems]="oems"
+        (message)="addEditMessage($event)"
+      ></nxasm-cp-add-edit>
+    </ng-container>
+  </mat-card-content>
+</mat-card>

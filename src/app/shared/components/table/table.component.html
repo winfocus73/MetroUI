@@ -1,33 +1,61 @@
-<div class="mat-paginator-sticky table-responsive" [ngClass]="containerClasses" [ngStyle]="containerStyles">
+<div
+  class="mat-paginator-sticky table-responsive"
+  [ngClass]="containerClasses"
+  [ngStyle]="containerStyles"
+>
   <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
-    <ng-container *ngFor="let disCol of tableColumns let colIndex = index;" matColumnDef="{{disCol.columnDef}}">
-      <th class="text-nowrap" mat-header-cell mat-sort-header *matHeaderCellDef [ngStyle]="{'display': disCol.isHidden ? 'none': 'table-cell'}">
-
+    <ng-container
+      *ngFor="let disCol of tableColumns; let colIndex = index"
+      matColumnDef="{{ disCol.columnDef }}"
+    >
+      <th
+        class="text-nowrap"
+        mat-header-cell
+        mat-sort-header
+        *matHeaderCellDef
+        [ngStyle]="{ display: disCol.isHidden ? 'none' : 'table-cell' }"
+      >
         <div>
-        <ng-container [ngSwitch]="disCol.label">
-          <!-- Link -->
-          <ng-container *ngSwitchCase="'multiSelect'">
-            {{ disCol.header }}
-          </ng-container>
-          <!-- Default Case -->
-          <ng-container *ngSwitchDefault>
-            <ng-container>
+          <ng-container [ngSwitch]="disCol.label">
+            <!-- Link -->
+            <ng-container *ngSwitchCase="'multiSelect'">
               {{ disCol.header }}
             </ng-container>
+            <!-- Default Case -->
+            <ng-container *ngSwitchDefault>
+              <ng-container>
+                {{ disCol.header }}
+              </ng-container>
+            </ng-container>
           </ng-container>
-        </ng-container>
         </div>
         <!-- Filter input -->
-        <div *ngIf="showFilters && disCol.columnDef != 'index'" class="filter-container">
-          <input matInput (focus)="$event.stopPropagation()" (keyup)="applyFilter($event, disCol.columnDef)" placeholder="Filter {{disCol.header}}">
+        <div
+          *ngIf="showFilters && disCol.columnDef != 'index'"
+          class="filter-container"
+        >
+          <input
+            matInput
+            (focus)="$event.stopPropagation()"
+            (keyup)="applyFilter($event, disCol.columnDef)"
+            placeholder="Filter {{ disCol.header }}"
+          />
         </div>
       </th>
 
-      <td class="text-nowrap" mat-cell *matCellDef="let row let element let rowIndex = index;">
+      <td
+        class="text-nowrap"
+        mat-cell
+        *matCellDef="let row; let element; let rowIndex = index"
+      >
         <ng-container [ngSwitch]="disCol.label">
           <!-- Link -->
           <ng-container *ngSwitchCase="'link'">
-            <a *ngIf="disCol.cell(element) != 'undefined'" (click)="LinkClick(disCol.cell(element))" routerLinkActive="router-link-active">
+            <a
+              *ngIf="disCol.cell(element) != 'undefined'"
+              (click)="LinkClick(disCol.cell(element))"
+              routerLinkActive="router-link-active"
+            >
               {{ disCol.cell(element) }}
             </a>
           </ng-container>
@@ -42,34 +70,64 @@
           </ng-container>
           <!-- Select -->
           <ng-container *ngSwitchCase="'select'">
-            <mat-radio-button color="primary" (click)="$event.stopPropagation()" (change)="selectRow($any($event), element, rowIndex)"></mat-radio-button>
+            <mat-radio-button
+              color="primary"
+              (click)="$event.stopPropagation()"
+              (change)="selectRow($any($event), element, rowIndex)"
+            ></mat-radio-button>
           </ng-container>
           <!-- MultiSelect -->
           <ng-container *ngSwitchCase="'multiSelect'">
-            <mat-checkbox color="primary" [checked]="element.checked" (change)="selectRow($any($event), element, rowIndex)"></mat-checkbox>
+            <mat-checkbox
+              color="primary"
+              [checked]="element.checked"
+              (change)="selectRow($any($event), element, rowIndex)"
+            ></mat-checkbox>
           </ng-container>
           <!-- Edit Link -->
           <ng-container *ngSwitchCase="'editLink'">
-            <button type="button" (click)="editRecord(disCol.cell(element))" class="btn btn-link p-0">
+            <button
+              type="button"
+              (click)="editRecord(disCol.cell(element))"
+              class="btn btn-link p-0"
+            >
               {{ disCol.cell(element) }}
             </button>
           </ng-container>
           <!-- Status Field -->
           <ng-container *ngSwitchCase="'statusField'">
-            {{ (disCol.cell(element) == 1 || disCol.cell(element) === true) ? 'Active' : ((disCol.cell(element) == 0 || disCol.cell(element) === false) ? 'Inactive' : '') }}
+            {{
+              disCol.cell(element) == 1 || disCol.cell(element) === true
+                ? "Active"
+                : disCol.cell(element) == 0 || disCol.cell(element) === false
+                  ? "Inactive"
+                  : ""
+            }}
           </ng-container>
           <!-- Boolean Field -->
           <ng-container *ngSwitchCase="'booleanField'">
-            {{ (disCol.cell(element) == 1 || disCol.cell(element) === true) ? 'True' : ((disCol.cell(element) == 0 || disCol.cell(element) === false) ? 'False' : '') }}
+            {{
+              disCol.cell(element) == 1 || disCol.cell(element) === true
+                ? "True"
+                : disCol.cell(element) == 0 || disCol.cell(element) === false
+                  ? "False"
+                  : ""
+            }}
           </ng-container>
           <!-- Yes or No Field -->
           <ng-container *ngSwitchCase="'yesOrNoField'">
-            {{ (disCol.cell(element) == 1 || disCol.cell(element) === true) ? 'Yes' : ((disCol.cell(element) == 0 || disCol.cell(element) === false) ? 'No' : '') }}
+            {{
+              disCol.cell(element) == 1 || disCol.cell(element) === true
+                ? "Yes"
+                : disCol.cell(element) == 0 || disCol.cell(element) === false
+                  ? "No"
+                  : ""
+            }}
           </ng-container>
           <!-- Index -->
           <ng-container *ngSwitchCase="'index'">
             <ng-container *ngIf="!disCol.isExpandBtn; else expand">
-              {{ (rowIndex + 1) + (pageIndex * pageSize) }}
+              {{ rowIndex + 1 + pageIndex * pageSize }}
             </ng-container>
           </ng-container>
           <!-- Default Case -->
@@ -77,12 +135,26 @@
             <span *ngIf="!disCol.isEditbtn; else edit">
               <span *ngIf="!disCol.isHistorybtn; else history">
                 <ng-container *ngIf="disCol.cell(element) && disCol.isLink">
-                  <a *ngIf="disCol.cell(element) != 'undefined'" (click)="LinkClick(disCol.cell(element))" routerlinkactive="router-link-active">
+                  <a
+                    *ngIf="disCol.cell(element) != 'undefined'"
+                    (click)="LinkClick(disCol.cell(element))"
+                    routerlinkactive="router-link-active"
+                  >
                     {{ disCol.cell(element) }}
                   </a>
                 </ng-container>
-                <ng-container *ngIf="disCol.cell(element) && !disCol.isLink && !disCol.isEditLink">
-                  <ng-container *ngIf="((disCol.isDateOnly || disCol.isDateTime) && disCol.cell(element) != 'undefined'); else status">
+                <ng-container
+                  *ngIf="
+                    disCol.cell(element) && !disCol.isLink && !disCol.isEditLink
+                  "
+                >
+                  <ng-container
+                    *ngIf="
+                      (disCol.isDateOnly || disCol.isDateTime) &&
+                        disCol.cell(element) != 'undefined';
+                      else status
+                    "
+                  >
                     <ng-container *ngIf="disCol.isDateOnly">
                       {{ disCol.cell(element) | dateOnly }}
                     </ng-container>
@@ -92,17 +164,32 @@
                   </ng-container>
                 </ng-container>
                 <ng-container *ngIf="disCol.columnDef == 'select'">
-                  <mat-radio-button color="primary" (click)="$event.stopPropagation()" (change)="selectRow($any($event), element, rowIndex)"></mat-radio-button>
+                  <mat-radio-button
+                    color="primary"
+                    (click)="$event.stopPropagation()"
+                    (change)="selectRow($any($event), element, rowIndex)"
+                  ></mat-radio-button>
                 </ng-container>
                 <ng-container *ngIf="disCol.columnDef == 'MultiSelect'">
-                  <mat-checkbox color="primary" (change)="selectRow($any($event), element, rowIndex)"></mat-checkbox>
+                  <mat-checkbox
+                    color="primary"
+                    (change)="selectRow($any($event), element, rowIndex)"
+                  ></mat-checkbox>
                 </ng-container>
                 <ng-container *ngIf="disCol.isEditLink">
-                  <button type="button" (click)="editRecord(disCol.cell(element))" class="btn btn-link p-0">{{ disCol.cell(element) }}</button>
+                  <button
+                    type="button"
+                    (click)="editRecord(disCol.cell(element))"
+                    class="btn btn-link p-0"
+                  >
+                    {{ disCol.cell(element) }}
+                  </button>
                 </ng-container>
-                <ng-container *ngIf="!disCol.cell(element) && disCol.columnDef == 'index'">
+                <ng-container
+                  *ngIf="!disCol.cell(element) && disCol.columnDef == 'index'"
+                >
                   <ng-container *ngIf="!disCol.isExpandBtn; else expand">
-                    {{ (rowIndex + 1) + (pageIndex * pageSize) }}
+                    {{ rowIndex + 1 + pageIndex * pageSize }}
                   </ng-container>
                 </ng-container>
               </span>
@@ -110,51 +197,138 @@
           </ng-container>
         </ng-container>
         <ng-template #expand>
-          {{ (rowIndex + 1) + (pageIndex * 10) }}
+          {{ rowIndex + 1 + pageIndex * 10 }}
           <ng-container *ngIf="getAsset(disCol.cell(element))">
-            <i style="cursor: pointer;" class="fa fa-plus" (click)="showChildData(disCol.cell(element))"></i>
+            <i
+              style="cursor: pointer"
+              class="fa fa-plus"
+              (click)="showChildData(disCol.cell(element))"
+            ></i>
           </ng-container>
         </ng-template>
         <ng-template #status>
           <ng-container *ngIf="disCol.isStatusPipe; else normal">
             <label [ngClass]="disCol.cell(element) | statusColor">
-              {{ disCol.cell(element) != 'undefined' ? disCol.cell(element) : '' }}
+              {{
+                disCol.cell(element) != "undefined" ? disCol.cell(element) : ""
+              }}
             </label>
           </ng-container>
         </ng-template>
         <ng-template #normal>
           <ng-container *ngIf="!disCol.isExpandBtn; else expand">
-            <span *ngIf="!disCol.template" title="{{ disCol.cell(element) != 'undefined' ? disCol.cell(element) : '' }}" class="{{ disCol.className }}">
+            <span
+              *ngIf="!disCol.template"
+              title="{{
+                disCol.cell(element) != 'undefined' ? disCol.cell(element) : ''
+              }}"
+              class="{{ disCol.className }}"
+            >
               <ng-container *ngIf="disCol.cell(element) != 'undefined'">
-                {{ disCol.cell(element) | truncate : 50 }}
+                {{ disCol.cell(element) | truncate: 50 }}
               </ng-container>
             </span>
             <ng-container *ngIf="disCol.template">
-              <ng-container *ngTemplateOutlet="disCol.template; context: { $implicit: { item: disCol.cell(element), rowIndex: rowIndex, row: row, totalRecords: totalData, itemIndex: ((rowIndex + 1) + (pageIndex * pageSize)) } }"></ng-container>
+              <ng-container
+                *ngTemplateOutlet="
+                  disCol.template;
+                  context: {
+                    $implicit: {
+                      item: disCol.cell(element),
+                      rowIndex: rowIndex,
+                      row: row,
+                      totalRecords: totalData,
+                      itemIndex: rowIndex + 1 + pageIndex * pageSize,
+                    },
+                  }
+                "
+              ></ng-container>
             </ng-container>
           </ng-container>
         </ng-template>
         <ng-template #history>
-          <button type="button" *ngIf="disCol.isHistorybtn" class="btn btn-light btn-rounded btn-fw" (click)="historyPopup(disCol.cell(element))">
+          <button
+            type="button"
+            *ngIf="disCol.isHistorybtn"
+            class="btn btn-light btn-rounded btn-fw"
+            (click)="historyPopup(disCol.cell(element))"
+          >
             <i class="fas fa-history"></i>
           </button>
-          <span *ngIf="disCol.isExpandBtn" style="cursor: pointer; color: #dfdada;" (click)="showParentData(disCol.cell(element))">.</span>
+          <span
+            *ngIf="disCol.isExpandBtn"
+            style="cursor: pointer; color: #dfdada"
+            (click)="showParentData(disCol.cell(element))"
+            >.</span
+          >
         </ng-template>
         <ng-template #edit>
-          <button type="button" *ngIf="!actionDisplayName" class="btn btn-light btn-rounded btn-fw" (click)="editRecord(disCol.cell(element))">
+          <button
+            type="button"
+            *ngIf="!actionDisplayName"
+            class="btn btn-light btn-rounded btn-fw"
+            (click)="editRecord(disCol.cell(element))"
+          >
             <i class="fas fa-edit"></i>
           </button>
-          <button type="button" *ngIf="disCol.isHistorybtn" class="btn btn-light btn-rounded btn-fw" (click)="historyPopup(disCol.cell(element))">
+          <button
+            type="button"
+            *ngIf="disCol.isViewbtn"
+            class="btn btn-light btn-rounded btn-fw me-1"
+            (click)="viewRecord(element)"
+            title="View"
+          >
+            <i class="fas fa-expand-arrows-alt"></i>
+          </button>
+
+          <button
+            type="button"
+            *ngIf="disCol.isDeletebtn"
+            class="btn btn-light btn-rounded btn-fw ms-1"
+            (click)="deleteRecord(disCol.cell(element))"
+            title="Delete"
+          >
+            <i class="fas fa-trash-can"></i>
+          </button>
+
+          <button
+            type="button"
+            *ngIf="disCol.isHistorybtn"
+            class="btn btn-light btn-rounded btn-fw"
+            (click)="historyPopup(disCol.cell(element))"
+          >
             <i class="fas fa-history"></i>
           </button>
           <ng-container *ngIf="disCol.isAssetLocChange">
-            <button type="button" *ngIf="getAssetChange(disCol.cell(element))" (click)="assetLocationChange(disCol.cell(element))" class="btn btn-light btn-rounded btn-fw">
+            <button
+              type="button"
+              *ngIf="getAssetChange(disCol.cell(element))"
+              (click)="assetLocationChange(disCol.cell(element))"
+              class="btn btn-light btn-rounded btn-fw"
+            >
               <i class="fas fa-location"></i>
             </button>
           </ng-container>
-          <span *ngIf="disCol.isExpandBtn" style="cursor: pointer; color: #dfdada;" (click)="showParentData(disCol.cell(element))">.</span>
-          <button type="button" *ngIf="actionDisplayName" (click)="editRecord(disCol.cell(element))" class="btn btn-link">{{ actionDisplayName }}</button>
-          <button type="button" *ngIf="disCol.isPWDChange" (click)="pwdChange(disCol.cell(element))" class="btn btn-link">
+          <span
+            *ngIf="disCol.isExpandBtn"
+            style="cursor: pointer; color: #dfdada"
+            (click)="showParentData(disCol.cell(element))"
+            >.</span
+          >
+          <button
+            type="button"
+            *ngIf="actionDisplayName"
+            (click)="editRecord(disCol.cell(element))"
+            class="btn btn-link"
+          >
+            {{ actionDisplayName }}
+          </button>
+          <button
+            type="button"
+            *ngIf="disCol.isPWDChange"
+            (click)="pwdChange(disCol.cell(element))"
+            class="btn btn-link"
+          >
             <i class="fa fa-lock"></i>
           </button>
         </ng-template>
@@ -162,8 +336,18 @@
     </ng-container>
 
     <!-- Grouped Headers row  -->
-    <ng-container *ngFor="let gh of tableColumns" matColumnDef="{{ gh.header }}">
-      <th class="text-nowrap" [ngStyle]="{ 'text-align': (gh.groupHeader ? 'center' : 'left') }" mat-header-cell *matHeaderCellDef [attr.colspan]="gh.colspan" [attr.rowspan]="gh.rowspan">
+    <ng-container
+      *ngFor="let gh of tableColumns"
+      matColumnDef="{{ gh.header }}"
+    >
+      <th
+        class="text-nowrap"
+        [ngStyle]="{ 'text-align': gh.groupHeader ? 'center' : 'left' }"
+        mat-header-cell
+        *matHeaderCellDef
+        [attr.colspan]="gh.colspan"
+        [attr.rowspan]="gh.rowspan"
+      >
         {{ gh.groupHeader ? gh.groupHeader : gh.header }}
       </th>
     </ng-container>
@@ -174,9 +358,18 @@
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
 
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
 </div>
 
-<mat-paginator *ngIf="!hidePagination" #paginator [length]="totalData" [pageSize]="pageSize" [pageIndex]="pageIndex" (page)="pageChanged($event)" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]="true">
+<mat-paginator
+  *ngIf="!hidePagination"
+  #paginator
+  [length]="totalData"
+  [pageSize]="pageSize"
+  [pageIndex]="pageIndex"
+  (page)="pageChanged($event)"
+  [pageSizeOptions]="pageSizeOptions"
+  [showFirstLastButtons]="true"
+>
 </mat-paginator>

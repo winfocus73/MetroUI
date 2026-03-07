@@ -1,0 +1,229 @@
+<mat-card>
+  <ng-container *ngIf="objForm" class="mt-2">
+    <div class="row mb-3">
+      <div class="col-md-12 text-end">
+        <div class="language-selector d-inline-block">
+          <label class="me-2"
+            >{{ getLabel("selectLanguage", "Language") }}:</label
+          >
+          <select
+            class="form-select d-inline-block w-auto"
+            [(ngModel)]="selectedLanguage"
+            (change)="onLanguageChange(selectedLanguage)"
+          >
+            <option *ngFor="let lang of languages" [value]="lang.code">
+              {{ lang.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="btn-add">
+      <span
+        class="btn btn-primary"
+        *ngIf="!isAddEdit"
+        type="button"
+        (click)="add(!isAddEdit)"
+      >
+        <i class="las la-plus"></i> {{ getLabel("newButton", "New") }}
+      </span>
+    </div>
+    <div class="btn-btlist">
+      <button
+        *ngIf="isAddEdit"
+        mat-button
+        type="button"
+        (click)="add(!isAddEdit)"
+      >
+        <i class="fa fa-arrow-left"></i>
+        {{ getLabel("backToList", "Back to List") }}
+      </button>
+    </div>
+    <ng-container *ngIf="!isAddEdit">
+      <div class="row m-2">
+        <div class="col-md-2">
+          <div class="form-group row">
+            <label class="col-sm-12 ms-2">{{
+              getLabel("issueNumber", "Issue Num")
+            }}</label>
+            <div class="col-sm-12 ms-2">
+              <ng-select
+                class="cust_multiple"
+                [(ngModel)]="objSearch.issueNum"
+                [items]="issueNumbers"
+                bindLabel="name"
+                bindValue="name"
+                [closeOnSelect]="false"
+                [placeholder]="getLabel('selectIssueNum', 'Select Issue Num')"
+              >
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group row">
+            <label class="col-sm-12 ms-2">{{
+              getLabel("department", "To Department")
+            }}</label>
+            <div class="col-sm-12 ms-2">
+              <ng-select
+                class="department-dropdown"
+                [(ngModel)]="objSearch.departmentId"
+                [items]="departmentNames"
+                bindLabel="departmentName"
+                bindValue="departmentId"
+                [closeOnSelect]="false"
+                [placeholder]="
+                  getLabel('selectDepartment', 'Select Department')
+                "
+              >
+              </ng-select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group row">
+            <label class="col-sm-12 ms-2">{{
+              getLabel("status", "Status")
+            }}</label>
+            <div class="col-sm-12 ms-2">
+              <select
+                class="form-select round"
+                name="section"
+                [(ngModel)]="objSearch.statusId"
+              >
+                <option value="">{{ getLabel("all", "ALL") }}</option>
+                <option *ngFor="let t of materialIssueStatuses" [value]="t.id">
+                  {{ t.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="row align-item-center">
+            <label class="col-sm-12 ms-2">Date Range (From - To)</label>
+            <div class="col-9">
+              <input
+                type="text"
+                ngxDaterangepickerMd
+                [formControl]="$any(materialIssueForm.get('timeStamp'))"
+                class="form-control"
+                placeholder="From Date - To Date"
+                [showCustomRangeLabel]="true"
+                [alwaysShowCalendars]="true"
+                [ranges]="ranges"
+                [locale]="{
+                  format: 'YYYY-MM-DD',
+                  displayFormat: 'DD-MM-YYYY',
+                  separator: ' To ',
+                  cancelLabel: 'Cancel',
+                  applyLabel: 'Okay',
+                }"
+                [linkedCalendars]="true"
+                [showDropdowns]="true"
+                [lockStartDate]="false"
+                [customRangeDirection]="false"
+                (datesUpdated)="datesUpdated($event)"
+                [keepCalendarOpeningWithRange]="true"
+                [showRangeLabelOnInput]="true"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3 mt-4">
+          <button
+            type="button"
+            class="btn btn-rounded btn-fw me-1 fs-5"
+            [title]="getLabel('filter', 'Filter')"
+            (click)="showFilter = !showFilter"
+          >
+            <i class="las la-filter"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-success btn-rounded btn-fw me-2"
+            [title]="getLabel('search', 'Search')"
+            (click)="search()"
+          >
+            <i class="las la-search"></i>
+          </button>
+          <button
+            type="button"
+            class="btn btn-success btn-rounded btn-fw"
+            [title]="getLabel('reset', 'Reset')"
+            (click)="reset()"
+          >
+            <i class="la la-refresh"></i>
+          </button>
+          <span
+            *ngIf="!isAddEdit"
+            class="btn btn-primary btn-rounded btn-fw ms-2 d-inline-block"
+            [title]="getLabel('excelDownload', 'Excel Download')"
+            (click)="export()"
+          >
+            <i class="fa fa-file-excel"></i>
+          </span>
+        </div>
+      </div>
+      <div class="row" *ngIf="showFilter">
+        <div class="amx-slide-up col-md-12">
+          <div
+            class="row py-2 filter_more"
+            style="background-color: #f5f5f5; position: relative"
+          ></div>
+          <div>
+            <span
+              style="position: absolute; right: 0; top: 0"
+              (click)="showFilter = !showFilter"
+              class="mb-filter me-3"
+            >
+              <i class="las la-times"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      <app-table
+        *ngIf="materialIssueData.length > 0"
+        [totalRowsCount]="objSearch.TotalRecords"
+        [isCustomPagination]="'true'"
+        (emitPagination)="pageChanged($event)"
+        [pageIndex]="objSearch.PageNo"
+        [pageSize]="objSearch.PageSize"
+        [tableColumns]="tableColumns"
+        [tableData]="materialIssueData"
+        (editData)="editMaterialIssueId($event)"
+        (deleteData)="deleteMaterialIssue($event)"
+        (viewData)="viewMaterialIssue($event)"
+        (refreshTableData)="refreshTableData($event)"
+      >
+      </app-table>
+      <div class="row m-2" *ngIf="isNotFound">
+        <span class="bg-warning text-center fw-bold">{{
+          getLabel("noDataFound", "Material Issue Details not found")
+        }}</span>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="objForm?.list == 0">
+    <p class="bg-warning text-center fw-bold">
+      {{
+        getLabel(
+          "noPermission",
+          "You do not have permission to access this Page"
+        )
+      }}
+    </p>
+  </ng-container>
+  <ng-container *ngIf="isAddEdit" class="mt-2">
+    <nxasm-material-issue-add-edit
+      [objForm]="objForm"
+      [materialIssueId]="materialIssueId"
+      [labels]="labels"
+      [selectedLanguage]="selectedLanguage"
+      (message)="addEditMessage($event)"
+    >
+    </nxasm-material-issue-add-edit>
+  </ng-container>
+</mat-card>

@@ -4,6 +4,7 @@ export interface Column {
     cell: Function;
     isLink?: boolean;
     url?: string;
+    isViewbtn?: boolean;  
     isEditbtn?: boolean;
     isDateTime?: boolean;
     isDateOnly?: boolean;
@@ -21,4 +22,6 @@ export interface Column {
     isAssetLocChange?: boolean;
     template?: any;
     label?: string;
+    isInput?: boolean;
+    inputType?: string;
   }

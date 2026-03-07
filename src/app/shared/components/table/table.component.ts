@@ -36,11 +36,15 @@ export class TableComponent<T> implements OnInit, OnChanges {
 
 
   @Output() editData =  new EventEmitter<number>();
+  @Output() viewData = new EventEmitter<{ id: number; data: any }>();
+
   @Output() showDownArrowClick =  new EventEmitter<number>();
   @Output() showUpArrowClick =  new EventEmitter<number>();
   @Output() selectedData =  new EventEmitter<any>();
   @Output() selectedRows =  new EventEmitter<any>();
   @Output() pageTypeNavigate =  new EventEmitter<any>();
+
+  @Output() deleteData = new EventEmitter<number>();
 
   @Output() raisePopup =  new EventEmitter<any>();
 
@@ -141,6 +145,27 @@ export class TableComponent<T> implements OnInit, OnChanges {
   editRecord(id: number) {
     this.editData.emit(id);
   }
+// Add this to your TableComponent
+viewRecord(rowData: any): void {
+  console.log('ViewRecord called with:', rowData);
+  
+  // If rowData has an id property, it's the full object
+  if (rowData && rowData.id) {
+    this.viewData.emit({ 
+      id: rowData.id, 
+      data: rowData  // Pass the full object directly
+    });
+  } else {
+    // Fallback: if only ID was passed
+    const id = rowData;
+    const fullObject = this.tableData.find(item => (item as any)['id'] === id);
+    this.viewData.emit({ id: id, data: fullObject });
+  }
+}
+
+
+
+
   showChildData(data: string) {
    const asID  = parseInt(data.split(',')[0]);
     this.showDownArrowClick.emit(asID);
@@ -198,6 +223,10 @@ export class TableComponent<T> implements OnInit, OnChanges {
    // console.log(this.isSubAsset)
     return this.isSubAsset;
   }
+
+  deleteRecord(id: number): void {
+  this.deleteData.emit(id);
+}
 
   selectRow(e: any, data: any, rowIndex:any) {
     data.checked =e?.checked;

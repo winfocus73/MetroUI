@@ -1,0 +1,381 @@
+<form class="form-sample p-2" [formGroup]="cashPurchaseForm">
+  <div class="row">
+    <div class="col-3" *ngIf="isEditMode">
+      <div class="form-group mb-2">
+        <label class="mb-2">CP Num<span class="text-danger">*</span></label>
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'CP Num'"
+              class="form-control"
+              formControlName="sourceNum"
+              readonly
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Bill No</label>
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Bill No'"
+              class="form-control"
+              formControlName="rec_invoicenum"
+              value=""
+            />
+            <div
+              class="text-danger"
+              *ngIf="
+                cashPurchaseForm.get('rec_invoicenum')?.errors?.['pattern']
+              "
+            >
+              Special characters are not allowed
+            </div>
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="col-sm-12 mb-2"
+          >Vendor<span class="text-danger">*</span></label
+        >
+        <div class="col-sm-12">
+          <ng-select
+            [items]="agencyNames"
+            bindLabel="vendorName"
+            bindValue="vendorId"
+            formControlName="vendorId"
+            [closeOnSelect]="false"
+            placeholder="Select Vendor"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <label class="col-sm-12 mb-2"
+        >Purchase Date <span class="text-danger">*</span></label
+      >
+      <div
+        class="col-sm-12 no-padding-right cal-pos"
+        style="display: inline-flex"
+      >
+        <input
+          matInput
+          [matDatepicker]="datepickerPurchase"
+          formControlName="CPDate"
+          class="form-control round"
+          [max]="today"
+          placeholder="Purchase Date"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="datepickerPurchase"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #datepickerPurchase></mat-datepicker>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="col-sm-12 ms-2"
+          >Item Type <span class="text-danger">*</span></label
+        >
+        <app-form-field>
+          <ng-select
+            showError
+            [controlName]="'ItemType'"
+            formControlName="itemTypeId"
+            placeholder="Select Item Type"
+            [items]="itemTypeItems"
+            bindLabel="value"
+            [closeOnSelect]="false"
+            bindValue="code"
+            [clearable]="true"
+            [searchable]="true"
+            (change)="updateCategoriesByItemType()"
+          >
+          </ng-select>
+        </app-form-field>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="col-sm-12 ms-2"
+          >Category <span class="text-danger">*</span></label
+        >
+        <app-form-field>
+          <ng-select
+            showError
+            [controlName]="'Category'"
+            formControlName="categoryId"
+            [items]="categoryItems"
+            bindLabel="value"
+            bindValue="code"
+            placeholder="Select Category"
+            [clearable]="true"
+            [searchable]="true"
+            (change)="onCategoryChange()"
+          >
+          </ng-select>
+        </app-form-field>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="col-sm-12 ms-2"
+          >Item Name <span class="text-danger">*</span></label
+        >
+        <app-form-field>
+          <ng-select
+            showError
+            [controlName]="'ItemName'"
+            formControlName="itemName"
+            [items]="filteredItems"
+            bindLabel="value"
+            bindValue="code"
+            placeholder="Select Item Name"
+            [clearable]="true"
+            [searchable]="true"
+            [disabled]="
+              !cashPurchaseForm.get('itemTypeId')?.value ||
+              !cashPurchaseForm.get('categoryId')?.value
+            "
+            (change)="onItemNameChange()"
+          >
+          </ng-select>
+        </app-form-field>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="col-sm-12 mb-2">Item Description</label>
+        <app-form-field>
+          <input
+            type="text"
+            formControlName="description"
+            class="form-control text-truncate"
+            readonly
+          />
+        </app-form-field>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Quantity<span class="text-danger">*</span></label>
+        <div>
+          <app-form-field>
+            <input
+              type="number"
+              showError
+              [controlName]="'Quantity'"
+              class="form-control"
+              formControlName="quantity"
+              min="1"
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">UOM</label>
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Uom'"
+              class="form-control"
+              formControlName="uom"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Unit Cost <span class="text-danger">*</span></label>
+        <div>
+          <app-form-field>
+            <input
+              type="number"
+              showError
+              [controlName]="'Unit Cost'"
+              class="form-control"
+              formControlName="unitCost"
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Total Amount<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="number"
+              showError
+              [controlName]="'Total Amount'"
+              class="form-control"
+              formControlName="totalAmount"
+              value=""
+              min="1"
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Mfg Batch no</label>
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Mfg Batch no'"
+              class="form-control"
+              formControlName="batchNo"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <label>Mfg Date</label>
+      <div
+        class="col-sm-12 no-padding-right cal-pos"
+        style="display: inline-flex"
+      >
+        <input
+          matInput
+          [matDatepicker]="datepickerMfg"
+          formControlName="mfgDate"
+          class="form-control round"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="datepickerMfg"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #datepickerMfg></mat-datepicker>
+      </div>
+    </div>
+
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="col-sm-12 mb-2">Inventory Type</label>
+        <div class="col-sm-12">
+          <select class="form-select" formControlName="inventoryType">
+            <option value="Serialized">Serialized</option>
+            <option value="Non-Serialized">Non-Serialized</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Requested By</label>
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Requested By'"
+              class="form-control"
+              formControlName="requestedBy"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2 l-col"
+          >Location<span class="text-danger">*</span></label
+        >
+        <div class="mb-2">
+          <app-form-field>
+            <ng-select
+              showError
+              [controlName]="'Location'"
+              formControlName="locationId"
+              name="location"
+              [items]="locationItems"
+              bindLabel="value"
+              bindValue="code"
+              placeholder="Select Location"
+              [clearable]="true"
+              [searchable]="true"
+            >
+            </ng-select>
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Remarks</label>
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'remarks'"
+              class="form-control"
+              formControlName="remarks"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="col-md-12 my-2 text-end">
+  <button
+    type="button"
+    class="btn btn-primary btn-space"
+    (click)="openCachPurchaseDialog()"
+    [disabled]="
+      isEditMode ||
+      cashPurchaseForm.get('inventoryType')?.value?.toLowerCase() !==
+        'serialized'
+    "
+  >
+    <i class="fa fa-save"></i> Add Serial No
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-outline-danger btn-space"
+    (click)="clear()"
+  >
+    <i class="fa fa-refresh"></i> Reset
+  </button>
+  <!-- <button type="button" class="btn btn-primary btn-space" [disabled]="!cashPurchaseForm.valid" (click)="save()"><i class="fa fa-save"></i> Save</button> -->
+  <button
+    type="button"
+    class="btn btn-primary btn-space"
+    [disabled]="!cashPurchaseForm.valid"
+    (click)="isEditMode ? update() : save()"
+  >
+    <i class="fa fa-save"></i>{{ isEditMode ? "Update" : "Save" }}
+  </button>
+</div>

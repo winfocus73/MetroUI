@@ -148,6 +148,12 @@ export const DashboardRoutes: Routes = [
                 canActivate: [AuthGuard]
               },
               {
+                path: 'i-v',
+                loadChildren: () =>import('./inventory/inventory.module').then((m)=>m.InventoryModule),
+                data: {breadcrumb:'inventory', isClickable: true},
+                canActivate: [AuthGuard]
+              },
+              {
                 path:'**',
                 component: NotFoundComponent
               }

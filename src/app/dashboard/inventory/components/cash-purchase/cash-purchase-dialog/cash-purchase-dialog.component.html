@@ -1,0 +1,42 @@
+
+<mat-card>
+  <mat-card-content>
+<table  mat-table [dataSource]="dataSource" class="mb-3">
+   <ng-container matColumnDef="item">
+  <th mat-header-cell *matHeaderCellDef>
+    <span style="padding-left:40px">Item</span>
+  </th>
+  <td mat-cell *matCellDef="let data">
+    {{ data.item }}
+  </td>
+</ng-container>
+
+    <ng-container matColumnDef="make">
+        <th mat-header-cell *matHeaderCellDef>Make <span class="text-danger">*</span> </th>
+        <td mat-cell *matCellDef="let data">
+            <input type="text" [(ngModel)]="data.make" placeholder="Make" class="form-control round" [disabled]="assetId> 0">
+        </td>
+    </ng-container>
+    <ng-container matColumnDef="oemSerialNo">
+        <th mat-header-cell *matHeaderCellDef>Oem Serial No <span class="text-danger">*</span> </th>
+        <td mat-cell *matCellDef="let data">
+            <input type="text" [(ngModel)]="data.oemSerialNo" placeholder="OEM Serial No" class="form-control round">
+        </td>
+    </ng-container>
+   
+    <ng-container matColumnDef="modelNum">
+        <th mat-header-cell *matHeaderCellDef> Model Num <span class="text-danger">*</span> </th>
+        <td mat-cell *matCellDef="let data">
+            <input type="text" [(ngModel)]="data.modelNum" placeholder="Model Num"
+                class="form-control round">
+        </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="asset-tree"></tr>
+</table>
+<div class="col-md-12 text-end my-2">
+       <button type="button" class="btn btn-primary btn-space" (click)="save()"><i class="fa fa-save"></i>Save</button>
+       <button type="button" class="btn btn-outline-danger btn-space" (click)="close()">Close</button>
+     </div>
+</mat-card-content>
+</mat-card>

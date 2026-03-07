@@ -1,0 +1,103 @@
+.cust-filter input, .cust-filter select{
+    height: 35px !important;
+    box-shadow: none;
+    
+}
+.cust-filter input, .cust-filter select,.cust-filter label{
+    font-size: 14px !important;
+}
+.cust-filter label{
+    margin-bottom: 5px;
+}
+.cust-filter .row .col-auto{
+    width: 12% !important;
+}
+.cal-pos mat-datepicker-toggle{
+    right: 0 !important;
+}
+.btn-cust{
+    padding: 5px;
+    height: auto;
+    line-height: 1;
+    border-radius: 5px;
+}
+.btn-add{
+    top:-34px;
+}
+.btn-add span.btn{
+    padding: 0px 6px;
+    font-size: 14px;
+    border-radius: 4px;
+}
+.mat-paginator-sticky{
+    max-height: 60vh;
+}
+::ng-deep .cust_multiple.ng-select .ng-select-container {
+    height: auto !important;
+    font-size: 14px !important;
+}
+@media(min-width:501px){
+    .filter-header,.mb-filter{
+        display: none;
+    }
+}
+@media (max-width:500px){
+    .cust-filter {
+        position: fixed;
+        right: 12px;
+        width: 300px;
+        background-color: #fff;
+        z-index: 999;
+        top: 0;
+        bottom: 45px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-top: 0 !important;
+        box-shadow: -22px 25px 12px -28px rgba(0,0,0,0.45);
+        display: none;
+    }
+    .cust-filter.showmfilter{
+        display: block !important;
+    }
+    .cust-filter .cal-pos,.cust-filter .col-md-1, .cust-filter .row .col,.cust-filter .row .col-auto,
+    .cust-filter .col-sm-12,.cust-filter .col-12, .cust-filter .col-1{
+        display: block !important;
+        width: 100% !important;
+        padding: 0;
+    }
+    .max-date-width, .small-input-ctrl{
+        max-width: 100% !important;
+    }
+    .cust-filter .col-sm-12.ms-2,.cust-filter .row,.cust-filter .mb-3{
+        margin: 0 !important;
+    }
+    .cust-filter .amx-slide-up div{
+        background-color: transparent !important;
+    }
+    .cust-filter .filter-header+div.col-md-12{
+        padding-top: 45px;
+    }
+    .btn_cust-filter{
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        background-color: #fff;
+        width: 300px;
+        text-align: right;
+        box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.2);
+    }
+    .btn_cust-filter span{
+        margin-right: 0.2rem !important;
+    }
+    .filter-header{
+        background-color: rgb(79, 70, 229);
+        color: #fff;
+        position: fixed;
+        padding: 8px 15px;
+        top: 0;
+        z-index: 999;
+        width: 100%;
+    }
+   
+    
+}

@@ -1,0 +1,10 @@
+// Look for and fix any parent containers
+.mat-card-content {
+  overflow: visible !important; // Instead of hidden/auto
+}
+
+.row,
+.col-md-2,
+.form-group {
+  overflow: visible !important;
+}

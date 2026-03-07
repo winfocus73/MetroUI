@@ -1,0 +1,439 @@
+<form class="form-simple p-3" [formGroup]="purchaseOrderForm">
+    <div class="row">
+        <div class="col-md-2" *ngIf="purchaseOrderId > 0">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('poNum', 'PONum') }}
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <input type="text" showError [controlName]="'PONum'" 
+                            [value]="poNumberDisplay" 
+                            class="form-control" 
+                            readonly>
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('vendor', 'Vendor') }}
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <ng-select
+                            showError
+                            [controlName]="'Vendor'"
+                            formControlName="poVendorId"
+                            name="vendor"
+                            [items]="vendorItems"
+                            bindLabel="value"
+                            bindValue="code"
+                            [placeholder]="getLabel('select', 'Select')"
+                            [clearable]="true"
+                            [searchable]="true">
+                        </ng-select>
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('poDate', 'PO Date') }}
+                    <span class="text-danger">*</span>
+                </label>
+                <app-form-field>
+                    <div class="mb-2 cal-pos" style="display: inline-flex;">
+                        <input showError [controlName]="'PO Date'" [matDatepicker]="poDatePicker"
+                            datePickerFormat="DD-MM-YYYY" formControlName="poDate" 
+                            [placeholder]="getLabel('poDate', 'PO Date')"
+                            class="form-control round" [max]="today">
+                        <mat-datepicker-toggle matSuffix [for]="poDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #poDatePicker></mat-datepicker>
+                    </div>
+                </app-form-field>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('priority', 'Priority') }}
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <ng-select
+                            showError
+                            [controlName]="'Priority'"
+                            formControlName="poPriorityId"
+                            name="priority"
+                            [items]="priorityItems"
+                            bindLabel="value"
+                            bindValue="code"
+                            [placeholder]="getLabel('selectPriority', 'Select Priority')"
+                            [clearable]="true"
+                            [searchable]="true">
+                        </ng-select>
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('poStatus', 'PO Status') }}
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <ng-select
+                            showError
+                            [controlName]="'PO Status'"
+                            formControlName="poStatusId"
+                            name="status"
+                            [items]="statusItems"
+                            bindLabel="value"
+                            bindValue="code"
+                            [placeholder]="getLabel('selectStatus', 'Select Status')"
+                            [clearable]="true"
+                            [searchable]="true"
+                            (change)="onStatusChange()">
+                        </ng-select>
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('location', 'Location') }}
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <ng-select
+                            showError
+                            [controlName]="'Location'"
+                            formControlName="poLocationId"
+                            name="location"
+                            [items]="locationItems"
+                            bindLabel="value"
+                            bindValue="code"
+                            [placeholder]="getLabel('selectLocation', 'Select Location')"
+                            [clearable]="true"
+                            [searchable]="true">
+                        </ng-select>
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('requiredDate', 'Required Date') }}
+                </label>
+                <app-form-field>
+                    <div class="mb-2 cal-pos" style="display: inline-flex;">
+                        <input showError [controlName]="'Required Date'" [matDatepicker]="requiredDatePicker"
+                            datePickerFormat="DD-MM-YYYY" formControlName="poRequiredDate" 
+                            [placeholder]="getLabel('requiredDate', 'Required Date')"
+                            class="form-control round" [min]="today">
+                        <mat-datepicker-toggle matSuffix [for]="requiredDatePicker"></mat-datepicker-toggle>
+                        <mat-datepicker #requiredDatePicker></mat-datepicker>
+                    </div>
+                </app-form-field>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('estimateCost', 'Estimate Cost') }}
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <input type="number" 
+                            showError 
+                            [controlName]="'Estimate Cost'" 
+                            formControlName="poEstimateCost" 
+                            class="form-control"
+                            min="0"
+                            step="0.01"
+                            [placeholder]="getLabel('estimateCost', 'Estimate Cost')">
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('shipTo', 'SHIP TO') }}
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <textarea showError [controlName]="'SHIP TO'" class="form-control" rows="2" 
+                                formControlName="poShipTo" [placeholder]="getLabel('shipTo', 'SHIP TO')"></textarea>
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('billTo', 'BILL TO') }}
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <textarea showError [controlName]="'BILL TO'" class="form-control" rows="2" 
+                                formControlName="poBillTo" [placeholder]="getLabel('billTo', 'BILL TO')"></textarea>
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="mb-2 l-col">
+                    {{ getLabel('remarks', 'Remarks') }}
+                </label>
+                <div class="mb-2">
+                    <app-form-field>
+                        <textarea showError [controlName]="'Remarks'" class="form-control" rows="2" 
+                                formControlName="poRemarks" [placeholder]="getLabel('remarks', 'Remarks')"></textarea>
+                    </app-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-workflow-details 
+        [form]="purchaseOrderForm"
+        [workflowConfig]="workflowConfig"
+        [workflowDetails]="workflowDetails"
+        [entityId]="purchaseOrderId"
+        [dateFormat]="'DD-MM-YYYY'">
+    </app-workflow-details>
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <button type="button" class="btn btn-primary btn-sm" (click)="openLineItemDialog()">
+                <i class="las la-plus"></i> {{ getLabel('addLineItem', 'Add Line Item') }}
+            </button>
+        </div>
+    </div>
+    <div class="table-responsive" *ngIf="lineItems.length > 0">
+        <table class="table table-bordered table-striped">
+
+                <thead>
+                    <tr>
+                        <th style="width: 5%">{{ getLabel('sNo', 'S.No.') }}</th>
+                        <th style="width: 10%">{{ getLabel('itemType', 'Item Type') }}</th>
+                        <th style="width: 10%">{{ getLabel('category', 'Category') }}</th>
+                        <th style="width: 15%">{{ getLabel('itemName', 'Item Name') }}</th>
+                        <th style="width: 18%">{{ getLabel('description', 'Description') }}</th>
+                        <th style="width: 5%">{{ getLabel('uom', 'UOM') }}</th>
+                        <th style="width: 7%">{{ getLabel('testLab', 'Test Lab') }}</th>
+                        <th style="width: 5%">{{ getLabel('qty', 'Qty') }}</th>
+                        <th style="width: 8%">{{ getLabel('unitCost', 'Unit Cost') }}</th>
+                        <th style="width: 8%">{{ getLabel('totalAmt', 'Total Amt') }}</th>
+                        <th style="width: 10%">{{ getLabel('action', 'Action') }}</th>
+                    </tr>
+                </thead>
+            <tbody>
+                <tr *ngFor="let item of lineItems; let i = index">
+                    <td>{{i + 1}}</td>
+                    <td title="{{item.itemTypeName}}">
+                        {{item.itemTypeName.length > 12 ? (item.itemTypeName | slice:0:12) + '...' : item.itemTypeName}}
+                    </td>
+                    <td title="{{item.categoryName}}">
+                        {{item.categoryName.length > 12 ? (item.categoryName | slice:0:12) + '...' : item.categoryName}}
+                    </td>
+                    <td title="{{item.itemName}}">
+                        {{item.itemName.length > 15 ? (item.itemName | slice:0:15) + '...' : item.itemName}}
+                    </td>
+                    <td title="{{item.description || 'No description'}}">
+                        {{(item.description || 'No description').length > 20 ? ((item.description || 'No description') | slice:0:20) + '...' : (item.description || 'No description')}}
+                    </td>
+                    <td>{{item.uom}}</td>
+                    <td>{{item.testLab ? 'Yes' : 'No'}}</td>
+                    <td>{{item.quantity}}</td>
+                    <td>{{item.unitCost | currency:'INR':'symbol':'1.2-2'}}</td>
+                    <td>{{item.totalAmount | currency:'INR':'symbol':'1.2-2'}}</td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-outline-primary" (click)="editLineItem(i)" title="Edit" style="margin-right: 3px;">
+                            <i class="las la-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteLineItem(i)" title="Delete">
+                            <i class="las la-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row m-2" *ngIf="lineItems.length === 0">
+        <span class="bg-warning text-center fw-bold">No line items added. Please add line items.</span>
+    </div>
+    <div class="col-md-12 text-end my-3" *ngIf="showSaveButtons">
+        <button type="button" class="btn btn-outline-danger btn-space me-2" (click)="clear()">
+            <i class="fa fa-refresh"></i> {{ getLabel('reset', 'Reset') }}
+        </button>
+        <button type="button" class="btn btn-primary btn-space me-2" 
+                *ngIf="!isStatusSelected()"
+                [disabled]="!purchaseOrderForm.get('poVendorId')?.value || 
+                        !purchaseOrderForm.get('poPriorityId')?.value || 
+                        !purchaseOrderForm.get('poLocationId')?.value" 
+                (click)="save()">
+            <i class="fa fa-save"></i> {{ getLabel('saveAsDraft', 'Save as Draft') }}
+        </button>
+        <button type="button" class="btn btn-success btn-space" 
+                *ngIf="isStatusSelected()"
+                [disabled]="purchaseOrderForm.invalid" 
+                (click)="submit()">
+            <i class="fa fa-check"></i> {{ getLabel('submit', 'Submit') }}
+        </button>
+    </div>
+</form>
+<div class="modal fade show" [class.show]="showLineItemDialog" style="display: block; background: rgba(0,0,0,0.5);" *ngIf="showLineItemDialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{editLineItemIndex >= 0 ? 'Edit' : 'Add'}} Line Item</h5>
+                <button type="button" class="btn-close" (click)="closeLineItemDialog()"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="lineItemForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2"> 
+                                    {{getLabel('itemType','Item Type')}}<span class="text-danger">*</span></label>
+                                <app-form-field>
+                                    <ng-select
+                                        showError
+                                        [controlName]="'ItemType'"
+                                        formControlName="itemTypeId"
+                                        [items]="itemTypeItems"
+                                        bindLabel="value"
+                                        bindValue="code"
+                                        placeholder= "{{getLabel('itemType','Item Type')}} {{getLabel('select', 'Select')}}"
+                                        [clearable]="true"
+                                        [searchable]="true"
+                                        (change)="updateCategoriesByItemType()">
+                                    </ng-select>
+                                </app-form-field>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2">
+                                    {{getLabel('category','Category')}}<span class="text-danger">*</span></label>
+                                <app-form-field>
+                                    <ng-select
+                                        showError
+                                        [controlName]="'Category'"
+                                        formControlName="categoryId"
+                                        [items]="categoryItems"
+                                        bindLabel="value"
+                                        bindValue="code"
+                                        placeholder="{{getLabel('select','select')}} {{getLabel('category','category')}}"
+                                        [clearable]="true"
+                                        [searchable]="true"
+                                        (change)="onCategoryChange()">
+                                    </ng-select>
+                                </app-form-field>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2"> 
+                                    {{getLabel('itemName','Item Name')}}<span class="text-danger">*</span></label>
+                                <app-form-field>
+                                    <ng-select
+                                        showError
+                                        [controlName]="'ItemName'"
+                                        formControlName="itemName"
+                                        [items]="filteredItems"
+                                        bindLabel="value"
+                                        bindValue="code"
+                                        placeholder="{{getLabel('select','select')}} {{getLabel('itemName','Item Name')}}"
+                                        [clearable]="true"
+                                        [searchable]="true"
+                                        [disabled]="!lineItemForm.get('itemTypeId')?.value || !lineItemForm.get('categoryId')?.value"
+                                        (change)="onItemNameChange()">
+                                    </ng-select>
+                                </app-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2">
+                                    {{getLabel('description','Description')}}
+                                </label>
+                                <textarea class="form-control" rows="2" formControlName="description" readonly></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2">
+                                    {{getLabel('uom','UOM')}}
+                                </label>
+                                <input type="text" class="form-control" formControlName="uom" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2"> 
+                                    {{getLabel('qty','Quantity')}}<span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" formControlName="quantity" (input)="calculateTotalAmount()" min="1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2">{{ getLabel('unitCost', 'Unit Cost') }}<span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" formControlName="unitCost" (input)="calculateTotalAmount()" min="0" step="0.01">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2">
+                                    {{ getLabel('totalAmt', 'Total Amount') }}</label>
+                                <input type="number" class="form-control" formControlName="totalAmount" readonly>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="mb-2">{{ getLabel('testLab', 'Test Lab') }}</label>
+                                <div class="form-check mt-2">
+                                    <input type="checkbox" class="form-check-input" formControlName="testLab">
+                                    <label class="form-check-label">{{ getLabel('yes', 'Yes') }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeLineItemDialog()">
+                    {{ getLabel('cancel', 'Cancel') }}
+                </button>
+                <button type="button" class="btn btn-primary" (click)="saveLineItem()">
+                    {{ editLineItemIndex >= 0 ? getLabel('update', 'Update') : getLabel('save', 'Save') }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
