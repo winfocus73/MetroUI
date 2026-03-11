@@ -1,115 +1,97 @@
 <mat-card>
-    <form class="form-sample p-2" [formGroup]="headerForm">
-      <div class="row">
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2"
-              >Issue Number <span class="text-danger">*</span></label
-            >
-            <div>
-              <app-form-field>
-                <input
-                  type="text"
-                  showError
-                  [controlName]="'Issue Number'"
-                  class="form-control"
-                  formControlName="issueNumber"
-                  readonly
-                />
-              </app-form-field>
-            </div>
-          </div>
-        </div>
+  <!-- Language Selector -->
+  <!-- <div class="row mb-3">
+    <div class="col-md-12 text-end">
+      <div class="language-selector d-inline-block">
+        <label class="me-2"
+          >{{ getLabel("selectLanguage", "Language") }}:</label
+        >
+        <select
+          class="form-select d-inline-block w-auto"
+          [(ngModel)]="selectedLanguage"
+          (change)="onLanguageChange(selectedLanguage)"
+        >
+          <option *ngFor="let lang of languages" [value]="lang.code">
+            {{ lang.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div> -->
 
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2 d-block l-col">
-              Issue Date <span class="text-danger">*</span>
-            </label>
+  <form class="form-sample p-2" [formGroup]="headerForm">
+    <!-- First Row -->
+    <div class="row">
+      <div class="col-md-3" *ngIf="materialIssueId > 0">
+        <div class="form-group mb-2">
+          <label class="mb-2">
+            {{ getLabel("issueNumber", "Issue Number") }}
+            <span class="text-danger">*</span>
+          </label>
+          <div>
             <app-form-field>
-              <div
-                class="mb-2 no-padding-right cal-pos"
-                style="display: inline-flex; width: 100%"
-              >
-                <input
-                  showError
-                  [controlName]="'Issue Date'"
-                  [matDatepicker]="issueDatePicker"
-                  datePickerFormat="DD-MM-YYYY"
-                  formControlName="issueDate"
-                  placeholder="Issue Date"
-                  [max]="today"
-                  class="form-control round"
-                  style="width: 100%"
-                />
-                <mat-datepicker-toggle
-                  matSuffix
-                  [for]="issueDatePicker"
-                ></mat-datepicker-toggle>
-                <mat-datepicker #issueDatePicker></mat-datepicker>
-              </div>
+              <input
+                type="text"
+                showError
+                [controlName]="getLabel('issueNumber', 'Issue Number')"
+                class="form-control"
+                formControlName="issueNumber"
+                readonly
+              />
             </app-form-field>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="mb-2 l-col">
-              From Location
-              <span class="text-danger">*</span>
-            </label>
-            <div class="mb-2">
-              <app-form-field>
-                <ng-select
-                  showError
-                  [controlName]="'Location'"
-                  formControlName="fromLocationId"
-                  name="location"
-                  [items]="locationItems"
-                  bindLabel="value"
-                  bindValue="code"
-                  placeholder="Select Location"
-                  [clearable]="true"
-                  [searchable]="true"
-                >
-                </ng-select>
-              </app-form-field>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2">MR Number</label>
-            <div>
-              <app-form-field>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="mrNumber"
-                  readonly
-                />
-              </app-form-field>
-            </div>
           </div>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="mb-2"
-              >Category <span class="text-danger">*</span></label
+      <div class="col-md-3">
+        <div class="form-group mb-2">
+          <label class="mb-2 d-block l-col">
+            {{ getLabel("issueDate", "Issue Date") }}
+            <span class="text-danger">*</span>
+          </label>
+          <app-form-field>
+            <div
+              class="mb-2 no-padding-right cal-pos"
+              style="display: inline-flex; width: 100%"
             >
+              <input
+                showError
+                [controlName]="getLabel('issueDate', 'Issue Date')"
+                [matDatepicker]="issueDatePicker"
+                datePickerFormat="DD-MM-YYYY"
+                formControlName="issueDate"
+                [placeholder]="getLabel('issueDate', 'Issue Date')"
+                [max]="today"
+                class="form-control round"
+                style="width: 100%"
+              />
+              <mat-datepicker-toggle
+                matSuffix
+                [for]="issueDatePicker"
+              ></mat-datepicker-toggle>
+              <mat-datepicker #issueDatePicker></mat-datepicker>
+            </div>
+          </app-form-field>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label class="mb-2 l-col">
+            {{ getLabel("fromLocation", "From Location") }}
+            <span class="text-danger">*</span>
+          </label>
+          <div class="mb-2">
             <app-form-field>
               <ng-select
                 showError
-                [controlName]="'Category'"
-                formControlName="categoryId"
-                [items]="categoryItems"
+                [controlName]="getLabel('fromLocation', 'From Location')"
+                formControlName="fromLocationId"
+                name="location"
+                [items]="locationItems"
                 bindLabel="value"
                 bindValue="code"
-                placeholder="Select Category"
+                [placeholder]="getLabel('selectLocation', 'Select Location')"
                 [clearable]="true"
                 [searchable]="true"
               >
@@ -117,379 +99,447 @@
             </app-form-field>
           </div>
         </div>
+      </div>
 
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2"
-              >To Section <span class="text-danger">*</span></label
-            >
-            <div>
-              <app-form-field>
-                <ng-select
-                  showError
-                  [controlName]="'To Section'"
-                  formControlName="toDepartmentId"
-                  [items]="filteredDepartments"
-                  bindLabel="value"
-                  bindValue="code"
-                  placeholder="Select Section"
-                  [clearable]="false"
-                  [searchable]="true"
-                  [notFoundText]="'No sections available for selected category'"
-                >
-                </ng-select>
-              </app-form-field>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group">
-            <label class="mb-2 l-col">
-              Status
-              <span class="text-danger">*</span>
-            </label>
-            <div class="mb-2">
-              <app-form-field>
-                <ng-select
-                  showError
-                  [controlName]="'Status'"
-                  formControlName="statusId"
-                  name="status"
-                  [items]="statusItems"
-                  bindLabel="value"
-                  bindValue="code"
-                  placeholder="Select Status"
-                  [clearable]="true"
-                  [searchable]="true"
-                >
-                </ng-select>
-              </app-form-field>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2">Remarks</label>
-            <div>
-              <app-form-field>
-                <textarea
-                  showError
-                  [controlName]="'Remarks'"
-                  class="form-control"
-                  formControlName="remarks"
-                  rows="1"
-                ></textarea>
-              </app-form-field>
-            </div>
+      <div class="col-md-3">
+        <div class="form-group mb-2">
+          <label class="mb-2">{{ getLabel("mrNumber", "MR Number") }}</label>
+          <div>
+            <app-form-field>
+              <ng-select
+                showError
+                [controlName]="getLabel('mrNumber', 'MR Numbers')"
+                formControlName="mrNumberId"
+                name="MRNumber"
+                [items]="MRNumbersDetails"
+                bindLabel="value"
+                bindValue="code"
+                [placeholder]="getLabel('mrNumber', 'MR Numbers')"
+                [clearable]="true"
+                [searchable]="true"
+              >
+              </ng-select>
+            </app-form-field>
           </div>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2">Prepared By</label>
-            <div>
-              <app-form-field>
-                <input
-                  type="text"
-                  showError
-                  [controlName]="'Prepared By'"
-                  class="form-control"
-                  formControlName="preparedBy"
-                  readonly
-                />
-              </app-form-field>
-            </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label class="mb-2 l-col">
+            {{ getLabel("status", "Status") }}
+            <span class="text-danger">*</span>
+          </label>
+          <div class="mb-2">
+            <app-form-field>
+              <ng-select
+                showError
+                [controlName]="getLabel('status', 'Status')"
+                formControlName="statusId"
+                name="status"
+                [items]="statusItems"
+                bindLabel="value"
+                bindValue="code"
+                [placeholder]="getLabel('selectStatus', 'Select Status')"
+                [clearable]="true"
+                [searchable]="true"
+              >
+              </ng-select>
+            </app-form-field>
           </div>
         </div>
-
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2">Prepared Date</label>
-            <div>
-              <app-form-field>
-                <input
-                  type="text"
-                  showError
-                  [controlName]="'Prepared Date'"
-                  class="form-control"
-                  formControlName="preparedDate"
-                  readonly
-                />
-              </app-form-field>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2">Approved By</label>
-            <div>
-              <app-form-field>
-                <input
-                  type="text"
-                  showError
-                  [controlName]="'Approved By'"
-                  class="form-control"
-                  formControlName="approvedBy"
-                  readonly
-                />
-              </app-form-field>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-3">
-          <div class="form-group mb-2">
-            <label class="mb-2">Approved Date</label>
-            <div>
-              <app-form-field>
-                <input
-                  type="text"
-                  showError
-                  [controlName]="'Approved Date'"
-                  class="form-control"
-                  formControlName="approvedDate"
-                  readonly
-                />
-              </app-form-field>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="text-end mt-3">
-        <button
-          type="button"
-          class="btn btn-success btn-space me-2"
-          [disabled]="!headerForm.valid || headerSubmitted"
-          (click)="submitHeader()"
-        >
-          <i class="fa fa-check"></i> SUBMIT
-        </button>
-        <button
-          type="button"
-          class="btn btn-outline-danger btn-space"
-          (click)="resetHeader()"
-        >
-          <i class="fa fa-refresh"></i> RESET
-        </button>
-      </div>
-    </form>
-
-    <div *ngIf="headerSubmitted && !lineItemsDisplayed" class="row mt-4">
-      <div class="col-md-12 text-start">
-        <button class="btn btn-primary" (click)="loadLineItems()">
-          <i class="fa fa-plus-circle"></i>
-          ADD LINE ITEMS
-        </button>
       </div>
     </div>
 
-    <div *ngIf="lineItemsDisplayed" class="mt-4">
-      <div class="row">
-        <div class="col-md-12">
-          <h5>Material Issue Items</h5>
+    <!-- Second Row -->
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group">
+          <label class="mb-2">
+            {{ getLabel("category", "Category") }}
+            <span class="text-danger">*</span>
+          </label>
+          <app-form-field>
+            <ng-select
+              showError
+              [controlName]="getLabel('category', 'Category')"
+              formControlName="categoryId"
+              [items]="categoryItems"
+              bindLabel="value"
+              bindValue="code"
+              [placeholder]="getLabel('selectCategory', 'Select Category')"
+              [clearable]="true"
+              [searchable]="true"
+            >
+            </ng-select>
+          </app-form-field>
         </div>
       </div>
 
-      <div *ngIf="lineItems.length > 0" class="table-responsive">
-        <table class="table table-bordered table-striped">
-          <thead class="table-light">
-            <tr>
-              <th>S.No.</th>
-              <th>ITEM NUM</th>
-              <th>ITEM DESC</th>
-              <th>UOM</th>
-              <th>IS SERIALIZED</th>
-              <th>ORDER QTY</th>
-              <th>BATCH NO.</th>
-              <th>QOH</th>
-              <th>ISSUED QTY</th>
-              <th>ACTIONS</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr
-              *ngFor="
-                let item of lineItems;
-                let i = index;
-                trackBy: trackByItemId
-              "
-            >
-              <td>{{ i + 1 }}</td>
-              <td>{{ item.itemNum }}</td>
-              <td>{{ item.itemDesc }}</td>
-              <td>{{ item.uom }}</td>
-              <td>
-                <ng-select
-                  [items]="serializedOptions"
-                  bindLabel="name"
-                  bindValue="value"
-                  [ngModel]="item.isSerialized"
-                  (ngModelChange)="updateIsSerialized(item, $event)"
-                  style="min-width: 140px"
-                >
-                </ng-select>
-              </td>
-              <td>{{ item.orderQty }}</td>
-              <td>{{ item.batchNo || "-" }}</td>
-              <td>{{ item.qoh || "-" }}</td>
-              <td>
-                <input
-                  type="number"
-                  class="form-control form-control-sm"
-                  style="width: 80px"
-                  [value]="item.issuedQty"
-                  (input)="updateIssuedQty(item, $event)"
-                  (change)="onIssuedQtyChange(item)"
-                  min="0"
-                  [max]="item.orderQty"
-                  placeholder="Qty"
-                />
-              </td>
-              <td>
-                <div class="action-icons d-flex gap-2">
-                  <i
-                    class="fa fa-save action-icon text-success"
-                    (click)="saveItem(item)"
-                    title="Save Item"
-                    style="cursor: pointer; font-size: 1.2rem"
-                  ></i>
-
-                  <i
-                    class="fa fa-pencil action-icon text-primary"
-                    (click)="editItem(item)"
-                    title="Edit Item"
-                    style="cursor: pointer; font-size: 1.2rem"
-                  ></i>
-
-                  <i
-                    *ngIf="canShowSerializedIcon(item)"
-                    class="fa fa-qrcode action-icon text-info"
-                    (click)="openSerializedEntry(item)"
-                    title="Enter Serial Details"
-                    style="cursor: pointer; font-size: 1.2rem"
-                  ></i>
-
-                  <span
-                    *ngIf="
-                      !canShowSerializedIcon(item) &&
-                      item.isSerialized !== 'SERIALIZED'
-                    "
-                    >—</span
-                  >
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="col-md-3">
+        <div class="form-group mb-2">
+          <label class="mb-2">
+            {{ getLabel("toSection", "To Section") }}
+            <span class="text-danger">*</span>
+          </label>
+          <div>
+            <app-form-field>
+              <ng-select
+                showError
+                [controlName]="getLabel('toSection', 'To Section')"
+                formControlName="toDepartmentId"
+                [items]="filteredDepartments"
+                bindLabel="value"
+                bindValue="code"
+                [placeholder]="getLabel('selectSection', 'Select Section')"
+                [clearable]="false"
+                [searchable]="true"
+                [notFoundText]="
+                  getLabel(
+                    'noSectionsAvailable',
+                    'No sections available for selected category'
+                  )
+                "
+              >
+              </ng-select>
+            </app-form-field>
+          </div>
+        </div>
       </div>
 
-      <div *ngIf="selectedSerializedItem" class="mt-4">
-        <mat-card class="bg-light border-info">
-          <mat-card-content>
-            <div class="table-responsive">
-              <table class="table table-bordered">
-                <thead class="table-light">
-                  <tr>
-                    <th>S.No.</th>
-                    <th>ITEM</th>
-                    <th>SERIAL NUM</th>
-                    <th>Mfg Date</th>
-                    <th>MODEL NUM</th>
-                    <th>MAKE</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="
-                      let entry of serializedEntries;
-                      let j = index;
-                      trackBy: trackBySerialIndex
-                    "
-                  >
-                    <td>{{ j + 1 }}</td>
-                    <td>{{ entry.item }}</td>
-                    <td>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        [(ngModel)]="entry.serialNum"
-                        [ngModelOptions]="{ standalone: true }"
-                        placeholder="Serial #"
-                      />
-                    </td>
-                    <td>
-                      <app-form-field>
-                        <div
-                          class="mb-2 no-padding-right cal-pos"
-                          style="display: inline-flex; width: 100%"
-                        >
-                          <input
-                            matInput
-                            showError
-                            [matDatepicker]="mfgPicker"
-                            [(ngModel)]="entry.mfgDate"
-                            #mfgDateCtrl="ngModel"
-                            [ngModelOptions]="{ standalone: true }"
-                            placeholder="MFG Date"
-                            [max]="today"
-                            class="form-control form-control-sm"
-                            required
-                          />
-
-                          <mat-datepicker-toggle
-                            matSuffix
-                            [for]="mfgPicker"
-                          ></mat-datepicker-toggle>
-
-                          <mat-datepicker #mfgPicker></mat-datepicker>
-                        </div>
-                      </app-form-field>
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        [(ngModel)]="entry.modelNum"
-                        [ngModelOptions]="{ standalone: true }"
-                        placeholder="Model #"
-                      />
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        [(ngModel)]="entry.make"
-                        [ngModelOptions]="{ standalone: true }"
-                        placeholder="Make"
-                      />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </mat-card-content>
-
-          <mat-card-actions align="end" class="p-3">
-            <button
-              class="btn btn-success me-2"
-              (click)="saveAllSerialEntries()"
-            >
-              <i class="fa fa-save"></i> Save All Serial Data
-            </button>
-            <button
-              class="btn btn-outline-danger"
-              (click)="closeSerializedEntry()"
-            >
-              <i class="fa fa-times"></i> Close
-            </button>
-          </mat-card-actions>
-        </mat-card>
+      <div class="col-md-6">
+        <div class="form-group mb-2">
+          <label class="mb-2">{{ getLabel("remarks", "Remarks") }}</label>
+          <div>
+            <app-form-field>
+              <textarea
+                showError
+                [controlName]="getLabel('remarks', 'Remarks')"
+                class="form-control"
+                formControlName="remarks"
+                rows="1"
+              ></textarea>
+            </app-form-field>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Third Row -->
+    <div class="row">
+      <div class="col-md-3">
+        <div class="form-group mb-2">
+          <label class="mb-2">{{
+            getLabel("preparedBy", "Prepared By")
+          }}</label>
+          <div>
+            <app-form-field>
+              <input
+                type="text"
+                showError
+                [controlName]="getLabel('preparedBy', 'Prepared By')"
+                class="form-control"
+                formControlName="preparedBy"
+                readonly
+              />
+            </app-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group mb-2">
+          <label class="mb-2">{{
+            getLabel("preparedDate", "Prepared Date")
+          }}</label>
+          <div>
+            <app-form-field>
+              <input
+                type="text"
+                showError
+                [controlName]="getLabel('preparedDate', 'Prepared Date')"
+                class="form-control"
+                formControlName="preparedDate"
+                readonly
+              />
+            </app-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group mb-2">
+          <label class="mb-2">{{
+            getLabel("approvedBy", "Approved By")
+          }}</label>
+          <div>
+            <app-form-field>
+              <input
+                type="text"
+                showError
+                [controlName]="getLabel('approvedBy', 'Approved By')"
+                class="form-control"
+                formControlName="approvedBy"
+                readonly
+              />
+            </app-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group mb-2">
+          <label class="mb-2">{{
+            getLabel("approvedDate", "Approved Date")
+          }}</label>
+          <div>
+            <app-form-field>
+              <input
+                type="text"
+                showError
+                [controlName]="getLabel('approvedDate', 'Approved Date')"
+                class="form-control"
+                formControlName="approvedDate"
+                readonly
+              />
+            </app-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-end mt-3">
+      <button
+        type="button"
+        class="btn btn-success btn-space me-2"
+        [disabled]="!headerForm.valid || headerSubmitted"
+        (click)="submitHeader()"
+      >
+        <i class="fa fa-check"></i> {{ getLabel("submit", "SUBMIT") }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-danger btn-space"
+        (click)="resetHeader()"
+      >
+        <i class="fa fa-refresh"></i> {{ getLabel("reset", "RESET") }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Add Line Items Button -->
+  <div *ngIf="headerSubmitted && !lineItemsDisplayed" class="row mt-4">
+    <div class="col-md-12 text-start">
+      <button class="btn btn-primary" (click)="loadLineItems()">
+        <i class="fa fa-plus-circle"></i>
+        {{ getLabel("addLineItems", "ADD LINE ITEMS") }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Line Items Section -->
+  <div *ngIf="lineItemsDisplayed" class="mt-4">
+    <div class="row">
+      <div class="col-md-12">
+        <h5>{{ getLabel("materialIssueItems", "Material Issue Items") }}</h5>
+      </div>
+    </div>
+
+    <div *ngIf="lineItems.length > 0" class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>{{ getLabel("sNo", "S.No.") }}</th>
+            <th>{{ getLabel("itemNum", "ITEM NUM") }}</th>
+            <th>{{ getLabel("itemDesc", "ITEM DESC") }}</th>
+            <th>{{ getLabel("uom", "UOM") }}</th>
+            <th>{{ getLabel("isSerialized", "IS SERIALIZED") }}</th>
+            <th>{{ getLabel("orderQty", "ORDER QTY") }}</th>
+            <th>{{ getLabel("batchNo", "BATCH NO.") }}</th>
+            <th>{{ getLabel("qoh", "QOH") }}</th>
+            <th>{{ getLabel("issuedQty", "ISSUED QTY") }}</th>
+            <th>{{ getLabel("actions", "ACTIONS") }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="
+              let item of lineItems;
+              let i = index;
+              trackBy: trackByItemId
+            "
+          >
+            <td>{{ i + 1 }}</td>
+            <td>{{ item.itemNum }}</td>
+            <td>{{ item.itemDesc }}</td>
+            <td>{{ item.uom }}</td>
+            <td>
+              <ng-select
+                [items]="serializedOptions"
+                bindLabel="name"
+                bindValue="value"
+                [ngModel]="item.isSerialized"
+                (ngModelChange)="updateIsSerialized(item, $event)"
+                style="min-width: 140px"
+              >
+              </ng-select>
+            </td>
+            <td>{{ item.orderQty }}</td>
+            <td>{{ item.batchNo || "-" }}</td>
+            <td>{{ item.qoh || "-" }}</td>
+            <td>
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                style="width: 80px"
+                [value]="item.issuedQty"
+                (input)="updateIssuedQty(item, $event)"
+                (change)="onIssuedQtyChange(item)"
+                min="0"
+                [max]="item.orderQty"
+                [placeholder]="getLabel('qty', 'Qty')"
+              />
+            </td>
+            <td>
+              <div class="action-icons d-flex gap-2">
+                <i
+                  class="fa fa-save action-icon text-success"
+                  (click)="saveItem(item)"
+                  [title]="getLabel('saveItem', 'Save Item')"
+                  style="cursor: pointer; font-size: 1.2rem"
+                ></i>
+
+                <i
+                  class="fa fa-pencil action-icon text-primary"
+                  (click)="editItem(item)"
+                  [title]="getLabel('editItem', 'Edit Item')"
+                  style="cursor: pointer; font-size: 1.2rem"
+                ></i>
+
+                <i
+                  *ngIf="canShowSerializedIcon(item)"
+                  class="fa fa-qrcode action-icon text-info"
+                  (click)="openSerializedEntry(item)"
+                  [title]="
+                    getLabel('enterSerialDetails', 'Enter Serial Details')
+                  "
+                  style="cursor: pointer; font-size: 1.2rem"
+                ></i>
+
+                <span
+                  *ngIf="
+                    !canShowSerializedIcon(item) &&
+                    item.isSerialized !== 'SERIALIZED'
+                  "
+                  >{{ getLabel("serialHash", "—") }}</span
+                >
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Serial Entries Section -->
+    <div *ngIf="selectedSerializedItem" class="mt-4">
+      <mat-card class="bg-light border-info">
+        <mat-card-content>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="table-light">
+                <tr>
+                  <th>{{ getLabel("sNo", "S.No.") }}</th>
+                  <th>{{ getLabel("item", "ITEM") }}</th>
+                  <th>{{ getLabel("serialNum", "SERIAL NUM") }}</th>
+                  <th>{{ getLabel("mfgDate", "Mfg Date") }}</th>
+                  <th>{{ getLabel("modelNum", "MODEL NUM") }}</th>
+                  <th>{{ getLabel("make", "MAKE") }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  *ngFor="
+                    let entry of serializedEntries;
+                    let j = index;
+                    trackBy: trackBySerialIndex
+                  "
+                >
+                  <td>{{ j + 1 }}</td>
+                  <td>{{ entry.item }}</td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="entry.serialNum"
+                      [ngModelOptions]="{ standalone: true }"
+                      [placeholder]="getLabel('serialNum', 'Serial #')"
+                    />
+                  </td>
+                  <td>
+                    <app-form-field>
+                      <div
+                        class="mb-2 no-padding-right cal-pos"
+                        style="display: inline-flex; width: 100%"
+                      >
+                        <input
+                          matInput
+                          showError
+                          [matDatepicker]="mfgPicker"
+                          [(ngModel)]="entry.mfgDate"
+                          #mfgDateCtrl="ngModel"
+                          [ngModelOptions]="{ standalone: true }"
+                          [placeholder]="getLabel('mfgDate', 'MFG Date')"
+                          [max]="today"
+                          class="form-control form-control-sm"
+                          required
+                        />
+
+                        <mat-datepicker-toggle
+                          matSuffix
+                          [for]="mfgPicker"
+                        ></mat-datepicker-toggle>
+
+                        <mat-datepicker #mfgPicker></mat-datepicker>
+                      </div>
+                    </app-form-field>
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="entry.modelNum"
+                      [ngModelOptions]="{ standalone: true }"
+                      [placeholder]="getLabel('modelNum', 'Model #')"
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      class="form-control form-control-sm"
+                      [(ngModel)]="entry.make"
+                      [ngModelOptions]="{ standalone: true }"
+                      [placeholder]="getLabel('make', 'Make')"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions align="end" class="p-3">
+          <button class="btn btn-success me-2" (click)="saveAllSerialEntries()">
+            <i class="fa fa-save"></i>
+            {{ getLabel("saveAllSerialData", "Save All Serial Data") }}
+          </button>
+          <button
+            class="btn btn-outline-danger"
+            (click)="closeSerializedEntry()"
+          >
+            <i class="fa fa-times"></i> {{ getLabel("close", "Close") }}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
 </mat-card>

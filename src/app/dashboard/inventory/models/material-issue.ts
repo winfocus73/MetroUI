@@ -202,3 +202,22 @@ export const MATERIAL_ISSUE_CONSTANTS = {
     CANCELLED: 6,
   },
 };
+export interface IIssueHeaderRequest {
+  issue_date: string; // Format: YYYY-MM-DD (e.g., "2026-03-02")
+  mr_id: number; // MR ID from your MR number (e.g., 1)
+  issue_section_category_id: number; // Category ID (e.g., 1)
+  issued_to_section: number; // To Department/Section ID (e.g., 3)
+  issue_location_id: number; // From Location ID (e.g., 43192)
+  issue_status: number; // Status ID (e.g., 1019)
+  issue_remarks: string; // Remarks (e.g., "Header Only Test MAR 9")
+  created_by: number; // User ID (e.g., 1)
+}
+
+/**
+ * Response interface for material issue header creation
+ */
+export interface IIssueHeaderResponse {
+  status: number; // 34 for success
+  message: string; // Success/Error message
+  issue_id?: number; // Optional - if API returns the created ID
+}

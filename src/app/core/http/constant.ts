@@ -1,4 +1,7 @@
 export class Constants {
+  // static SHIPMENT_SEARCH_LIST(SHIPMENT_SEARCH_LIST: any, objSearch: any) {
+  //   throw new Error('Method not implemented.');
+  // }
   static LANGUAGES = [
     { code: 'en', name: 'English' },
     { code: 'sp', name: 'Español' },
@@ -13,6 +16,8 @@ export class Constants {
   static CASH_PURCHASE_LIST_FILTER_OBJECT = 'cashPurchaseListFilterObject';
   //Material issue
   static MATERIAL_ISSUE_LIST_FILTER_OBJECT = 'materialIssueListFilterObject';
+  static SHIPMENT_SEARCH_LIST="SHIPMENT_LIST_SEARCH";
+   static MATERIAL_REQUISITION_FILTER_OBJECT = 'materialRequisitionFilterOptions';
 
   static success = 'success';
   static error = 'error';

@@ -1,0 +1,19 @@
+<mat-card >
+
+  <app-table *ngIf="shipmentDetail.length > 0"
+    [totalRowsCount]="objSearch.TotalRecords"
+    [isCustomPagination]="'true'"
+    (emitPagination)="pageChanged($event)"
+    [pageIndex]="objSearch.PageNo"
+    [pageSize]="objSearch.PageSize"
+    [tableColumns]="tableColumns"
+    [tableData]="shipmentDetail"
+    (editData)="editAssetId($event)"
+    (refreshTableData)="refreshTableData($event)">
+  </app-table>
+
+  <div class="row m-2" *ngIf="isNotFound">
+    <span class="bg-warning text-center fw-bold">Shipment Details not found</span>
+  </div>
+
+</mat-card>

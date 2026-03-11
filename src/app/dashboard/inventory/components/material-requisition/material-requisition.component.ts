@@ -1,69 +1,79 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormGroup, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { ILoginResponse, ILoginData } from '@auth/models/login.response';
-import { IAssetReg, IAssetSearchList } from '@dashboard/asset-registry/models/assets';
-import { IOEM } from '@dashboard/asset-registry/models/oem';
-import { IAssetCategories, IAssetStatus } from '@dashboard/config-assets/models/asset-categories';
-import { AssetService } from '@dashboard/config-assets/services/asset.service';
 import { UnitService } from '@dashboard/configuration/services/unit.service';
-import { ICorridor } from '@dashboard/planning-scheduling/permit-to-work/models/corridor';
-import { IDropdown, Column, ICommonRequest, IRequest } from '@shared/models';
+import { IDropdown, Column, ICommonRequest, IRequest, ILookupValue, IGetSearchRequest } from '@shared/models';
 import { IFormCheck } from '@shared/models/role-check';
-import { IStation } from '@shared/models/station';
-import { IZone } from '@shared/models/zone';
 import { CommonService } from '@shared/services/common.service';
 import { LoadingService } from '@shared/services/spinner.service';
 import * as moment from 'moment';
 import { Constants } from 'src/app/core/http/constant';
 import { HttpApi } from 'src/app/core/http/http-api';
 import * as XLSX from 'xlsx';
+import { IUnit } from '@dashboard/configuration/models/units/unit';
+import { DynamicViewDialogComponent } from '@shared/components/dynamic-view-dialog/dynamic-view-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
+import { IMaterialRequisitionReg, IMaterialRequisitionSearchList, IMRNumberDropdown, ISessionsList } from '@dashboard/inventory/models/material-requisition';
+import { InventoryService } from '@dashboard/inventory/services/inventory.service';
+import { ICategory, IPriority, ISectionList } from '@dashboard/inventory/models/material-issue';
+import { Console } from 'console';
+import { IStatus } from '../material-issue/add-edit-material-issue/add-edit-material-issue.component';
 
 @Component({
-  selector: 'app-material-requisition',
+  selector: 'nxasm-inventory-material-requisition',
   templateUrl: './material-requisition.component.html',
   styleUrls: ['./material-requisition.component.scss']
 })
 export class MaterialRequisitionComponent implements OnInit {
-
-   assets: IAssetReg[] =[];
-    rollName!: string;
-    isAddEdit = false;
-    assetId = 0;
-    categoryId = 0;
-    assetCategories: IAssetCategories[] = [];
-    assetStatuses: IAssetStatus[] = [];
-    assetsSearch: IAssetSearchList = {} as IAssetSearchList;
-    priorityList = HttpApi.priorityData;
-    statusList = HttpApi.workStatusData;
-    dropLabel = 'Category';
-    UserInfo:ILoginResponse = {} as ILoginResponse;
-    userRoleId!: string;
-    items: IDropdown[] = [];
-    isNotFound = false;
-    showFilter = false;
-    objSearch = {
-      CategoryId: '',
-      AssetName: '',
-      AssetNo: '',
-      Status: '',
-      Linear:'',
-      PageNo: 1,
-      PageSize: 10,
-      TotalRecords: 0,
-      Station:'',
-      Participation: '',
-      Corridor:'',
-      Stage:'',
-      Location:'',
-      TopAssetNo: '',
-      Description: '',
-      IntegrationAssetNo: '',
-      Make: '',
-      Priority: ''
-    }
-    stations: IStation[] =[];
+  selectedLanguage: string = 'en';
+  languages = Constants.LANGUAGES;
+  labels: { [key: string]: string } = {};
+  @Output() message = new EventEmitter();
+  @Input() mrId!: number;
+  showFilter = false;
+  showmFilter = false;
+  materials: IMaterialRequisitionReg[] =[];
+    statusList: IStatus[] = [];
+   priorities: IPriority[] = [];
+    status: IStatus[] = [];
+  rollName!: string;
+  isAddEdit = false;
+  units: IUnit[] = [];
+  sessionList: ISessionsList[] = [];
+  categoryItems: IDropdown[] = [];
+  pageNo = 1;
+  pageSize = 10;
+   categories: ICategory[] = [];
+  totalRecords!: number; 
+  mrSearch: IMaterialRequisitionSearchList = {} as IMaterialRequisitionSearchList;
+  // priorityList = HttpApi.priorityData;
+  // statusList = HttpApi.workStatusData;
+  UserInfo:ILoginResponse = {} as ILoginResponse;
+  userRoleId!: string;
+  items: IDropdown[] = [];
+  isNotFound = false;
+  toDate = '';
+  fromDate = '';
+  MrData: IMRNumberDropdown[] = [];
+  objSearch = {
+    name: '',
+    MRNumber: null,
+    UnitId: '',
+    unitName: '',
+    statusId: '',
+    Location:'',
+    LocationId: '',
+    PriorityId: '',
+    priority: null,
+    ToDate: '',
+    FromDate: '',
+    PageNo: 1,
+    PageSize: 10,
+    TotalRecords: 0,
+  }
     objForm: IFormCheck = {} as IFormCheck;
-    oems: IOEM[] = [];
     LoginUserInfo: ILoginData = {} as ILoginData;
     tableColumns: Array<Column> = [
       {
@@ -75,22 +85,22 @@ export class MaterialRequisitionComponent implements OnInit {
         columnDef: 'mrNum',
         header: 'MR Num',
         isEditLink: true,
-        cell: (element: Record<string, any>) => `${element['mrNum']}`
+        cell: (element: Record<string, any>) => `${element['mrNumber']}`
       },
       {
-        columnDef: 'reqDept',
-        header: 'Req Dept',
-        cell: (element: Record<string, any>) => `${element['reqDept']}`
+        columnDef: 'SectionName',
+        header: 'Section Name',
+        cell: (element: Record<string, any>) => `${element['SectionName']}`
       },
       {
         columnDef: 'mrReqDate',
         header: 'MR Req Date',
-        cell: (element: Record<string, any>) => `${element['mrReqDate']}`
+        cell: (element: Record<string, any>) => `${element['mrDate']}`
       },
       {
         columnDef: 'priority',
         header: 'Priority',
-        cell: (element: Record<string, any>) => `${element['priority']}`
+        cell: (element: Record<string, any>) => `${element['priorityName']}`
       },
       {
         columnDef: 'requiredDate',
@@ -100,298 +110,366 @@ export class MaterialRequisitionComponent implements OnInit {
       {
         columnDef: 'status',
         header: 'Status',
-        cell: (element: Record<string, any>) => `${element['status']}`
+        cell: (element: Record<string, any>) => `${element['statusName']}`
       },
       {
         columnDef: 'location',
         header: 'Location',
-        cell: (element: Record<string, any>) => `${element['location']}`
+        cell: (element: Record<string, any>) => `${element['locationName']}`
       },
-      // {
-      //   columnDef: 'quantity',
-      //   header: 'Quantity',
-      //   cell: (element: Record<string, any>) => `${element['quantity']}`
-      // }, 
       {
         columnDef: 'actions',
         header: 'Actions',
-        cell: (element: Record<string, number>) => `${element['id']}`,
-        isHistorybtn: true,
+        cell: (element: Record<string, number>) => `${element['mrId']}`,
+        // isHistorybtn: true,
+        isViewbtn: true,
         isEditbtn: false,
-        isAssetLocChange: true
+        isDeletebtn: true
+       
       }
     ];
-    zones: IZone[] = [];
-    corridors: ICorridor[] = [];
-  service: any;
-  dataList: any;
-    constructor(private assetService: AssetService, private snackBar: MatSnackBar, private unitService: UnitService,
-      private commonService: CommonService, private _loading: LoadingService
-      ) {}
+  priorityList: any;
+  constructor(private router: Router,
+      private inventoryServices: InventoryService,
+       private snackBar: MatSnackBar, private unitService: UnitService,
+    private commonService: CommonService, private _loading: LoadingService, private dialog: MatDialog
+    ) {}
   
   ngOnInit(): void {
-  if (this.commonService.getFormPriviliges) {
-    this.getFormPriviliges();
+    if (this.commonService.getFormPriviliges) {
+      this.getFormPriviliges();
+    }
+    this.getUnitsData();
+    this.getAllMrNumbersList();
+    this.getCategories();
+    this.getPriorities();
+    this.getMrStatus();
   }
-}
-
-  
-    pageLoad() {
-      if(this.commonService.filterObjects[Constants.ASSETS_LIST_FILTER_OBJECT]){
-        this.objSearch = this.commonService.filterObjects[Constants.ASSETS_LIST_FILTER_OBJECT];
-      }
-      this.LoginUserInfo = this.commonService.loginStorageData;
-      if(this.LoginUserInfo.loginData.assetCategoryId > 0) {
-        this.objSearch.CategoryId = this.LoginUserInfo.loginData.assetCategoryId.toString();
-      }
-      this.getAssetCategories();
-      this.getAssetStatus();
-      this.getStations();
-      this.getZones();
-      this.getCorridors();
-      this.getOEMSList();
-      //this.getAssetRegistryList();
-  
-      this.userRoleId = this.LoginUserInfo.userRoleId;
+  pageLoad() {
+    if(this.commonService.filterObjects[Constants.MATERIAL_REQUISITION_FILTER_OBJECT]){
+      this.objSearch = this.commonService.filterObjects[Constants.MATERIAL_REQUISITION_FILTER_OBJECT];
     }
-  
-    getOEMSList() {
-      try {
-        this.oems = [];
-        const request: ICommonRequest = {} as ICommonRequest;
-        let param: IRequest[] = [{
-          key: 'OEMName', value: ''
-        }];
-        request.Params = param;
-        this.assetService.getOems(request).subscribe((res) => {
-          this.oems = res;
-        });
-      } catch (error) {
-  
-      }
-    }
-  
-    getCorridors() {
-      this.commonService.getCorridors().subscribe((res: any) => {
-        if (res && res.length)
-          this.corridors = res;
-      })
-    }
-  
-    getZones() {
-      this.commonService.zones({} as ICommonRequest).subscribe((res: any) => {
-        if (res && res.length)
-          this.zones = res;
-      })
-    }
-  
-getFormPriviliges(): void {
+    this.LoginUserInfo = this.commonService.loginStorageData;
+    if(this.LoginUserInfo.loginData.assetCategoryId > 0) {
+    }  
+    this.userRoleId = this.LoginUserInfo.userRoleId;
+  }
+  getFormPriviliges(): void {
 
-  this.commonService.getFormPriviliges.subscribe({
-    next: (res: IFormCheck[]) => {
+    this.commonService.getFormPriviliges.subscribe({
+      next: (res: IFormCheck[]) => {
 
-      if (!res || res.length === 0) {
-        return;
-      }
-
-      this.objForm = res[0];
-
-      // Enable Edit button based on privilege
-      if (this.objForm.edit === 1) {
-        const actionCol = this.tableColumns.find(x => x.columnDef === 'actions');
-        if (actionCol) {
-          actionCol.isEditbtn = true;
+        if (!res || res.length === 0) {
+          return;
         }
-      }
 
-      // Load page data only if list permission is allowed
-      if (this.objForm.list === 1) {
-        this.pageLoad();
-        this.getAssetRegistryList();
-      }
-    },
-    error: (err) => {
-      console.error('Privilege API error', err);
-    }
-  });
+        this.objForm = res[0];
 
-}
-
-  
-    getAssetCategories() {
-      let request: ICommonRequest = {} as ICommonRequest;
-      const reqdata: IRequest[] = [
-          {
-            key: 'name', value: ''
-          },
-          {
-            key: 'id', value: ''
+        // Enable Edit button based on privilege
+        if (this.objForm.edit === 1) {
+          const actionCol = this.tableColumns.find(x => x.columnDef === 'actions');
+          if (actionCol) {
+            actionCol.isEditbtn = true;
           }
-        ]
-        request.Params = reqdata;
-          this.assetService.getAssetCategories(request).subscribe((res) => {
-          this.assetCategories = res;
-          this.items = this.assetCategories.map( x => ({ code: x.assetCategoryId.toString(), value: x.assetCategoryCode }));
-      });
-  }
-  
-  
-  getAssetStatus() {
-    let request: ICommonRequest = {} as ICommonRequest;
-    const reqdata: IRequest[] = [
-        {
-          key: 'name', value: ''
         }
-      ]
-      request.Params = reqdata;
-        this.assetService.getAssetStatusTypes(request).subscribe((res) => {
-        this.assetStatuses = res;
+
+        // Load page data only if list permission is allowed
+        if (this.objForm.list === 1) {
+          this.pageLoad();
+          // this.getMaterialRequisitionList();
+        }
+      },
+      error: (err: any) => {
+        console.error('Privilege API error', err);
+      }
     });
+
   }
-  
-    getAssetRegistryList() {
-      this._loading._loading.next(true);
-      this.assets = [];
-      this.isNotFound = false;
-      const request: ICommonRequest = {} as ICommonRequest;
-      const reqdata: IRequest[] = [
-        { key: 'Category', value: this.objSearch.CategoryId  ? this.objSearch.CategoryId : '0' },
-        { key: 'AssetName', value: this.objSearch.AssetName  ? this.objSearch.AssetName.trim().toString() : '' },
-         { key: 'Description', value: this.objSearch.Description  ? this.objSearch.Description.toString() : '' },
-        { key: 'AssetNo', value: this.objSearch.AssetNo  ? this.objSearch.AssetNo.trim().toString() : '' },
-        { key: 'PageNo', value: this.objSearch.PageNo  ? this.objSearch.PageNo.toString() : '' },
-        { key: 'PageSize', value: this.objSearch.PageSize  ? this.objSearch.PageSize.toString() : '' },
-        { key: 'Status', value: this.objSearch.Status  ? this.objSearch.Status.toString() : '' },
-        { key: 'Linear', value: this.objSearch.Linear  ? this.objSearch.Linear.toString() : '' },
-        { key: 'Pagenation', value: '1' },
-        {key:'Station', value: this.objSearch.Station ? this.objSearch.Station.toString() : ''},
-        {key: "Participation", value: this.objSearch.Participation ? this.objSearch.Participation.toString() : ''},
-        {key: "Stage", value: this.objSearch.Stage ? this.objSearch.Stage: ''},
-        {key: "Corridor", value: this.objSearch.Corridor ? this.objSearch.Corridor: ''},
-        {key: "Location", value: this.objSearch.Location ? this.objSearch.Location: ''},
-        {key: "Make", value: this.objSearch.Make ? this.objSearch.Make?.toString(): ''},
-        {key: "IntegrationAssetNo", value: this.objSearch.IntegrationAssetNo ? this.objSearch.IntegrationAssetNo: ''},
-        {key: "RootAssetNo", value: this.objSearch.TopAssetNo ? this.objSearch.TopAssetNo.toString(): ''}
-        
-  
-      ]
-      request.Params = reqdata;
-      this.commonService.setFilterObject(Constants.ASSETS_LIST_FILTER_OBJECT,this.objSearch);
-      try {
-        this.assetService.getAssetRegistrySearchList(request).subscribe((res) =>{
-          if(res) {
-            this._loading._loading.next(false);
-            this.assetsSearch = res;
-            //this.objSearch.TotalRecords = this.assetsSearch.totalRows;
-            this.objSearch.TotalRecords = this.assetsSearch.totalRows > 0 ? this.assetsSearch.totalRows : this.objSearch.TotalRecords;
-            if(this.assetsSearch.results) {
-              this.assets = JSON.parse(this.assetsSearch.results.toString());
-            } else {
-              this.assets = [];
-              this.isNotFound = true;
-            }
-          } else {
-            this._loading._loading.next(false);
-            this.assets = [];
-            this.isNotFound = true;
-          }
-        });
-      } catch(ex) {
-        this._loading._loading.next(false);
-        this.assets = [];
+  getAllMrNumbersList() {
+  this.inventoryServices.getAllMrList().subscribe((res: any) => {
+    this.MrData = res;
+      console.log("data of mr===========>"+JSON.stringify(this.MrData));
+  });
+}
+   getMaterialRequisitionList() {
+  this._loading._loading.next(true);
+  this.materials = [];
+  this.isNotFound = false;
+
+  const request: ICommonRequest = {} as ICommonRequest;
+  // const reqdata: IRequest[] = [
+  //   { key: 'MRNumber', value: this.objSearch.MRNumber ? this.objSearch.MRNumber : '' },
+  //   { key: 'UnitId', value: this.objSearch.unitName ? this.objSearch.unitName.toString() : '' },
+  //   { key: 'statusId', value: this.objSearch.statusId ? this.objSearch.statusId.toString() : '' },
+  //   { key: 'FromDate', value: this.objSearch.FromDate ? this.objSearch.FromDate.toString() : '' },
+  //   { key: 'ToDate', value: this.objSearch.ToDate ? this.objSearch.ToDate.toString() : '' },
+  //   { key: 'priority', value: this.objSearch.priority ? this.objSearch.priority : '' },
+  //   { key: 'LocationId', value: this.objSearch.LocationId ? this.objSearch.LocationId.toString() : '' },
+  //   { key: 'PageNo', value: this.objSearch.PageNo ? this.objSearch.PageNo.toString() : '' },
+  //   { key: 'PageSize', value: this.objSearch.PageSize ? this.objSearch.PageSize.toString() : '' },
+  //   { key: 'Pagenation', value: '1' }
+  // ];
+const reqdata: IRequest[] = [
+  { key: 'MRNumber', value: this.objSearch.MRNumber ? this.objSearch.MRNumber : '' },
+  { key: 'UnitId', value: this.objSearch.unitName ? this.objSearch.unitName.toString() : '' },
+  { key: 'statusId', value: this.objSearch.statusId ? this.objSearch.statusId.toString() : '' },
+  { key: 'DateFrom', value: this.objSearch.FromDate ? this.objSearch.FromDate.toString() : '' },
+  { key: 'DateTo', value: this.objSearch.ToDate ? this.objSearch.ToDate.toString() : '' },
+  { key: 'priority', value: this.objSearch.priority ? this.objSearch.priority : '' },
+  { key: 'LocationId', value: this.objSearch.LocationId ? this.objSearch.LocationId.toString() : '' },
+  { key: 'PageNo', value: this.objSearch.PageNo ? this.objSearch.PageNo.toString() : '' },
+  { key: 'PageSize', value: this.objSearch.PageSize ? this.objSearch.PageSize.toString() : '' },
+  { key: 'Pagenation', value: '1' }
+];
+  request.Params = reqdata;
+  this.commonService.setFilterObject(Constants.MATERIAL_REQUISITION_FILTER_OBJECT, this.objSearch);
+
+  try {
+    this.inventoryServices.getMaterialSearchList(request).subscribe((res: IMaterialRequisitionSearchList) => {
+      this._loading._loading.next(false);
+      if (res) {
+        this.mrSearch = res;
+
+        // Total records for pagination
+        this.objSearch.TotalRecords = this.mrSearch.totalRows > 0 ? this.mrSearch.totalRows : this.objSearch.TotalRecords;
+
+        // Assign data
+        if (this.mrSearch.results) {
+          // If backend returns JSON string, parse it
+          this.materials = typeof this.mrSearch.results === 'string' ? JSON.parse(this.mrSearch.results) : this.mrSearch.results;
+        } else {
+          this.materials = [];
+          this.isNotFound = true;
+        }
+      } else {
+        this.materials = [];
         this.isNotFound = true;
       }
-    }
+      console.log('Final MR Table Data:', this.materials);
+    });
+  } catch (ex) {
+    this._loading._loading.next(false);
+    this.materials = [];
+    this.isNotFound = true;
+    console.error('Error fetching MR list:', ex);
+  }
+}
   
+    // search() {
+    //   this.objSearch.PageNo = 1;
+    //   this.objSearch.PageSize = this.objSearch.PageSize;
+    //   this.getMaterialRequisitionList();
+    // }
     search() {
+    if (this.dateValidation()) {
       this.objSearch.PageNo = 1;
-      this.objSearch.PageSize = this.objSearch.PageSize;
-      this.getAssetRegistryList();
+      this.getMaterialRequisitionList();
+    } else {
+      this.snackBar.open(Constants.SearchDateError || 'To Date must be greater than or equal to From Date', 'Close', {
+        duration: 4000,
+        panelClass: 'error',
+        horizontalPosition: 'end',
+        verticalPosition: 'top',
+      });
     }
+  }
+   dateValidation(): boolean {
+    if (!this.objSearch.FromDate || !this.objSearch.ToDate) return true;
+    
+    const to = moment(moment(this.objSearch.ToDate).format('YYYY-MM-DD'))
+      .isSameOrAfter(moment(this.objSearch.FromDate).format('YYYY-MM-DD'));
+    return to;
+  }
   
-    add(data: boolean) {
-      this.isAddEdit = data;
-      this.assetId = 0;
-      //this.getAssetRegistryList();
+  add(data: boolean) {
+    this.isAddEdit = data;
+    this.mrId = 0;
+  }
+
+  editMRId(mrId: any) {
+    console.log('Editing material requisition with ID:', mrId);
+    const materialRequsition = this.materials.find((x: { mrId: any; }) => x.mrId == mrId);
+    if (materialRequsition) {
+      this.mrId = materialRequsition.mrId; 
+    } else {
+      this.mrId = 0;
     }
-  
-    editAssetId(id: any) {
-      const asset = this.assets.filter(x=>x.assetNo == id);
-      if(asset.length > 0) {
-        this.assetId = asset[0].id;
-      } else {
-        this.assetId = parseInt(id);
-      }
-      this.isAddEdit = true;
-    }
-  
-    addEditMessage(status: number) {
+    this.isAddEdit = true;
+  }
+
+  addEditMessage(status: number) {
       if(status > 0) {
         this.isAddEdit = false;
-        this.getAssetRegistryList();
+        this.getMaterialRequisitionList()
       }
     }
   
+    viewMR(rowData: any): void {
+    
+    let mrId = null;
+    
+    if (rowData?.id && typeof rowData.id === 'object') {
+      mrId = rowData.id.mrld || rowData.id.mrId || rowData.id.id;
+    }
+
+    this._loading._loading.next(true);
+    
+    // Create request
+    const request = {
+      Params: [
+        { Key: 'MRId', Value: mrId.toString() }
+      ],
+    };
+    this.inventoryServices.getMaterialRequisitionDetails(request).subscribe({
+      next: (response: any) => {
+        this._loading._loading.next(false);
+        // Open dialog
+        const dialogRef = this.dialog.open(DynamicViewDialogComponent, {
+          width: '90vw',
+          maxWidth: '1200px',
+          data: {
+            title: `Material Requisition Details`,
+            data: response
+          }
+        });
+      },
+    });
+  }
+  getCategories(): void {
+        this.inventoryServices.getCategories().subscribe({
+          next: (res: ICategory[]) => {
+            this.categories = res;
+            this.categoryItems = res.map(x => ({ 
+              code: x.id.toString(), 
+              value: x.name 
+            }));
+          }
+        });
+      }
+    ranges: any = {
+    'Today': [moment(), moment()],
+    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    'This Month': [moment().startOf('month'), moment().endOf('month')],
+    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+  };
+  // datesUpdated(range: any): void {
+  //   if (range.endDate && range.startDate) {
+  //     let dt = moment('' + range.startDate.year() + '-' + (range.startDate.month() + 1) + '-' + range.startDate.date()).utc();
+  //     dt.set({ 'hour': moment().utc().hour(), 'minute': moment().utc().minute() });
+  //     range.startDate = dt;
+
+  //     range.endDate = moment('' + range.endDate.year() + '-' + (range.endDate.month() + 1) + '-' + range.endDate.date()).utc();
+  //     range.endDate.set({ 'hour': moment().utc().hour(), 'minute': moment().utc().minute() });
+
+  //     this.materialRequisitionForm.patchValue({
+  //       timeStamp: {
+  //         startDate: range.startDate,
+  //         endDate: range.endDate
+  //       }
+  //     });
+
+  //     this.objSearch.FromDate = range.startDate.format('YYYY-MM-DD');
+  //     this.objSearch.ToDate = range.endDate.format('YYYY-MM-DD');
+
+  //     this.search();
+  //   }
+  // }
+
+  datesUpdated(range: any): void {
+
+  if (range?.startDate && range?.endDate) {
+
+    // range.startDate is already moment object
+    this.objSearch.FromDate = range.startDate.format('YYYY-MM-DD');
+    this.objSearch.ToDate = range.endDate.format('YYYY-MM-DD');
+
+    console.log(
+      'User Selected Dates:',
+      this.objSearch.FromDate,
+      this.objSearch.ToDate
+    );
+
+    this.search();
+  }
+}
+getPriorities() {
+   this.inventoryServices.getPriorities().subscribe({
+        next: (res: any[]) => {
+          this.priorities = res;
+          this.priorityList = res.map(x => ({ code: x.id.toString(), value: x.name }));
+          console.log("==================="+JSON.stringify(this.priorityList));
+        },
+      });
+      
+  }
+  materialRequisitionForm = new FormGroup({
+    // timeStamp: new FormGroup({
+    //   startDate: new FormControl(),
+    //   endDate: new FormControl()
+    // })
+  });
     pageChanged(obj: any) {
       this.objSearch.PageSize =  obj.pageSize;
       this.objSearch.PageNo = obj.pageIndex;
-      this.getAssetRegistryList();
+      this.getMaterialRequisitionList();
     }
-  
+   getUnitsData() {
+      let unitsrequest: IGetSearchRequest = {} as IGetSearchRequest;
+       unitsrequest = {
+         SearchByName:  '',
+         SearchByValue:  ''
+       }
+       this.unitService.getUnits(unitsrequest).subscribe((res: IUnit[]) => {
+         this.units = res;
+       });
+   }
     reset() {
-      this.objSearch = {
-        CategoryId: this.UserInfo.assetCategoryId > 0 ? this.UserInfo.assetCategoryId.toString() :  '',
-        AssetName: '',
-        Status:'',
-        AssetNo: '',
-        Linear: '',
-        PageNo: 1,
-        PageSize: 10,
-        TotalRecords: 0,
-        Station: '',
-        Participation: '',
-        Corridor:'',
-        Stage:'',
-        Location:'',
-        TopAssetNo: '',
-        Description: '',
-        Make: '',
-        IntegrationAssetNo: '',
-        Priority: '',
-      }
-      this.commonService.setFilterObject(Constants.ASSETS_LIST_FILTER_OBJECT, this.objSearch);
-    }
+   this.objSearch = {
+    name: '',
+    MRNumber: null,
+    UnitId: '',
+    unitName: '',
+    statusId: '',
+    Location:'',
+    LocationId: '',
+    PriorityId: '',
+    priority: null,
+    ToDate: '',
+    FromDate: '',
+    PageNo: 1,
+    PageSize: 10,
+    TotalRecords: 0,
+  }
+
+    this.commonService.setFilterObject(Constants.ASSETS_LIST_FILTER_OBJECT, this.objSearch);
+  }
+
   
     export() {
+      if (this.dateValidation()) {
       const request: ICommonRequest = {} as ICommonRequest;
       const reqdata: IRequest[] = [
-        { key: 'Category', value: this.objSearch.CategoryId  ? this.objSearch.CategoryId : '0' },
-        { key: 'AssetName', value: this.objSearch.AssetName  ? this.objSearch.AssetName.trim().toString() : '' },
-         { key: 'Description', value: this.objSearch.Description  ? this.objSearch.Description.toString() : '' },
-        { key: 'AssetNo', value: this.objSearch.AssetNo  ? this.objSearch.AssetNo.trim().toString() : '' },
         { key: 'PageNo', value: this.objSearch.PageNo  ? this.objSearch.PageNo.toString() : '' },
         { key: 'PageSize', value: this.objSearch.PageSize  ? this.objSearch.PageSize.toString() : '' },
-        { key: 'Status', value: this.objSearch.Status  ? this.objSearch.Status.toString() : '' },
-        { key: 'Linear', value: this.objSearch.Linear  ? this.objSearch.Linear.toString() : '' },
+        { key: 'MRNumber', value: this.objSearch.MRNumber  ? this.objSearch.MRNumber : '' },
+        { key: 'UnitId', value: this.objSearch.UnitId  ? this.objSearch.UnitId.toString() : '' },
+       { key: 'priority', value: this.objSearch.priority ? this.objSearch.priority : '' },
+        { key: 'fromDate', value: this.objSearch.FromDate  ? this.objSearch.FromDate.toString() : '' },
+        { key: 'toDate', value: this.objSearch.ToDate  ? this.objSearch.ToDate.toString() : '' },
         { key: 'Pagenation', value: '0' },
-        {key:'Station', value: this.objSearch.Station ? this.objSearch.Station.toString() : ''},
-        {key: "Participation", value: this.objSearch.Participation ? this.objSearch.Participation.toString() : ''},
-        {key: "Stage", value: this.objSearch.Stage ? this.objSearch.Stage: ''},
-        {key: "Corridor", value: this.objSearch.Corridor ? this.objSearch.Corridor: ''},
-        {key: "Location", value: this.objSearch.Location ? this.objSearch.Location: ''},
-        {key: "Make", value: this.objSearch.Make ? this.objSearch.Make?.toString(): ''},
-        {key: "IntegrationAssetNo", value: this.objSearch.IntegrationAssetNo ? this.objSearch.IntegrationAssetNo: ''},
-        {key: "RootAssetNo", value: this.objSearch.TopAssetNo ? this.objSearch.TopAssetNo.toString(): ''}
-  
+        {key:  'Location', value: this.objSearch.Location ? this.objSearch.Location: ''},
+        
       ]
       request.Params = reqdata;
       try {
-        this.assetService.getAssetRegistrySearchList(request).subscribe((res) =>{
+        this.inventoryServices.getMaterialSearchList(request).subscribe((res: any) =>{
           if(res) {
-            const assetsSearch = res;
-            if(assetsSearch.results) {
-              const assets = JSON.parse(assetsSearch.results.toString());
-              const ws: XLSX.WorkSheet=XLSX.utils.json_to_sheet(assets);
+            const mrSearch = res;
+            if(mrSearch.results) {
+              const materials = JSON.parse(mrSearch.results.toString());
+              const ws: XLSX.WorkSheet=XLSX.utils.json_to_sheet(materials);
               const wb: XLSX.WorkBook = XLSX.utils.book_new();
               XLSX.utils.book_append_sheet(wb, ws,'Sheet1' );
   
@@ -403,20 +481,99 @@ getFormPriviliges(): void {
       } catch(ex) {
       }
     }
+}
   
-    getStations() {
-      const request: ICommonRequest = {} as ICommonRequest;
-      const reqdata: IRequest[] = [
-          {key: 'Name', value: ''}
-      ]
-      request.Params = reqdata;
-      this.commonService.getStations(request).subscribe(res=>{
-        this.stations =res;
-      })
-    }
   
     refreshTableData(e: any) {
-      this.getAssetRegistryList();
+      this.getMaterialRequisitionList();
     }
-  
+     getLabel(key: string, fallback: string): string {
+    return this.labels[key] || fallback;
+  }
+ deleteMR(id: any): void {
+    if (
+      confirm(
+        this.getLabel(
+          'confirmDelete',
+          'Are you sure you want to delete?',
+        ),
+      )
+    ) {
+      this.snackBar.open(
+        this.getLabel('deleteSuccess', 'Material Requisition deleted successfully'),
+        'Close',
+        { duration: 2000 },
+      );
+      this.getMaterialRequisitionList();
+    }
+  }
+   viewMRId(rowData: any): void {
+    let mrId = null;
+
+    if (rowData?.id && typeof rowData.id === 'object') {
+      mrId = rowData.id.mrid || rowData.id.mrId || rowData.id.id;
+    }
+
+    this._loading._loading.next(true);
+
+    const request = {
+      Params: [{ Key: 'MRId', Value: mrId.toString() }],
+    };
+
+    this.inventoryServices.getMaterialRequisitionDetails(request).subscribe({
+      next: (response: any) => {
+        this._loading._loading.next(false);
+        const dialogRef = this.dialog.open(DynamicViewDialogComponent, {
+          width: '90vw',
+          maxWidth: '1200px',
+          data: {
+            title: this.getLabel('materialRequisition', 'Material Requisition'),
+            data: response,
+          },
+        });
+      },
+    });
+  }
+  onHeaderCategoryChange(): void {
+      const categoryId = this.materialRequisitionForm.get('categoryId')?.value;
+      console.log("Header Category Selected:", categoryId);
+      if(categoryId){
+      this.getSessionList(categoryId);
+      }
+    }
+     getSessionList(categoryId: string): void {
+    
+          const request = {
+            Params: [
+              { key: 'CategoryId', value: categoryId }
+            ]
+          };
+    
+          this.inventoryServices.getSessionsList(request).subscribe({
+    
+            next: (res: ISectionList) => {
+    
+              console.log("API response received:", res);
+              this.sessionList = res.map((session: any) => ({
+                code: session.id?.toString(),
+                value: session.name
+              }));
+    
+              console.log("Mapped sessionList:", this.sessionList);
+    
+            },
+    
+            error: (error: any) => {
+              console.error('Error loading sessions:', error);
+            }
+    
+          });
+        }
+        getMrStatus() {
+          this.inventoryServices.getPoStatus().subscribe((res: any) => {
+          this.status = res;
+          this.statusList = res.map((x: any) => ({ code: x.id.toString(), value: x.name }));
+          console.log("==================="+JSON.stringify(this.statusList));
+        });
+  }
 }

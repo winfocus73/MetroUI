@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { assetRoutes } from '@dashboard/asset-registry/asset-registry-rounting.module';
 import { SharedModule } from '@shared/shared.module';
 import { MaterialRequisitionComponent } from './components/material-requisition/material-requisition.component';
 import { AddEditComponent } from './components/material-requisition/add-edit/add-edit.component';
@@ -15,6 +14,10 @@ import { CashPurchaseComponent } from './components/cash-purchase/cash-purchase.
 import { AddEditCashPurchaseComponent } from './components/cash-purchase/add-edit/add-edit.component';
 import { MaterialIssueComponent } from './components/material-issue/material-issue.component';
 import { AddEditMaterialIssueComponent } from './components/material-issue/add-edit/add-edit.component';
+import { ShipmentComponent } from './components/shipment/shipment.component';
+import { AddEditShipmentComponent } from './components/shipment/add-edit-shipment/add-edit-shipment.component';
+import { ShipmentSerialNoComponent } from './components/shipment/add-edit-shipment/shipment-serial-no/shipment-serial-no.component';
+import { ShipmentDetailsComponent } from './components/shipment/shipment-details/shipment-details.component';
 
 @NgModule({
   declarations: [
@@ -26,16 +29,25 @@ import { AddEditMaterialIssueComponent } from './components/material-issue/add-e
     MaterialIssueComponent,
     AddEditMaterialIssueComponent,
     AddEditCashPurchaseComponent,
+     ShipmentComponent,
+    ShipmentDetailsComponent,
+    ShipmentSerialNoComponent,
+    AddEditShipmentComponent,
+    MaterialRequisitionComponent, 
+
+
   ],
-  imports: [
-    CommonModule,
+  imports: [ CommonModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     SharedModule,
     NgxDaterangepickerMd.forRoot(),
     RouterModule.forChild(inventoryRoutes),
+    // MatDialogModule,
+    // MatCheckboxModule
   ],
   providers: [],
+
 })
 export class InventoryModule {}

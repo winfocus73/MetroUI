@@ -5,6 +5,11 @@
         <span class="btn btn-primary" *ngIf="!isAddEdit && objForm.add==1" type="button"
           (click)="add(!isAddEdit)"><i class="las la-plus"></i> New</span>
       </div>
+        <!-- <div class="btn-add" >
+          <span class="btn btn-primary" (click)="add(true)">
+            <i class="las la-plus"></i> New
+          </span>
+        </div> -->
       <div class="btn-btlist">
         <button *ngIf="isAddEdit" mat-button type="button" (click)="add(!isAddEdit)"><i class="fa fa-arrow-left"></i>
           Back to List</button>
@@ -12,59 +17,105 @@
       <ng-container *ngIf="!isAddEdit">
         <!-- <app-search [unitDropdown]="true" [dropDownlabelName]="dropLabel" [searchTextBox]="false" [dropdownItems]="items" (objSearch)="search($event)"></app-search> -->
         <div class="row m-2">
-           <div class="col-auto pe-0 small-input-ctrl">
-                  <label>MR Num</label>
-                  <input type="text" class="form-control" id="WONumber" placeholder="MR Num" formControlName="WONumber"
-                    aria-describedby="WONumber" (keydown.enter)="search()" />
-                </div>
-                            <div class="col-auto pe-0 small-input-ctrl">
-            <label>Priority</label>
-            <ng-select class="cust_multiple" [(ngModel)]="objSearch.Priority" [items]="priorityList"
-              bindLabel="value" bindValue="code" placeholder="Select Priority"
-              [multiple]="true" [closeOnSelect]="false">
-            </ng-select>
+           <!-- <div class="col-auto pe-0 small-input-ctrl">
+                  <label>MR Number</label>
+                  <input type="text" class="form-control" id="WONumber" placeholder="MR Num" formControlName="MRNumber"
+                    aria-describedby="MRNumber" (keydown.enter)="search()" />
+              </div> -->
+              <!-- <div class="col-auto pe-0 small-input-ctrl">
+            <div class="form-group row">
+              <label class="col-sm-12 ms-2">MR Number</label>
+              <div class="col-sm-12">
+                <input type="text" class="form-control" [(ngModel)]="objSearch.MRNumber" (keydown.enter)="search()">
+              </div>
             </div>
-          <!-- <div class="col-auto pe-0 small-input-ctrl">
-                  <label>Priority</label>
-                  <ng-select class="cust_multiple" formControlName="Status" [closeOnSelect]="true" [items]="items" [closeOnSelect]="false"
-                    name="Status" placeholder="Select Priority" bindLabel="value" [multiple]="true" bindValue="code"
-                    [editableSearchTerm]="true"><ng-option value="null">Select Vendor</ng-option>
-                    <ng-option *ngFor="let t of items" [value]="t.code">{{t.value}}</ng-option>
+          </div> -->
+          <div class="col-md-2">
+            <div class="form-group row">
+              <label>MR Number</label>
+              <div class="col-sm-12 ms-2">
+                <ng-select 
+                  class="cust_multiple"
+                  [(ngModel)]="objSearch.MRNumber" 
+                  [items]="MrData"  
+                  bindLabel="name"
+                  bindValue="name" 
+                  [closeOnSelect]="false" 
+                  placeholder="Select MR Num">
+                </ng-select>
+              </div>
+            </div>
+          </div>
+            <!-- <div class="col-auto pe-0 small-input-ctrl">
+              <label>Department</label>
+              <div>
+                <select class="form-select round" name="department" [(ngModel)]="objSearch.UnitId">
+                  <option value="">ALL</option>
+                  <option *ngFor="let t of units" [value]="t.id">
+                    {{t.unitCode}}
+                  </option>
+                </select>
+              </div>
+            </div> -->
+          <!-- <div class="col-md-2">
+            <div class="form-group row">
+              <label>Category</label>
+              <app-form-field>
+                  <ng-select
+                    showError
+                    formControlName="categoryId"
+                    [items]="categoryItems"
+                    bindLabel="value"
+                      bindValue="code"
+                    placeholder="Select Category"
+                    [clearable]="true"
+                    [searchable]="true"
+                    (change)="onHeaderCategoryChange()">
                   </ng-select>
-                </div> -->
-                            <div class="col-auto pe-0 small-input-ctrl">
+              </app-form-field>
+            </div>
+          </div> -->
+           <div class="col-md-2">
+          <div class="form-group row">
+          <label>Priority</label>
+          <ng-select [(ngModel)]="objSearch.priority" [items]="priorityList"
+            bindLabel="value" bindValue="code" placeholder="Select Priority" [closeOnSelect]="false">
+          </ng-select>
+          </div>
+          
+            </div>
+          <div class="col-auto pe-0 small-input-ctrl">
             <label>Status</label>
-            <ng-select class="cust_multiple" [(ngModel)]="objSearch.Status" [items]="statusList"
+            <ng-select class="cust_multiple" [(ngModel)]="objSearch.statusId" [items]="statusList"
               bindLabel="value" bindValue="code" placeholder="Select Status"
               [multiple]="true" [closeOnSelect]="false">
             </ng-select>
             </div>
-          <!-- <div class="col-auto pe-0 small-input-ctrl">
-                  <label>Status</label>
-                  <ng-select class="cust_multiple" formControlName="Status" [closeOnSelect]="true" [items]="items" [closeOnSelect]="false"
-                    name="Status" placeholder="Select Status" bindLabel="value" [multiple]="true" bindValue="code"
-                    [editableSearchTerm]="true"><ng-option value="null">Select Item Type</ng-option>
-                    <ng-option *ngFor="let t of items" [value]="t.code">{{t.value}}</ng-option>
-                  </ng-select>
-                </div> -->
-         <div class="col-auto pe-0 max-date-width">
-                  <label>From Date</label>
-                  <div class="cal-pos" style="display: inline-flex;">
-                    <input [matDatepicker]="datepickerFrom" datePickerFormat="DD-MM-YYYY" formControlName="FromDate"
-                      placeholder="From Date" class="form-control round" (keydown.enter)="search()">
-                    <mat-datepicker-toggle matSuffix [for]="datepickerFrom"></mat-datepicker-toggle>
-                    <mat-datepicker #datepickerFrom></mat-datepicker>
-                  </div>
-                </div>
-                <div class="col-auto pe-0 max-date-width">
-                  <label>To Date</label>
-                  <div class="col-sm-12 no-padding-right cal-pos" style="display: inline-flex;">
-                    <input [matDatepicker]="datepickerTo" datePickerFormat="DD-MM-YYYY" formControlName="ToDate"
-                      placeholder="To Date" class="form-control round" (keydown.enter)="search()">
-                    <mat-datepicker-toggle matSuffix [for]="datepickerTo"></mat-datepicker-toggle>
-                    <mat-datepicker #datepickerTo></mat-datepicker>
-                  </div>
-                </div>
+          <!-- Date Range Picker -->
+          <div class="col-md-3">
+            <div class="row align-item-center">
+              <label class="col-auto p-1">Date Range (From - To)</label>
+              <div class="col-9">
+                <input type="text" 
+                  ngxDaterangepickerMd 
+                  [formControl]="$any(materialRequisitionForm.get('timeStamp'))"
+                  class="form-control"
+                  placeholder="From Date - To Date" 
+                  [showCustomRangeLabel]="true" 
+                  [alwaysShowCalendars]="true"
+                  [ranges]="ranges"
+                  [locale]='{ "format": "YYYY-MM-DD", "displayFormat": "DD-MM-YYYY", "separator": " To ", "cancelLabel": "Cancel", "applyLabel": "Okay" }'
+                  [showCancel]="true" 
+                  [linkedCalendars]="true" 
+                  [showDropdowns]="true" 
+                  [lockStartDate]="false"
+                  [customRangeDirection]="false" 
+                  (datesUpdated)="datesUpdated($event)"
+                  [keepCalendarOpeningWithRange]="true" 
+                  [showRangeLabelOnInput]="true" />
+              </div>
+            </div>
+          </div>
                <div class="col mt-4">
                   <div class="btn_cust-filter d-inline">
                     <button type="button" class="btn btn-rounded btn-fw me-1 fs-5" (click)="showFilter = !showFilter">
@@ -83,59 +134,59 @@
         <div class="row">
           <div class="amx-slide-up col-md-12" [ngClass]="{'amx-slide-down': showFilter}">
             <div class="row py-2 filter_more" style="background-color: #f5f5f5; position: relative;">
-
-              <div class="col-1" style="max-width: 12.666667%;">
-                <div class="form-group row">
-                  <label class="col-sm-12 ms-2">Station</label>
-                  <div class="col-sm-12">
-                    <select class="form-select round small-input-ctrl" name="section" [(ngModel)]="objSearch.Station">
-                      <option value="">ALL</option>
-                      <option *ngFor="let t of stations" [value]="t.stationId" title="{{t.stationName}}">
-                        {{t.stationCode}}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-md-2">
-                <div class="form-group row">
-                  <label class="col-sm-12 ms-2">Integration Code</label>
-                  <div class="col-sm-12">
-                    <input type="text" class="form-control" [(ngModel)]="objSearch.IntegrationAssetNo" (keydown.enter)="search()">
-                  </div>
-                </div>
-              </div>
               <div>
                 <!-- <div>Filter</div> -->
                 <span  style="position: absolute; right: 0; top: 0;" (click)="showFilter = !showFilter" class="mb-filter me-3"><i class="las la-times"></i></span>
               </div>
-              <!-- <div class="col-auto pe-0">
-                <label>Station</label>
-                <select class="form-select round small-input-ctrl" name="section" formControlName="Station">
-                  <option value="">ALL</option>
-                  <option *ngFor="let t of stations" [value]="t.stationId" title="{{t.stationName}}">
-                    {{t.stationCode}}
-                  </option>
-                </select>
-              </div> -->
-
             </div>
           </div>
         </div>
-        <app-table *ngIf="assets.length > 0" [totalRowsCount]="objSearch.TotalRecords" [isCustomPagination]="'true'"
-          (emitPagination)="pageChanged($event)" [pageIndex]="objSearch.PageNo" [pageSize]="objSearch.PageSize"
-          [tableColumns]="tableColumns" [tableData]="assets" (editData)="editAssetId($event)"
+         <!-- <app-table 
+          *ngIf="materials.length > 0" 
+          [totalRowsCount]="objSearch.TotalRecords" 
+          [isCustomPagination]="'true'"
+          (emitPagination)="pageChanged($event)" 
+          [pageIndex]="objSearch.PageNo" 
+          [pageSize]="objSearch.PageSize"
+          [tableColumns]="tableColumns" 
+          [tableData]="materials" 
+          (editData)="editMRId($event)"
+          (deleteData)="deleteMR($event)" 
+          (refreshTableData)="refreshTableData($event)">
+        </app-table> -->
+         <app-table 
+          *ngIf="materials.length > 0" 
+          [totalRowsCount]="objSearch.TotalRecords" 
+          [isCustomPagination]="'true'"
+          (emitPagination)="pageChanged($event)" 
+          [pageIndex]="objSearch.PageNo" 
+          [pageSize]="objSearch.PageSize"
+          [tableColumns]="tableColumns" 
+          [tableData]="materials" 
+          (editData)="editMRId($event)"
+          (deleteData)="deleteMR($event)"
+          (viewData)="viewMRId($event)" 
           (refreshTableData)="refreshTableData($event)">
         </app-table>
         <div class="row m-2" *ngIf="isNotFound">
-          <span class="bg-warning text-center fw-bold">Asset Details not found</span>
+          <span class="bg-warning text-center fw-bold">Material Requisition Details not found</span>
         </div>
       </ng-container>
     </ng-container>
-    <ng-container *ngIf="objForm?.list==0">
+    <!-- <ng-container *ngIf="objForm?.list==0">
       <p class="bg-warning text-center fw-bold">You do not have permission to access this Page</p>
+    </ng-container> -->
+    <!-- <ng-container *ngIf="isAddEdit">
+      <app-add-edit [objForm]="objForm" [mrId]="mrId" 
+        (message)="addEditMessage($event)"></app-add-edit>
+    </ng-container> -->
+      <!-- Add/Edit Component -->
+    <ng-container *ngIf="isAddEdit">
+      <nxasm-inventory-add-edit
+        [objForm]="objForm" 
+        [mrId]="mrId" 
+        (message)="addEditMessage($event)">
+      </nxasm-inventory-add-edit>
     </ng-container>
-    
   </mat-card-content>
 </mat-card>

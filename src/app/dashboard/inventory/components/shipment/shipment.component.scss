@@ -1,0 +1,13 @@
+:-webkit-autofill {
+    transition: all 100000s ease-in-out 0s;
+  }
+
+  ::ng-deep {
+    ng-select {
+      ng-dropdown-panel {
+        .ng-dropdown-panel.ng-select-bottom {
+          position: relative !important;
+        }
+      }
+    }
+}

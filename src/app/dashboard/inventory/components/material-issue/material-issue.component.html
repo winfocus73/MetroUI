@@ -18,6 +18,7 @@
         </div>
       </div>
     </div>
+
     <div class="btn-add">
       <span
         class="btn btn-primary"
@@ -28,6 +29,7 @@
         <i class="las la-plus"></i> {{ getLabel("newButton", "New") }}
       </span>
     </div>
+
     <div class="btn-btlist">
       <button
         *ngIf="isAddEdit"
@@ -39,7 +41,9 @@
         {{ getLabel("backToList", "Back to List") }}
       </button>
     </div>
+
     <ng-container *ngIf="!isAddEdit">
+      <!-- Main Search Row - Always Visible -->
       <div class="row m-2">
         <div class="col-md-2">
           <div class="form-group row">
@@ -60,27 +64,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-2">
-          <div class="form-group row">
-            <label class="col-sm-12 ms-2">{{
-              getLabel("department", "To Department")
-            }}</label>
-            <div class="col-sm-12 ms-2">
-              <ng-select
-                class="department-dropdown"
-                [(ngModel)]="objSearch.departmentId"
-                [items]="departmentNames"
-                bindLabel="departmentName"
-                bindValue="departmentId"
-                [closeOnSelect]="false"
-                [placeholder]="
-                  getLabel('selectDepartment', 'Select Department')
-                "
-              >
-              </ng-select>
-            </div>
-          </div>
-        </div>
+
         <div class="col-md-2">
           <div class="form-group row">
             <label class="col-sm-12 ms-2">{{
@@ -89,7 +73,7 @@
             <div class="col-sm-12 ms-2">
               <select
                 class="form-select round"
-                name="section"
+                name="status"
                 [(ngModel)]="objSearch.statusId"
               >
                 <option value="">{{ getLabel("all", "ALL") }}</option>
@@ -132,12 +116,13 @@
             </div>
           </div>
         </div>
+
         <div class="col-md-3 mt-4">
           <button
             type="button"
             class="btn btn-rounded btn-fw me-1 fs-5"
             [title]="getLabel('filter', 'Filter')"
-            (click)="showFilter = !showFilter"
+            (click)="toggleFilter()"
           >
             <i class="las la-filter"></i>
           </button>
@@ -167,23 +152,70 @@
           </span>
         </div>
       </div>
-      <div class="row" *ngIf="showFilter">
-        <div class="amx-slide-up col-md-12">
-          <div
-            class="row py-2 filter_more"
-            style="background-color: #f5f5f5; position: relative"
-          ></div>
-          <div>
-            <span
-              style="position: absolute; right: 0; top: 0"
-              (click)="showFilter = !showFilter"
-              class="mb-filter me-3"
-            >
-              <i class="las la-times"></i>
+
+      <!-- Expandable Filter Section -->
+      <div class="row">
+        <div
+          class="amx-slide-up col-md-12 filter-section m-2"
+          [ngClass]="{ 'amx-slide-down': showFilter }"
+        >
+          <div class="row py-2 filter_more" style="position: relative">
+            <!-- Category Filter -->
+            <div class="col-md-2 ms-2">
+              <div class="form-group row">
+                <label class="col-sm-12 ms-2">{{
+                  getLabel("category", "Category")
+                }}</label>
+                <div class="col-sm-12 ms-2">
+                  <ng-select
+                    [(ngModel)]="objSearch.categoryId"
+                    [items]="categoryItems"
+                    bindLabel="value"
+                    bindValue="code"
+                    [placeholder]="
+                      getLabel('selectCategory', 'Select Category')
+                    "
+                    (change)="onSearchCategoryChange($event)"
+                    [clearable]="true"
+                    [appendTo]="'body'"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section Filter (depends on category) -->
+            <div class="col-md-2">
+              <div class="form-group row">
+                <label class="col-sm-12 ms-2">{{
+                  getLabel("toSection", "To Section")
+                }}</label>
+                <div class="col-sm-12 ms-2">
+                  <ng-select
+                    [(ngModel)]="objSearch.departmentId"
+                    [items]="searchSections"
+                    bindLabel="value"
+                    bindValue="code"
+                    [placeholder]="getLabel('selectSection', 'Select Section')"
+                    [clearable]="true"
+                    [notFoundText]="
+                      getLabel('noSectionsAvailable', 'No sections available')
+                    "
+                    [appendTo]="'body'"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Close button - Now on the right -->
+            <span class="mb-filter me-3">
+              <i class="las la-times" (click)="toggleFilter()"></i>
             </span>
           </div>
         </div>
       </div>
+      <!-- Table -->
       <app-table
         *ngIf="materialIssueData.length > 0"
         [totalRowsCount]="objSearch.TotalRecords"
@@ -199,6 +231,7 @@
         (refreshTableData)="refreshTableData($event)"
       >
       </app-table>
+
       <div class="row m-2" *ngIf="isNotFound">
         <span class="bg-warning text-center fw-bold">{{
           getLabel("noDataFound", "Material Issue Details not found")
@@ -206,6 +239,7 @@
       </div>
     </ng-container>
   </ng-container>
+
   <ng-container *ngIf="objForm?.list == 0">
     <p class="bg-warning text-center fw-bold">
       {{
@@ -216,6 +250,7 @@
       }}
     </p>
   </ng-container>
+
   <ng-container *ngIf="isAddEdit" class="mt-2">
     <nxasm-material-issue-add-edit
       [objForm]="objForm"

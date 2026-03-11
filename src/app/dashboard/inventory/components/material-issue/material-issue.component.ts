@@ -16,25 +16,13 @@ import { ICorridor } from '@dashboard/planning-scheduling/permit-to-work/models/
 import { FormControl, FormGroup } from '@angular/forms';
 import { PermittoWorkService } from '@dashboard/planning-scheduling/permit-to-work/services/permit-to-work.service';
 import { MatDialog } from '@angular/material/dialog';
-
 import {
   ScreenLabelService,
   IScreenLabelResponse,
 } from '@shared/services/screen-label.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-// Import interfaces for Material Issue
-// import {
-//   IMaterialIssue,
-//   IMaterialIssueReg,
-//   IMaterialIssueSearchList,
-//   IDepartment,
-//   IMaterialIssueStatus,
-//   IIssueNumberDropdown,
-// } from '@dashboard/inventory/models/material-issue';
 import { DynamicViewDialogComponent } from '@shared/components/dynamic-view-dialog/dynamic-view-dialog.component';
-
 import {
   IMaterialIssueReg,
   IMaterialIssue,
@@ -44,6 +32,18 @@ import {
   IMaterialIssueSearchList,
 } from '@dashboard/inventory/models/material-issue';
 import { InventoryService } from '@dashboard/inventory/services/inventory.service';
+import { IUnit } from '@dashboard/configuration/models/units/unit';
+
+export interface ICategory {
+  id: number;
+  name: string;
+  code?: string;
+  description?: string;
+}
+
+export interface IDepartmentWithCategory extends IUnit {
+  categoryId?: number;
+}
 
 @Component({
   selector: 'nxasm-inventory-material-issue',
@@ -68,6 +68,10 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
   materialIssueStatuses: IMaterialIssueStatus[] = [];
   issueNumbers: IIssueNumberDropdown[] = [];
 
+  // Separate arrays for search and add/edit
+  searchSections: any[] = []; // For search filter sections
+  filteredDepartments: any[] = []; // For add/edit sections
+
   materialIssueSearch: IMaterialIssueSearchList =
     {} as IMaterialIssueSearchList;
   dropLabel = 'Department';
@@ -80,6 +84,7 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
 
   objSearch: {
     issueNum: string | null;
+    categoryId: string | null;
     departmentId: string | null;
     statusId: string;
     FromDate: string;
@@ -89,6 +94,7 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
     TotalRecords: number;
   } = {
     issueNum: null,
+    categoryId: null,
     departmentId: null,
     statusId: '',
     FromDate: '',
@@ -101,9 +107,11 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
   stations: IStation[] = [];
   objForm: IFormCheck = {} as IFormCheck;
   LoginUserInfo: ILoginData = {} as ILoginData;
-
   zones: IZone[] = [];
   corridors: ICorridor[] = [];
+
+  categories: ICategory[] = [];
+  categoryItems: { code: any; value: any }[] = [];
 
   ranges: any = {
     Today: [moment(), moment()],
@@ -117,12 +125,7 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
     ],
   };
 
-  materialIssueForm = new FormGroup({
-    // timeStamp: new FormGroup({
-    //   startDate: new FormControl(),
-    //   endDate: new FormControl(),
-    // }),
-  });
+  materialIssueForm = new FormGroup({});
 
   constructor(
     private inventoryService: InventoryService,
@@ -137,11 +140,9 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadScreenLabels();
     this.getFormPriviliges();
-    this.getDepartmentsList();
     this.getMaterialIssueNumbers();
-
+    this.getCategories();
     this.getMaterialIssueStatus();
-    // Add any other initialization methods as needed
   }
 
   ngOnDestroy(): void {
@@ -165,7 +166,7 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
       columnDef: 'departmentName',
       header: 'To Department',
       cell: (element: Record<string, any>) =>
-        `${element['departmentName'] || element['sectionName']}`, // Fallback to sectionName
+        `${element['departmentName'] || element['sectionName']}`,
     },
     {
       columnDef: 'issuedDate',
@@ -226,30 +227,24 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
           break;
       }
     });
-
-    // Force change detection
     this.tableColumns = [...this.tableColumns];
   }
 
   loadScreenLabels(): void {
     this._loading._loading.next(true);
-
     this.screenLabelService
       .getScreenLabels('MATERIAL_ISSUE', this.selectedLanguage)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response: IScreenLabelResponse) => {
           this._loading._loading.next(false);
-
           if (response.success && response.data && response.data.length > 0) {
-            // Convert array to key-value object for easy access
             this.labels = {};
             response.data.forEach(
               (item: { lbl_name: string | number; lbl_value: string }) => {
                 this.labels[item.lbl_name] = item.lbl_value;
               },
             );
-
             this.updateTableHeaders();
           }
         },
@@ -265,161 +260,95 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
     this.loadScreenLabels();
   }
 
-  initializeTableColumns(): void {
-    this.tableColumns = [
-      {
-        columnDef: 'index',
-        header: this.getLabel('sNo', 'S.No.'),
-        cell: (element: Record<string, any>) => '',
-      },
-      {
-        columnDef: 'issueNumber',
-        header: this.getLabel('issueNumber', 'Issue Num'),
-        isEditLink: true,
-        cell: (element: Record<string, any>) => `${element['issueNumber']}`,
-      },
-      {
-        columnDef: 'departmentName',
-        header: this.getLabel('department', 'To Department'),
-        cell: (element: Record<string, any>) => `${element['departmentName']}`,
-      },
-      {
-        columnDef: 'issuedDate',
-        header: this.getLabel('issuedDate', 'Issued Date'),
-        isDateOnly: true,
-        cell: (element: Record<string, any>) =>
-          element['issuedDate']
-            ? moment(element['issuedDate'], 'DD-MM-YYYY').format('YYYY-MM-DD')
-            : '',
-      },
-      {
-        columnDef: 'statusName',
-        header: this.getLabel('status', 'Status'),
-        isStatusPipe: true,
-        cell: (element: Record<string, any>) => `${element['statusName']}`,
-      },
-      {
-        columnDef: 'locationName',
-        header: this.getLabel('location', 'Location'),
-        cell: (element: Record<string, any>) => `${element['locationName']}`,
-      },
-      {
-        columnDef: 'actions',
-        header: this.getLabel('actions', 'Actions'),
-        cell: (element: Record<string, number>) => `${element['issueId']}`,
-        isEditbtn: true,
-        isViewbtn: true,
-        isDeletebtn: true,
-      },
-    ];
-  }
-
   getLabel(key: string, fallback: string): string {
     return this.labels[key] || fallback;
   }
 
-  pageLoad() {
-    if (
-      this.commonService.filterObjects[
-        Constants.MATERIAL_ISSUE_LIST_FILTER_OBJECT
-      ]
-    ) {
-      const savedFilter =
-        this.commonService.filterObjects[
-          Constants.MATERIAL_ISSUE_LIST_FILTER_OBJECT
-        ];
-      this.objSearch = { ...this.objSearch, ...savedFilter };
-    }
-    this.LoginUserInfo = this.commonService.loginStorageData;
-    this.getZones();
-    this.getCorridors();
-    this.getStations();
-
-    this.userRoleId = this.LoginUserInfo?.userRoleId;
+  toggleFilter(): void {
+    this.showFilter = !this.showFilter;
   }
 
-  getCorridors() {
-    this.commonService.getCorridors().subscribe((res: any) => {
-      if (res && res.length) this.corridors = res;
-    });
-  }
+  onSearchCategoryChange(event: any): void {
+    // Get the actual value from the event
+    let categoryValue = null;
 
-  getZones() {
-    this.commonService.zones({} as ICommonRequest).subscribe((res: any) => {
-      if (res && res.length) this.zones = res;
-    });
-  }
-
-  getFormPriviliges() {
-    this.pageLoad();
-    this.isEditbtn = true;
-  }
-
-  viewMaterialIssue(rowData: any): void {
-    let issueId = null;
-
-    if (rowData?.id && typeof rowData.id === 'object') {
-      issueId = rowData.id.issueId || rowData.id.id;
+    if (event && typeof event === 'object') {
+      categoryValue = event.code || event.value || event;
     }
 
-    this._loading._loading.next(true);
+    this.objSearch.departmentId = null;
+    this.searchSections = [];
 
+    if (categoryValue) {
+      const id = Number(categoryValue);
+
+      if (!isNaN(id)) {
+        this.objSearch.categoryId = categoryValue.toString(); // Store the original value
+        this.getSearchSections(id);
+      }
+    }
+  }
+
+  getSearchSections(categoryId: number): void {
     const request = {
-      Params: [{ Key: 'IssueId', Value: issueId.toString() }],
+      Params: [{ Key: 'CategoryId', Value: categoryId.toString() }],
     };
 
-    this.inventoryService.getMaterialIssueDetails(request).subscribe({
-      next: (response: any) => {
-        this._loading._loading.next(false);
-        const dialogRef = this.dialog.open(DynamicViewDialogComponent, {
-          width: '90vw',
-          maxWidth: '1200px',
-          data: {
-            title: this.getLabel('materialIssue', 'Material Issue'),
-            data: response,
-          },
-        });
+    this.inventoryService.getSectionList(request).subscribe({
+      next: (res: any[]) => {
+        if (res && res.length > 0) {
+          this.searchSections = res.map((x: any) => ({
+            code: x.id.toString(),
+            value: x.name,
+          }));
+        }
       },
     });
   }
 
-  getMaterialIssueStatus() {
-    this.inventoryService.getMrStatus().subscribe((res: any) => {
-      this.materialIssueStatuses = res;
-    });
+  onCategoryChange(categoryId: any): void {
+    this.objSearch.departmentId = null;
+    this.filteredDepartments = [];
+
+    if (categoryId) {
+      const id = Number(categoryId);
+      this.getSections(id);
+    }
   }
 
-  getMaterialIssueNumbers() {
-    this.inventoryService.getMINumbers().subscribe({
-      next: (res: any) => {
-        // Map the response to IIssueNumberDropdown format
-        this.issueNumbers = res.map((item: any) => ({
-          name:
-            item.name || item.poNumber || item.issueNumber || item.toString(),
-          id: item.id,
-          issueNumber: item.issueNumber || item.name || item.poNumber,
-        }));
-        console.log('Issue numbers loaded:', this.issueNumbers);
+  getSections(categoryId: number): void {
+    const request = {
+      Params: [{ Key: 'CategoryId', Value: categoryId.toString() }],
+    };
+    this.inventoryService.getSectionList(request).subscribe({
+      next: (res: any[]) => {
+        if (res && res.length > 0) {
+          this.filteredDepartments = res.map((x: any) => ({
+            code: x.id.toString(),
+            value: x.name,
+          }));
+        }
       },
-      error: (error) => {
-        console.error('Error loading issue numbers:', error);
-      },
     });
   }
 
-  getDepartmentsList() {
-    this.inventoryService.getSectionList().subscribe((res: any) => {
-      this.departmentNames = res;
-    });
-  }
-
-  getStations() {
-    const request: ICommonRequest = {} as ICommonRequest;
-    const reqdata: IRequest[] = [{ key: 'Name', value: '' }];
-    request.Params = reqdata;
-    this.commonService.getStations(request).subscribe((res) => {
-      this.stations = res;
-    });
+  search() {
+    if (this.dateValidation()) {
+      this.objSearch.PageNo = 1;
+      this.getMaterialIssueList();
+    } else {
+      this.snackBar.open(
+        Constants.SearchDateError ||
+          'To Date must be greater than or equal to From Date',
+        'Close',
+        {
+          duration: 4000,
+          panelClass: 'error',
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+        },
+      );
+    }
   }
 
   getMaterialIssueList() {
@@ -434,7 +363,13 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
         value: this.objSearch.issueNum ? String(this.objSearch.issueNum) : '',
       },
       {
-        key: 'DepartmentId',
+        key: 'CategoryId',
+        value: this.objSearch.categoryId
+          ? String(this.objSearch.categoryId)
+          : '',
+      },
+      {
+        key: 'StoreId',
         value: this.objSearch.departmentId
           ? String(this.objSearch.departmentId)
           : '',
@@ -457,7 +392,7 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
       },
       { key: 'PageNo', value: String(this.objSearch.PageNo) },
       { key: 'PageSize', value: String(this.objSearch.PageSize) },
-      { key: 'Pagenation', value: '1' },
+      { key: 'Pagination', value: '1' },
     ];
 
     request.Params = reqdata;
@@ -495,29 +430,11 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
     });
   }
 
-  search() {
-    if (this.dateValidation()) {
-      this.objSearch.PageNo = 1;
-      this.getMaterialIssueList();
-    } else {
-      this.snackBar.open(
-        Constants.SearchDateError ||
-          'To Date must be greater than or equal to From Date',
-        'Close',
-        {
-          duration: 4000,
-          panelClass: 'error',
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-        },
-      );
-    }
-  }
-
   reset() {
     this.objSearch = {
       issueNum: null,
-      departmentId: '',
+      categoryId: null,
+      departmentId: null,
       statusId: '',
       FromDate: moment(new Date().setDate(new Date().getDate() - 6)).format(
         'YYYY-MM-DD',
@@ -527,6 +444,7 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
       PageSize: 10,
       TotalRecords: 0,
     };
+    this.searchSections = [];
     this.commonService.setFilterObject(
       Constants.MATERIAL_ISSUE_LIST_FILTER_OBJECT,
       this.objSearch,
@@ -534,18 +452,124 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
     this.getMaterialIssueList();
   }
 
+  pageLoad() {
+    if (
+      this.commonService.filterObjects[
+        Constants.MATERIAL_ISSUE_LIST_FILTER_OBJECT
+      ]
+    ) {
+      const savedFilter =
+        this.commonService.filterObjects[
+          Constants.MATERIAL_ISSUE_LIST_FILTER_OBJECT
+        ];
+      this.objSearch = { ...this.objSearch, ...savedFilter };
+    }
+    this.LoginUserInfo = this.commonService.loginStorageData;
+    this.getZones();
+    this.getCorridors();
+    this.getStations();
+    this.userRoleId = this.LoginUserInfo?.userRoleId;
+  }
+
+  getCorridors() {
+    this.commonService.getCorridors().subscribe((res: any) => {
+      if (res && res.length) this.corridors = res;
+    });
+  }
+
+  getZones() {
+    this.commonService.zones({} as ICommonRequest).subscribe((res: any) => {
+      if (res && res.length) this.zones = res;
+    });
+  }
+
+  getFormPriviliges() {
+    this.pageLoad();
+    this.isEditbtn = true;
+  }
+
+  viewMaterialIssue(rowData: any): void {
+    let issueId = null;
+
+    if (rowData?.id && typeof rowData.id === 'object') {
+      issueId = rowData.id.issueId || rowData.id.id;
+    } else if (rowData?.issueId) {
+      issueId = rowData.issueId;
+    } else if (rowData?.id) {
+      issueId = rowData.id;
+    }
+
+    if (!issueId) {
+      this.snackBar.open('Issue ID not found', 'Close', { duration: 3000 });
+      return;
+    }
+
+    this._loading._loading.next(true);
+
+    const request: ICommonRequest = {
+      Params: [{ key: 'IssueId', value: issueId.toString() }],
+    };
+
+    this.inventoryService.getMaterialIssueDetails(request).subscribe({
+      next: (response: any) => {
+        this._loading._loading.next(false);
+        const apiData = response.data || response;
+        this.dialog.open(DynamicViewDialogComponent, {
+          width: '90vw',
+          maxWidth: '1000px',
+          data: {
+            title: this.getLabel('materialIssue', 'Material Issue'),
+            data: {
+              header: apiData.header || apiData,
+              lineItems: apiData.lineItems || [],
+            },
+          },
+        });
+      },
+      error: (error) => {
+        this._loading._loading.next(false);
+        this.snackBar.open('Error loading details', 'Close', {
+          duration: 3000,
+        });
+      },
+    });
+  }
+
+  getMaterialIssueStatus() {
+    this.inventoryService.getMrStatus().subscribe((res: any) => {
+      this.materialIssueStatuses = res;
+    });
+  }
+
+  getMaterialIssueNumbers() {
+    this.inventoryService.getMINumbers().subscribe({
+      next: (res: any) => {
+        this.issueNumbers = res.map((item: any) => ({
+          name:
+            item.name || item.poNumber || item.issueNumber || item.toString(),
+          id: item.id,
+          issueNumber: item.issueNumber || item.name || item.poNumber,
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading issue numbers:', error);
+      },
+    });
+  }
+
+  getStations() {
+    const request: ICommonRequest = {} as ICommonRequest;
+    const reqdata: IRequest[] = [{ key: 'Name', value: '' }];
+    request.Params = reqdata;
+    this.commonService.getStations(request).subscribe((res) => {
+      this.stations = res;
+    });
+  }
+
   datesUpdated(range: any): void {
     if (range?.startDate && range?.endDate) {
-      // range.startDate is already moment object
       this.objSearch.FromDate = range.startDate.format('YYYY-MM-DD');
       this.objSearch.ToDate = range.endDate.format('YYYY-MM-DD');
-
-      console.log(
-        'User Selected Dates:',
-        this.objSearch.FromDate,
-        this.objSearch.ToDate,
-      );
-
       this.search();
     }
   }
@@ -608,17 +632,25 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
     const materialIssue = this.materialIssueData.find(
       (x) => x.issueId == issueId,
     );
-    if (materialIssue) {
-      this.materialIssueId = materialIssue.issueId;
-    } else {
-      this.materialIssueId = 0;
-    }
-
+    this.materialIssueId = materialIssue ? materialIssue.issueId : 0;
     this.isAddEdit = true;
   }
 
-  addEditMessage(status: number) {
-    if (status > 0) {
+  addEditMessage(event: any): void {
+    if (event && event.status === 34) {
+      this.isAddEdit = false;
+      this.getMaterialIssueList();
+      this.snackBar.open(
+        event.message || 'Material Issue created successfully',
+        'Close',
+        {
+          duration: 3000,
+          panelClass: 'success',
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+        },
+      );
+    } else if (event && event.status > 0) {
       this.isAddEdit = false;
       this.getMaterialIssueList();
     }
@@ -654,10 +686,23 @@ export class MaterialIssueComponent implements OnInit, OnDestroy {
 
   dateValidation(): boolean {
     if (!this.objSearch.FromDate || !this.objSearch.ToDate) return true;
-
-    const to = moment(
+    return moment(
       moment(this.objSearch.ToDate).format('YYYY-MM-DD'),
     ).isSameOrAfter(moment(this.objSearch.FromDate).format('YYYY-MM-DD'));
-    return to;
+  }
+
+  getCategories(): void {
+    this.inventoryService.getCategories().subscribe({
+      next: (res: ICategory[]) => {
+        this.categories = res;
+        this.categoryItems = res.map((x) => ({
+          code: x.id.toString(),
+          value: x.name,
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading categories:', error);
+      },
+    });
   }
 }
