@@ -1,5 +1,6 @@
 
 export interface ILoginResponse {
+    userId: number;
     id: number;
     userName: string;
     staffName: string;
@@ -22,6 +23,7 @@ export interface ILoginResponse {
 }
 
 export interface ILoginData  {
+    userId: number;
     loginData: ILoginResponse;
     userRoleId: string;
 }

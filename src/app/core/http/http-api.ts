@@ -1,7 +1,39 @@
 import { IDropdown } from 'src/app/shared/models/dropdown';
 import { environment } from '../../../environments/environment';
+import { ICommonRequest } from '@shared/models';
 
 export class HttpApi {
+  static getShipmentSearchList<T>(
+    getShipmentSearchList: any,
+    request: ICommonRequest,
+  ): Observable<
+    import('../../dashboard/inventory/models/shipment').IShipmentSearchList
+  > {
+    throw new Error('Method not implemented.');
+  }
+  static addEditShipment(addEditShipment: any, payload: any): Observable<any> {
+    throw new Error('Method not implemented.');
+  }
+  static addShipmentLineItems(
+    addShipmentLineItems: any,
+    payload: any,
+  ): Observable<any> {
+    throw new Error('Method not implemented.');
+  }
+  static getPoListByShipmentApprovedOrNotComplete<T>(
+    getPoListByShipmentApprovedOrNotComplete: any,
+  ): Observable<any> {
+    throw new Error('Method not implemented.');
+  }
+  static getPoLineItemsByPOID(
+    getPoLineItemsByPOID: any,
+    request: any,
+  ): Observable<any> {
+    throw new Error('Method not implemented.');
+  }
+  static getShipmentById(getShipmentById: any, request: any): Observable<any> {
+    throw new Error('Method not implemented.');
+  }
   // static readonly baseUrl = `${environment.backend.host}`;//https://nxasm.winfocus.co.in/services';
 
   // Base URL - use environment variable
@@ -25,12 +57,16 @@ export class HttpApi {
 
   // Inventory endpoints - use full URL since it's on different port
   //material issue
+  static readonly addIssueHeader = 'inventory/api/inventory/add-issue-header';
+  static readonly updateIssueHeader =
+    'inventory/api/inventory/update-issue-header';
+
   //sections
   static readonly getSectionList = 'inventory/api/inventory/get-section-list';
   static readonly getMINumbers = 'inventory/api/inventory/get-issuenumber-list';
   static readonly getAllIssueList = '/MaterialIssue/GetAllIssueList';
   static readonly getMaterialIssueDetails =
-    '/MaterialIssue/GetMaterialIssueDetails';
+    '/inventory/api/inventory/get-issue-details';
   static readonly getMaterialIssueSearchList = `inventory/api/inventory/search-issue`;
   static readonly getMaterialIssueStatuses = `/MaterialIssue/GetStatuses`;
   static readonly getDepartmentsList = `/MaterialIssue/GetDepartments`;
@@ -40,6 +76,8 @@ export class HttpApi {
   static readonly getItemsForMaterialIssue = `/MaterialIssue/GetItems`;
   static readonly searchDepartments = `/MaterialIssue/SearchDepartments`;
   static readonly getIssueTypes = `/MaterialIssue/GetIssueTypes`;
+  static readonly getMRNUmbers =
+    'inventory/api/inventory/get_mrnumbers_for_issue';
 
   static readonly getCashPurchaseSearchList =
     'inventory/api/inventory/search-cashpurchase';
@@ -581,4 +619,14 @@ export class HttpApi {
   static workStatusData: any;
   static LocationData: any;
   static ItemTypeData: any;
+  static readonly getShipmentNumList =
+    'inventory/api/inventory/get-shipment-numbers-list';
+  static readonly getInvoiceNumsList =
+    'inventory/api/inventory/get-invoice-numbers-shipment';
+      //For Material Requisition
+  static readonly getMaterialRequisitionSearchList = 'inventory/api/inventory/search-materialrequisition';
+  static readonly getMRNumbers = 'inventory/api/inventory/get-mrnumbers-list';
+  static readonly getMaterialRequisitionStatuses = 'inventory/api/inventory/get-inv-status-types';
+  static readonly getMaterialRequisitionDetails='inventory/api/inventory/get-mr-by-id';
+  static readonly SubmitMaterialRequisition='inventory/api/inventory/submit-materialrequisition';
 }

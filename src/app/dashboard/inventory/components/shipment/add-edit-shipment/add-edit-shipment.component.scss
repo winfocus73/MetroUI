@@ -1,0 +1,7 @@
+.is-invalid {
+  border: 2px solid red !important;
+}
+.ng-select.ng-select-disabled {
+  background-color: #f5f5f5 !important;
+  pointer-events: none;
+}

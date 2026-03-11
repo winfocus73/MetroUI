@@ -19,7 +19,17 @@ import {
   ICPList,
   ICPNumList,
 } from '@dashboard/inventory/models/cashpurchase';
-import { IIssueNumberDropdown, IMaterialIssueDetailsResponse, IMaterialIssueSearchList, IMaterialIssueStatus, IDepartment } from '../models/material-issue';
+import {
+  IIssueNumberDropdown,
+  IMaterialIssueDetailsResponse,
+  IMaterialIssueSearchList,
+  IMaterialIssueStatus,
+  IDepartment,
+  IIssueHeaderRequest,
+  IIssueHeaderResponse,
+} from '../models/material-issue';
+import { IShipmentSearchList } from '../models/shipment';
+import { IMaterialRequisitionSearchList, IMaterialRequisition, IMaterialRequisitionDetailsResponse, IMaterialRequisitionStatus } from '../models/material-requisition';
 
 @Injectable({
   providedIn: 'root',
@@ -113,27 +123,69 @@ export class InventoryService {
   updateCashPurchase(data: any): Observable<any> {
     return this.http.post(HttpApi.UpdateCashPurchase, data);
   }
-
-
+   getMRNumbers():Observable<any>{
+    return this.http.get(HttpApi.getMRNUmbers);
+  }
 
   //material issue servicess
 
-  getMrStatus(): Observable<IPurchaseOrderStatus[]> {
+
+
+
+  // S H I P  M E N T S E R V I C E
+
+  getShipmentSearchList(
+    request: ICommonRequest,
+  ): Observable<IShipmentSearchList> {
+    return this.http.post<IShipmentSearchList>(
+      HttpApi.getShipmentSearchList,
+      request,
+    );
+  }
+
+  addEditShipment(payload: any): Observable<any> {
+    return this.http.post(HttpApi.addEditShipment, payload);
+  }
+
+  saveShipmentLineItems(payload: any): Observable<any> {
+    return this.http.post(HttpApi.addShipmentLineItems, payload);
+  }
+
+  getPoListByShipmentApprovedOrNotComplete(): Observable<any> {
+    return this.http.get<any>(HttpApi.getPoListByShipmentApprovedOrNotComplete);
+  }
+  getPoLineItemsByPOID(request: any): Observable<any> {
+    return this.http.post(HttpApi.getPoLineItemsByPOID, request);
+  }
+
+  getShipmentById(request: any): Observable<any> {
+    return this.http.post(HttpApi.getShipmentById, request);
+  }
+
+  // M A T E R I A L I S S U E
+
+
+   getMrStatus(): Observable<IPurchaseOrderStatus[]> {
     return this.http.get<IPurchaseOrderStatus[]>(
       HttpApi.getPurchaseOrderStatuses,
     );
   }
+
   // In your inventory service
   getMINumbers(): Observable<IIssueNumberDropdown[]> {
     return this.http.get<IIssueNumberDropdown[]>(HttpApi.getMINumbers);
   }
 
-  getSectionList(): Observable<any[]> {
-    const request = {
-      SearchByName: '',
-      SearchByValue: '',
-    };
+  // getSectionList1(): Observable<any[]> {
+  //   const request = {
+  //     SearchByName: '',
+  //     SearchByValue: '',
+  //   };
 
+  //   return this.http.post<any[]>(HttpApi.getSectionList, request);
+  // }
+
+  getSectionList(request: any): Observable<any[]> {
     return this.http.post<any[]>(HttpApi.getSectionList, request);
   }
 
@@ -142,12 +194,25 @@ export class InventoryService {
   }
 
   // Get material issue details by ID
-  getMaterialIssueDetails(request: {
-    Params: { Key: string; Value: string }[];
-  }): Observable<IMaterialIssueDetailsResponse> {
+  // Get material issue details by ID
+  getMaterialIssueDetails(
+    request: ICommonRequest,
+  ): Observable<IMaterialIssueDetailsResponse> {
+    console.log('Service - getMaterialIssueDetails request:', request);
+
+    // Convert ICommonRequest (lowercase) to API format (uppercase Key/Value)
+    const apiRequest = {
+      Params: request.Params.map((p) => ({
+        Key: p.key,
+        Value: p.value,
+      })),
+    };
+
+    console.log('Service - API request:', apiRequest);
+
     return this.http.post<IMaterialIssueDetailsResponse>(
       HttpApi.getMaterialIssueDetails,
-      request,
+      apiRequest,
     );
   }
 
@@ -205,6 +270,53 @@ export class InventoryService {
   getIssueTypes(): Observable<any[]> {
     return this.http.get<any[]>(HttpApi.getIssueTypes);
   }
+
+  //save header
+  addIssueHeader(data: IIssueHeaderRequest): Observable<IIssueHeaderResponse> {
+    return this.http.post<IIssueHeaderResponse>(HttpApi.addIssueHeader, data);
+  }
+
+  
+  //Material Requisition Services
+    materialRequisitionId!: number;
+
+    getMaterialSearchList(request: ICommonRequest): Observable<IMaterialRequisitionSearchList> {
+      return this.http.post<IMaterialRequisitionSearchList>(HttpApi.getMaterialRequisitionSearchList, request);
+    }
+    getAllMrList(): Observable<IMaterialRequisition[]> {
+      return this.http.get<IMaterialRequisition[]>(HttpApi.getMRNumbers);
+    }
+      
+       getMaterialRequisitionDetails(request: { Params: { Key: string; Value: string }[] }): Observable<IMaterialRequisitionDetailsResponse> {
+        return this.http.post<IMaterialRequisitionDetailsResponse>(HttpApi.getMaterialRequisitionDetails, request);
+      }
+   
+    
+      // POST method for Submit MR
+      SubmitMaterialRequisition(data: any): Observable<any> {
+        return this.http.post(HttpApi.SubmitMaterialRequisition, data);
+      }
+    getMaterialRequisitionStatusTypes(): Observable<IStatusResponse[]> {
+      return this.http.post<IStatusResponse[]>(HttpApi.getServiceRequestStatusTypes,{});
+    }
+  
+    getSearchMaterialRequisitionList(request: ICommonRequest): Observable<IServiceRequestSearchList> {
+      return this.http.post<IServiceRequestSearchList>(HttpApi.searchServiceRequestList, request);
+    }
+  
+    getSearchServiceRequestHistoryList(request: ICommonRequest): Observable<IServiceRequestSearchList> {
+      return this.http.post<IServiceRequestSearchList>(HttpApi.searchServiceRequestHistoryList, request);
+    }
+    
+     
+      getMaterialRequisitionStatus(): Observable<IMaterialRequisitionStatus[]> {
+        return this.http.get<IMaterialRequisitionStatus[]>(HttpApi.getMaterialRequisitionStatuses);
+      }
+      
+     getSessionsList(request: ICommonRequest): Observable<ISectionList> {
+        return this.http.post<ISectionList>(HttpApi.getAllSessionsList, request);
+      }
+
+
+  
 }
-
-

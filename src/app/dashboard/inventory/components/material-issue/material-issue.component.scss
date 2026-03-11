@@ -8,3 +8,78 @@
 .form-group {
   overflow: visible !important;
 }
+
+.amx-slide-up {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+}
+
+.amx-slide-down {
+  max-height: 200px; // Adjust based on content
+  transition: max-height 0.3s ease-in;
+}
+
+.filter_more {
+  border-radius: 4px;
+  padding: 10px 0;
+  margin-bottom: 15px;
+  position: relative;
+
+  // Ensure the close button is on the right
+  .mb-filter {
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    cursor: pointer;
+    z-index: 101;
+  }
+}
+
+// Ensure table doesn't overlap with dropdowns
+.app-table-container {
+  position: relative;
+  z-index: 1;
+}
+
+// // Fix for ng-select dropdowns in filter section
+// ::ng-deep .filter_more .ng-select .ng-dropdown-panel {
+//   z-index: 9999 !important;
+//   position: absolute !important;
+//   top: 100% !important;
+//   left: 0 !important;
+//   right: auto !important;
+//   margin-top: 2px;
+//   background: white;
+//   border: 1px solid #ccc;
+//   border-radius: 4px;
+//   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+// }
+
+// Ensure the filter section has proper positioning
+// .filter-section {
+//   position: relative;
+//   z-index: 1000;
+// }
+
+.mb-filter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+  i {
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+  &:hover {
+    i {
+      color: white;
+    }
+  }
+}

@@ -1,0 +1,532 @@
+<form class="form-sample p-2" [formGroup]="shipmentForm">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Invoice Num <span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Invoice Num'"
+              class="form-control"
+              formControlName="invoiceNum"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">PO Number<span class="text-danger">*</span></label>
+        <div>
+          <!-- <app-form-field>
+                        <input type="text" showError [controlName]="'PO Number'" class="form-control"
+                            formControlName="poNumber" value="">
+                    </app-form-field> -->
+          <ng-select
+            class="cust_multiple"
+            [items]="PoData"
+            formControlName="poNumber"
+            bindLabel="name"
+            bindValue="id"
+            [searchable]="true"
+            [clearable]="true"
+            placeholder="Select PO Number"
+          >
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Vendor <span class="text-danger">*</span></label>
+        <div>
+          <div class="col-sm-12 no-padding-right">
+            <app-form-field>
+              <select
+                showError
+                [controlName]="'vendor'"
+                class="form-control round"
+                name="section"
+                formControlName="vendor"
+              >
+                <option value="">Select</option>
+                <option *ngFor="let t of vendorNames" [value]="t.vendorId">
+                  {{ t.vendorName }}
+                </option>
+              </select>
+            </app-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Carrier Name<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Carrier Name'"
+              class="form-control"
+              formControlName="carrierName"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Vehicle Num<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Vehicle Num'"
+              class="form-control"
+              formControlName="vehicleNum"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Driver Name<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Driver Name'"
+              class="form-control"
+              formControlName="driverName"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Mobile Number <span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Mobile Number'"
+              numbersOnly
+              class="form-control"
+              formControlName="mobile"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-auto pe-0 max-date-width">
+      <label>Recived Date</label>
+      <div class="cal-pos" style="display: inline-flex">
+        <input
+          [matDatepicker]="datepickerFrom"
+          datePickerFormat="DD-MM-YYYY"
+          formControlName="recivedDate"
+          placeholder="Recived Date"
+          class="form-control round"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="datepickerFrom"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #datepickerFrom></mat-datepicker>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Status <span class="text-danger">*</span></label>
+        <div>
+          <div class="col-sm-12 no-padding-right">
+            <app-form-field>
+              <select
+                showError
+                [controlName]="'status'"
+                class="form-control round"
+                name="section"
+                formControlName="status"
+              >
+                <option value="">Select</option>
+                <option *ngFor="let t of statuses" [value]="t.id">
+                  {{ t.name }}
+                </option>
+              </select>
+            </app-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="form-group mb-2">
+        <label class="mb-2 l-col"
+          >Location<span class="text-danger">*</span></label
+        >
+        <div class="mb-2">
+          <app-form-field>
+            <ng-select
+              showError
+              [controlName]="'Location'"
+              formControlName="locationId"
+              name="location"
+              [items]="locations"
+              bindLabel="value"
+              bindValue="code"
+              placeholder="Select Location"
+              [clearable]="true"
+              [searchable]="true"
+            >
+            </ng-select>
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2">Remarks <span class="text-danger">*</span></label>
+        <div>
+          <app-form-field>
+            <textarea
+              type="text"
+              showError
+              [controlName]="'Remarks'"
+              class="form-control"
+              formControlName="remarks"
+              value=""
+            ></textarea>
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Prepared By<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Prepared By'"
+              class="form-control"
+              formControlName="preparedBy"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="col-md-3">
+            <div class="form-group mb-2">
+                <label class="mb-2">Prepared Date<span class="text-danger">*</span></label>
+                <div>
+                    <app-form-field>
+                        <input [matDatepicker]="preParedatepicker" datePickerFormat="DD-MM-YYYY" showError [controlName]="'Prepared Date'" class="form-control"
+                            formControlName="preparedDate" value="">                           
+                    <mat-datepicker-toggle matSuffix [for]="preParedatepicker"></mat-datepicker-toggle>
+                    <mat-datepicker #preParedatepicker></mat-datepicker>
+                    </app-form-field>
+                </div>
+            </div>
+        </div> -->
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Prepared Date<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="date"
+              showError
+              [controlName]="'Prepared Date'"
+              class="form-control"
+              formControlName="preparedDate"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Reviewed By<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Reviewed By'"
+              class="form-control"
+              formControlName="reviewedBy"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Reviewed Date<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="date"
+              showError
+              [controlName]="'Reviewed Date'"
+              class="form-control"
+              formControlName="reviewedDate"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Approved By<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="text"
+              showError
+              [controlName]="'Approved By'"
+              class="form-control"
+              formControlName="approvedBy"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group mb-2">
+        <label class="mb-2"
+          >Approved Date<span class="text-danger">*</span></label
+        >
+        <div>
+          <app-form-field>
+            <input
+              type="date"
+              showError
+              [controlName]="'Approved Date'"
+              class="form-control"
+              formControlName="approvedDate"
+              value=""
+            />
+          </app-form-field>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+<div class="col-md-12 text-end my-2">
+  <button
+    type="button"
+    class="btn btn-outline-danger btn-space"
+    (click)="clear()"
+  >
+    <i class="fa fa-refresh"></i> Reset
+  </button>
+  <!--  -->
+  <button
+    type="button" 
+    class="btn btn-success btn-space"
+    [disabled]="!shipmentForm.valid"
+    (click)="save()"
+  >
+    <i class="fa fa-save"></i> {{ isUpdateMode ? 'Update' : 'Save' }}
+  </button>
+  <button
+    type="button"
+    [disabled]="!isShipmentSaved"
+    (click)="loadShipmentLineItems()"
+    class="btn btn-success btn-space"
+  >
+    <i class="fa fa-plus"></i>
+    Add Shipment Line Items
+  </button>
+</div>
+<!-- <div class="col-md-12 text-end my-2" >
+    <button type="button" class="btn btn-outline-danger btn-space" (click)="clear()"><i class="fa fa-refresh"></i>
+        Reset</button>
+    <button type="button" class="btn btn-success btn-space" [disabled]="!shipmentForm.valid" (click)="save()"><i
+            class="fa fa-save"></i> Save</button>
+</div> -->
+
+<!-- <mat-tab-group animationDuration="0ms">
+    <mat-tab label="Craft">
+        <app-table *ngIf="craft.length > 0"  [tableColumns]="craftTableColumns" [tableData]="craft">
+        </app-table>
+    </mat-tab>
+    <mat-tab label="Qualification">
+        <app-table *ngIf="qual.length > 0"  [tableColumns]="qualTableColumns" [tableData]="qual">
+        </app-table>
+    </mat-tab>
+</mat-tab-group> -->
+
+<mat-card *ngIf="showShipmentTable">
+  <app-table
+    *ngIf="poLineItems.length > 0"
+    [tableColumns]="tableColumns"
+    [tableData]="poLineItems"
+    (editData)="editShipmentId($event)"
+    (refreshTableData)="refreshTableData($event)"
+  >
+  </app-table>
+
+  <!-- <div class="text-end mt-3">
+    <button class="btn btn-success me-2" (click)="addItem()">
+      <i class="fa fa-save"></i> Save Item's
+    </button>
+
+    <button class="btn btn-danger" (click)="cancel()">
+      <i class="fa fa-times"></i> Cancel
+    </button>
+  </div> -->
+
+  <div class="row m-2" *ngIf="isNotFound">
+    <span class="bg-warning text-center fw-bold">Po Details not found</span>
+  </div>
+</mat-card>
+
+<br />
+<br />
+
+<mat-card *ngIf="lineItems.length > 0">
+  <!-- Header Details -->
+  <div class="row mb-3">
+    <div class="col-3">
+      <label>Invoice Number</label>
+      <input class="form-control" [(ngModel)]="header.invoiceNumber" disabled />
+    </div>
+
+    <div class="col-3">
+      <label>PO Number</label>
+      <input class="form-control" [(ngModel)]="header.poNumber" disabled />
+    </div>
+
+    <div class="col-3">
+      <label>Vendor</label>
+      <input class="form-control" [(ngModel)]="header.vendor" disabled />
+    </div>
+  </div>
+
+  <!-- Table -->
+  <table class="table table-bordered table-sm">
+    <thead class="table-light">
+      <tr>
+        <th>Item Type</th>
+        <th>Item Category</th>
+        <th>Item Name</th>
+        <th>Item Desc</th>
+        <th>UOM</th>
+        <th>Batch No</th>
+        <th>Is Serialized</th>
+        <th>Order Qty</th>
+        <th>Already Done Qty</th>
+        <th>Received Qty</th>
+        <th>Test Required</th>
+        <th>Select</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of lineItems; let i = index">
+        <td>{{ item.itemType }}</td>
+        <td>{{ item.itemCategory }}</td>
+        <td>{{ item.itemNum }}</td>
+        <td>{{ item.itemDesc }}</td>
+        <td>{{ item.uom }}</td>
+        <td>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="item.batchNo"
+            (change)="onBatchChange(item, i)"
+            [ngClass]="{ 'is-invalid': item.isBatchDuplicate }"
+          />
+          <div *ngIf="item.isBatchDuplicate" class="text-danger small">
+            Duplicate batch number for this item.
+          </div>
+        </td>
+        <!-- Serialized Dropdown -->
+        <td>
+          <select class="form-control" [(ngModel)]="item.isSerialized">
+            <option value="Serialized">Serialized</option>
+            <option value="NonSerialized">NonSerialized</option>
+          </select>
+        </td>
+
+        <td>{{ item.orderQty }}</td>
+        <td>{{ item.alreadyDoneQty }}</td>
+        <!-- Received Qty -->
+        <td>
+          <input
+            type="number"
+            class="form-control"
+            [(ngModel)]="item.receivedQty"
+            (change)="onQtyChange(item, i)"
+          />
+        </td>
+
+        <td>{{ item.testRequired }}</td>
+
+        <!-- Buttons -->
+        <td>
+          <button
+            class="btn btn-sm btn-primary me-2"
+            [disabled]="
+              item.isSerialized === 'Serialized' && !item.isSerialCompleted
+            "
+            (click)="addItem(item)"
+          >
+            Add
+          </button>
+
+          <button
+            class="btn btn-sm btn-success"
+            [disabled]="item.isSerialized !== 'Serialized'"
+            (click)="addSerialNo(item)"
+          >
+            Add Serial No
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="deleteItem(i)">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-card>

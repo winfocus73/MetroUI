@@ -1,0 +1,91 @@
+<mat-card>
+    <mat-card-content>
+        <ng-container *ngIf="objForm?.list==1">
+            <ng-container *ngIf="!isAddEdit">
+               
+                    <div class="container-fluid">
+                        <div class="btn-add">                           
+                            <span class="btn btn-primary" *ngIf="!isAddEdit && objForm.add ==1" type="button"
+                                (click)="AddShipment()"><i class="las la-plus"></i> New</span>
+                        </div>
+                        <div class="row py-2 cust-filter" [ngClass]="{'showmfilter': showmFilter}">
+                           
+            <div class="col-md-12">
+                <div class="row mb-2 align-items-center">
+            <div class="col-auto pe-0 small-input-ctrl">
+              <label>Shipment Num</label>
+                <ng-select class="cust_multiple" [items]="shipmentNames" bindLabel="name" bindValue="name" [(ngModel)]="objSearch.shipmentNumber"
+                [multiple]="true" [closeOnSelect]="false"placeholder="Select Shipment">
+            </ng-select>
+        </div> 
+         <div class="col-auto pe-0 small-input-ctrl">
+              <label>Invoice Num</label>
+            <ng-select class="cust_multiple" [items]="invoiceNames" bindLabel="name" bindValue="name"[(ngModel)]="objSearch.invoiceNumber"
+             [multiple]="true" [closeOnSelect]="false"placeholder="Select Invoice">
+             </ng-select>
+        </div> 
+                          
+                <div class="col-auto pe-0 small-input-ctrl">
+                  <label>Carrier Name</label>
+                  <input type="text" class="form-control" [(ngModel)]="objSearch.carrierName" (keydown.enter)="search()"placeholder="Enter Carrier" >                   
+                </div>
+                        
+         <div class="col-auto pe-0 small-input-ctrl">
+                  <label>Vendor</label>
+            <ng-select [items]="vendorNames" bindLabel="vendorName" bindValue="vendorId" [multiple]="true" [closeOnSelect]="false"
+                 [(ngModel)]="objSearch.Vendor" placeholder="Select Vendor">
+            </ng-select>
+            </div>          
+                <div class="col-auto pe-0 small-input-ctrl">
+                        <label class="col-auto p-1"> RngeDate(From-To) </label>
+                        <div class="col-12">
+                            <input type="text" ngxDaterangepickerMd [(ngModel)]="objSearch.receivedDateFrom"(datesUpdated)="datesUpdated($event)"
+                    placeholder="From Date-To Date"[showCustomRangeLabel]="true"[alwaysShowCalendars]="true"  class="form-control"
+                    [ranges]="ranges"[locale]='{ "format": "YYYY-MM-DDTHH:mm:ss.SSSZ", "displayFormat": "DD-MM-YYYY", "separator": " To " }'[showCancel]="true"
+                    [linkedCalendars]="true" [showDropdowns]="true"[keepCalendarOpeningWithRange]="true"[showRangeLabelOnInput]="true" />                   
+                    </div>
+                        </div>
+                                    <div class="col mt-4">
+                                        <div class="btn_cust-filter d-inline">
+                                           
+                                            <button type="button"
+                                                class="btn btn-success btn-cust btn-rounded btn-fw me-2" title="Search"
+                                                (click)="SearchMaterialIssue()"><i class="las la-search"></i></button>
+                                            <button type="button" class="btn btn-success btn-cust btn-rounded btn-fw"
+                                                title="Reset" (click)="reset()"><i class="la la-refresh"></i></button>
+                                             <span *ngIf="!isAddEdit" class="btn btn-primary btn-rounded btn-fw ms-2 d-inline-block" title="Excel Download" (click)="export()">
+                                              <i class="fa fa-file-excel"></i>
+                                             </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+              
+        <app-table *ngIf="shipments.length > 0" [totalRowsCount]="objSearch.TotalRecords" [isCustomPagination]="'true'"
+          (emitPagination)="pageChanged($event)" [pageIndex]="objSearch.PageNo" [pageSize]="objSearch.PageSize"
+          [tableColumns]="tableColumns" [tableData]="shipments" (editData)="editAssetId($event)"
+          (refreshTableData)="refreshTableData($event)">
+        </app-table>
+        <div class="row m-2" *ngIf="isNotFound">
+          <span class="bg-warning text-center fw-bold">Shipment Details not found</span>
+        </div>
+    <ng-container *ngIf="objForm?.list==0">
+      <p class="bg-warning text-center fw-bold">You do not have permission to access this Page</p>
+    </ng-container>
+            </ng-container>
+        </ng-container> 
+    </mat-card-content>
+</mat-card>
+
+
+
+
+
+
+
+
+
+
+

@@ -24,4 +24,6 @@ export interface Column {
     label?: string;
     isInput?: boolean;
     inputType?: string;
+    isCheckbox?: boolean;
+    type?:any;
   }

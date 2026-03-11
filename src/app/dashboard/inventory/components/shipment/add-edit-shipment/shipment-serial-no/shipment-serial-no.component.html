@@ -1,0 +1,122 @@
+<h2 mat-dialog-title>Shipment Serial No</h2>
+
+<mat-dialog-content class="dialog-content">
+
+ <form autocomplete="off" class="form-sample p-2" [formGroup]="shipmentSerialNoFrom">
+
+  <div formArrayName="serialRows">
+
+    <div class="row border rounded p-2 mb-2"
+         *ngFor="let row of serialRows.controls; let i = index"
+         [formGroupName]="i">
+
+      <!-- S.No -->
+      <div class="col-1 min-wd-80 d-flex align-items-center">
+        <label class="fw-bold">{{ i + 1 }}</label>
+      </div>
+
+      <!-- Item -->
+      <div class="col-2 min-wd-180">
+        <div class="form-group">
+          <label class="ms-2">Item</label>
+          <app-form-field>
+            <input type="text"
+                   class="form-control"
+                   formControlName="item"
+                   showError
+                   [controlName]="'Item'" />
+          </app-form-field>
+        </div>
+      </div>
+
+      <!-- Serial No -->
+      <div class="col-2 min-wd-180">
+        <div class="form-group">
+          <label class="ms-2">Serial No</label>
+          <app-form-field>
+            <input type="text"
+       formControlName="serialNo"
+       class="form-control"
+       (input)="checkDuplicateSerials()"
+       [ngClass]="{'is-invalid': row.get('serialNo')?.hasError('duplicate')}" />
+       <div *ngIf="row.get('serialNo')?.hasError('duplicate')" 
+         class="text-danger small">
+          Duplicate serial number not allowed.
+       </div>
+          </app-form-field>
+        </div>
+      </div>
+
+      <!-- Make -->
+      <div class="col-2 min-wd-180">
+        <div class="form-group">
+          <label class="ms-2">Make</label>
+          <app-form-field>
+            <input type="text"
+                   class="form-control"
+                   formControlName="make"
+                   showError
+                   [controlName]="'Make'" />
+          </app-form-field>
+        </div>
+      </div>
+
+      <!-- Model -->
+      <div class="col-2 min-wd-180">
+        <div class="form-group">
+          <label class="ms-2">Model</label>
+          <app-form-field>
+            <input type="text"
+                   class="form-control"
+                   formControlName="model"
+                   showError
+                   [controlName]="'Model'" />
+          </app-form-field>
+        </div>
+      </div>
+
+      <!-- Warranty Date -->
+      <div class="col-2 min-wd-180">
+        <div class="form-group">
+          <label class="ms-2">Warranty Date</label>
+          <app-form-field>
+            <input type="date"
+                   class="form-control"
+                   formControlName="warrentyDate"
+                   showError
+                   [controlName]="'Warranty Date'" />
+          </app-form-field>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Buttons -->
+  <div class="col-md-12 my-2 text-end">
+
+    <button type="button"
+            class="btn btn-outline-danger btn-space"
+            (click)="clear()">
+      <i class="fa fa-refresh"></i> Reset
+    </button>
+
+    <button type="button"
+        class="btn btn-primary btn-space"
+        [disabled]="shipmentSerialNoFrom.invalid"
+        (click)="saveSerialNo()">
+  <i class="fa fa-save"></i> Save
+</button>
+
+  </div>
+
+</form>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+ <button mat-stroked-button color="primary" mat-dialog-close>
+  Close
+</button>
+</mat-dialog-actions>
